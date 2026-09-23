@@ -1,0 +1,35 @@
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.icon img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.icon span {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.icon p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}

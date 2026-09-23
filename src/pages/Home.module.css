@@ -1,0 +1,80 @@
+.homePage {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.streamingSection {
+  margin-bottom: 2.5rem;
+}
+
+.streamingSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.streamingGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.genresSection {
+  margin-bottom: 2.5rem;
+}
+
+.genresSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.genresGrid {
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+
+.genresGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.genresGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.genreButton {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.genreButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.genresWrapper {
+  position: relative;
+}
+
+.fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0.5rem;
+  width: 60px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  pointer-events: none;
+}

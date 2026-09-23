@@ -1,0 +1,126 @@
+.detailPage {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* Header: poster + info affiancati */
+.header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.poster {
+  width: 220px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.meta {
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.info > p:last-child {
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 65ch;
+}
+
+/* Blocchi info secondari (dettagli, produzione, reti) */
+.details,
+.productionSection,
+.networkSection {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.details p,
+.productionSection p,
+.networkSection p {
+  margin: 0.35rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.details strong,
+.productionSection strong,
+.networkSection strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Sezioni con titolo (Cast, Video, Stagioni, Simili) */
+.castSection,
+.videoSection,
+.seasonsSection,
+.similarSection {
+  margin-bottom: 2.5rem;
+}
+
+.castSection h2,
+.videoSection h2,
+.seasonsSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.castSection ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.castSection li {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.castSection strong {
+  color: var(--text);
+  display: block;
+}
+
+.videoSection iframe {
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seasonsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.seasonsColumn button {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.seasonsColumn button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

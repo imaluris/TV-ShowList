@@ -1,0 +1,59 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.poster {
+  width: 70px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.episodes {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.date {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.checkmark {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}

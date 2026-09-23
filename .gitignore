@@ -1,0 +1,17 @@
+# Dipendenze
+node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Variabili d'ambiente (contiene la tua API key TMDB)
+.env
+
+# Cache Vite
+.vite
+
+# File di sistema/editor
+.DS_Store
+*.log
