@@ -1,10 +1,11 @@
 export const STREAMING_KEYWORDS = [
-  { label: "Netflix", keyword: "netflix" },
-  { label: "Prime Video", keyword: "prime video" },
-  { label: "Apple TV+", keyword: "apple tv" },
-  { label: "Disney+", keyword: "disney" },
-  { label: "Paramount+", keyword: "paramount" },
-  { label: "Sky Go", keyword: "sky go" },
-  { label: "NOW TV", keyword: "now tv" },
-  { label: "Infinity+", keyword: "infinity" },
+  { label: "Netflix", keyword: "netflix", network: 213 },
+  { label: "Prime Video", keyword: "prime video", network: null },
+  { label: "Apple TV+", keyword: "apple tv", network: 2552 },
+  { label: "Disney+", keyword: "disney", network: 2739 },
+  { label: "Paramount+", keyword: "paramount", network: null },
+  { label: "Sky Go", keyword: "sky go", network: null },
+  { label: "NOW TV", keyword: "now tv", network: null },
+  { label: "Infinity+", keyword: "infinity", network: null },
 ];
+

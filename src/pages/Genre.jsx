@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { discoverShowsByGenre, getGenres } from "../services/tmdb";
 import ShowCard from "../components/ShowCard";
 import GenreFilterModal from "../components/GenreFilterModal";
@@ -10,8 +10,14 @@ function Genre() {
   const [shows, setShows] = useState([]);
   const [genreName, setGenreName] = useState("");
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({});
+  const [searchParams] = useSearchParams();
+  const presetProviderId = searchParams.get("provider") || "";
+  const [filters, setFilters] = useState(
+    presetProviderId ? { providerId: presetProviderId } : {},
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Il nome del genere non dipende dai filtri: basta caricarlo una volta
   useEffect(() => {
@@ -25,11 +31,25 @@ function Genre() {
   useEffect(() => {
     setLoading(true);
 
-    discoverShowsByGenre(id, filters).then((data) => {
-      setShows(data);
+    discoverShowsByGenre(id, filters, 1).then(({ results, totalPages }) => {
+      setShows(results);
+      setTotalPages(totalPages);
+      setPage(1);
       setLoading(false);
     });
   }, [id, filters]);
+
+  function loadMore() {
+    const nextPage = page + 1;
+
+    discoverShowsByGenre(id, filters, nextPage).then(
+      ({ results, totalPages }) => {
+        setShows((prev) => [...prev, ...results]);
+        setTotalPages(totalPages);
+        setPage(nextPage);
+      },
+    );
+  }
 
   return (
     <div className={styles.genrePage}>
@@ -62,7 +82,11 @@ function Genre() {
           ))}
         </div>
       )}
-
+      {!loading && page < totalPages && (
+        <button className={styles.loadMoreButton} onClick={loadMore}>
+          Carica altri
+        </button>
+      )}
       <GenreFilterModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

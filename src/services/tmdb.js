@@ -200,12 +200,13 @@ export async function searchCompany(query) {
   return data.results; // [{ id, name, logo_path }, ...]
 }
 
-export async function discoverShowsByGenre(genreId, filters = {}) {
+export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_genres: genreId,
     language: "it-IT",
     sort_by: filters.sortBy || "popularity.desc",
+    page: String(page),
   });
 
   if (filters.minVote) {
@@ -242,5 +243,48 @@ export async function discoverShowsByGenre(genreId, filters = {}) {
   }
 
   const data = await response.json();
+  return { results: data.results, totalPages: data.total_pages };
+}
+
+export async function getNewShowsByProvider(providerId, region = "IT") {
+  const today = new Date();
+  const weekAgo = new Date();
+  weekAgo.setDate(today.getDate() - 7);
+
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    with_watch_providers: providerId,
+    watch_region: region,
+    "first_air_date.gte": weekAgo.toISOString().slice(0, 10),
+    "first_air_date.lte": today.toISOString().slice(0, 10),
+    sort_by: "first_air_date.desc",
+    language: "it-IT",
+  });
+
+  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
   return data.results;
+}
+
+export async function getExclusivesByNetwork(networkId) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    with_networks: networkId,
+    sort_by: "popularity.desc",
+    language: "it-IT",
+  });
+
+  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results.slice(0, 10);
 }

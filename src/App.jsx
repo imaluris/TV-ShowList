@@ -6,6 +6,7 @@ import VerifyEmail from "./pages/VerifyEmail.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ShowDetail from "./pages/ShowDetail.jsx";
 import Genre from "./pages/Genre.jsx";
+import Provider from "./pages/Provider.jsx";
 
 function App() {
   return (
@@ -36,6 +37,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Genre />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/provider/:id"
+        element={
+          <ProtectedRoute>
+            <Provider />
           </ProtectedRoute>
         }
       />
