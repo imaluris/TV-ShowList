@@ -5,6 +5,7 @@ import Register from "./pages/Register.jsx";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ShowDetail from "./pages/ShowDetail.jsx";
+import Genre from "./pages/Genre.jsx";
 
 function App() {
   return (
@@ -12,7 +13,6 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/show/:id" element={<ShowDetail />} />
 
       {/* Le rotte dentro ProtectedRoute sono visibili solo a chi è loggato */}
       <Route
@@ -20,6 +20,22 @@ function App() {
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/show/:id"
+        element={
+          <ProtectedRoute>
+            <ShowDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/genre/:id"
+        element={
+          <ProtectedRoute>
+            <Genre />
           </ProtectedRoute>
         }
       />

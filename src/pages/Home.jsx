@@ -11,23 +11,14 @@ import {
 import ShowRow from "../components/ShowRow";
 import StreamingIcon from "../components/StreamingIcon";
 import styles from "./Home.module.css";
+import { STREAMING_KEYWORDS } from "../constants/streamingServices";
+import { Link } from "react-router-dom";
 
 const PROVIDERS = [
   { id: 8, name: "Netflix" },
   { id: 119, name: "Prime Video" },
   { id: 350, name: "Apple TV+" },
   { id: 337, name: "Disney+" },
-];
-
-const STREAMING_KEYWORDS = [
-  { label: "Netflix", keyword: "netflix" },
-  { label: "Prime Video", keyword: "prime video" },
-  { label: "Apple TV+", keyword: "apple tv" },
-  { label: "Disney+", keyword: "disney" },
-  { label: "Paramount+", keyword: "paramount" },
-  { label: "Sky Go", keyword: "sky go" },
-  { label: "NOW TV", keyword: "now tv" },
-  { label: "Infinity+", keyword: "infinity" },
 ];
 
 function Home() {
@@ -102,9 +93,13 @@ function Home() {
           <div className={styles.genresWrapper}>
             <div className={styles.genresGrid}>
               {genres.map((genre) => (
-                <button key={genre.id} className={styles.genreButton}>
+                <Link
+                  key={genre.id}
+                  to={`/genre/${genre.id}`}
+                  className={styles.genreButton}
+                >
                   {genre.name}
-                </button>
+                </Link>
               ))}
             </div>
             <div className={styles.fade} />

@@ -183,3 +183,64 @@ export async function getAggregateCreditsShow(id) {
   const data = await response.json();
   return data;
 }
+
+export async function searchCompany(query) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    query,
+  });
+
+  const response = await fetch(`${BASE_URL}/search/company?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results; // [{ id, name, logo_path }, ...]
+}
+
+export async function discoverShowsByGenre(genreId, filters = {}) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    with_genres: genreId,
+    language: "it-IT",
+    sort_by: filters.sortBy || "popularity.desc",
+  });
+
+  if (filters.minVote) {
+    params.set("vote_average.gte", filters.minVote);
+    // TODO: soglia vote_count.gte fissa a 20, da rivedere — magari renderla
+    // dinamica in base all'anno filtrato (soglia più bassa per le novità)
+    params.set("vote_count.gte", "20");
+  }
+
+  if (filters.year) {
+    params.set("first_air_date_year", filters.year);
+  } else {
+    if (filters.yearFrom) {
+      params.set("first_air_date.gte", `${filters.yearFrom}-01-01`);
+    }
+    if (filters.yearTo) {
+      params.set("first_air_date.lte", `${filters.yearTo}-12-31`);
+    }
+  }
+
+  if (filters.providerId) {
+    params.set("with_watch_providers", filters.providerId);
+    params.set("watch_region", "IT");
+  }
+
+  if (filters.companyId) {
+    params.set("with_companies", filters.companyId);
+  }
+
+  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results;
+}
