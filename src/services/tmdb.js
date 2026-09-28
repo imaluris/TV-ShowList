@@ -1,6 +1,7 @@
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMG_URL = "https://image.tmdb.org/t/p/w200";
+export const IMG_URL_LARGE = "https://image.tmdb.org/t/p/w500";
 
 export async function getPopularShows() {
   const params = new URLSearchParams({
@@ -103,7 +104,9 @@ export async function getRecommendedShows(id) {
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/tv/${id}/recommendations?${params}`);
+  const response = await fetch(
+    `${BASE_URL}/tv/${id}/recommendations?${params}`,
+  );
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -161,4 +164,22 @@ export async function getGenres() {
 
   const data = await response.json();
   return data.genres;
+}
+
+export async function getAggregateCreditsShow(id) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+  });
+
+  const response = await fetch(
+    `${BASE_URL}/tv/${id}/aggregate_credits?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
 }

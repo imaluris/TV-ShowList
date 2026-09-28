@@ -4,7 +4,14 @@
   padding: 2rem 1.5rem 4rem;
 }
 
+@media (max-width: 600px) {
+  .detailPage {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+}
+
 /* Header: poster + info affiancati */
+/* Header: poster + info affiancati — DESKTOP */
 .header {
   display: flex;
   gap: 2rem;
@@ -20,6 +27,22 @@
   flex-shrink: 0;
 }
 
+/* MOBILE: sovrascrive solo sotto i 600px */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .poster {
+    width: calc(100% + 1.5rem);
+    max-width: none;
+    max-height: 480px;
+    object-fit: cover;
+    margin: -1.5rem -0.75rem 0;
+    border-radius: 0;
+    border: none;
+  }
+}
 .info h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -38,8 +61,25 @@
   max-width: 65ch;
 }
 
-/* Blocchi info secondari (dettagli, produzione, reti) */
-.details,
+/* Info secondarie dentro l'header, sotto la overview */
+.details {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.details p {
+  margin: 0.3rem 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.details strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Blocchi info secondari (produzione, reti) */
 .productionSection,
 .networkSection {
   margin-bottom: 1.5rem;
@@ -47,7 +87,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.details p,
 .productionSection p,
 .networkSection p {
   margin: 0.35rem 0;
@@ -55,7 +94,6 @@
   font-size: 0.9rem;
 }
 
-.details strong,
 .productionSection strong,
 .networkSection strong {
   color: var(--text);
@@ -77,30 +115,93 @@
   margin-bottom: 0.75rem;
 }
 
-.castSection ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.5rem;
+.castRow {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
 }
 
-.castSection li {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+.castRow::-webkit-scrollbar {
+  display: none;
 }
 
-.castSection strong {
+.castWrapper {
+  position: relative;
+}
+
+.castWrapper .fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0.5rem;
+  width: 150px;
+  background: linear-gradient(to right, transparent, rgba(12, 13, 16, 0.75));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.castWrapper .arrowLeft,
+.castWrapper .arrowRight {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(12, 13, 16, 0.85);
+  border: none;
   color: var(--text);
-  display: block;
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
-.videoSection iframe {
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  margin-right: 1rem;
-  margin-bottom: 1rem;
+.castWrapper:hover .arrowLeft,
+.castWrapper:hover .arrowRight {
+  opacity: 1;
+}
+
+.castWrapper .arrowLeft:hover,
+.castWrapper .arrowRight:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.castWrapper .arrowLeft {
+  left: 0;
+}
+
+.castWrapper .arrowRight {
+  right: 0;
+}
+
+/* Nascondi le frecce su touch/mobile: lì lo scroll con il dito è già naturale */
+@media (pointer: coarse) {
+  .castWrapper .arrowLeft,
+  .castWrapper .arrowRight {
+    display: none;
+  }
+}
+
+.videoRow {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.videoRow::-webkit-scrollbar {
+  display: none;
 }
 
 .seasonsColumn {

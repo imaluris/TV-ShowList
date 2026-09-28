@@ -4,6 +4,12 @@
   padding: 2rem 1.5rem 4rem;
 }
 
+@media (max-width: 600px) {
+  .homePage {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+}
+
 .streamingSection {
   margin-bottom: 2.5rem;
 }

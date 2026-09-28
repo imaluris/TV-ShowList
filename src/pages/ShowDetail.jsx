@@ -5,11 +5,16 @@ import {
   getCreditsShow,
   getVideoShow,
   getShowsByGenres,
+  getAggregateCreditsShow,
   IMG_URL,
+  IMG_URL_LARGE,
 } from "../services/tmdb";
 import styles from "./ShowDetail.module.css";
 import ShowRow from "../components/ShowRow";
 import SeasonCard from "../components/SeasonCard";
+import CastCard from "../components/CastCard";
+import { useRef } from "react";
+import VideoCard from "../components/VideoCard";
 
 function ShowDetail() {
   const { id } = useParams();
@@ -18,6 +23,7 @@ function ShowDetail() {
   const [videos, setVideos] = useState(null);
   const [suggeriti, setSuggeriti] = useState([]);
   const [showAllSeasons, setShowAllSeasons] = useState(false);
+  const castRowRef = useRef(null);
 
   useEffect(() => {
     getShowDetails(id).then((data) => {
@@ -57,8 +63,23 @@ function ShowDetail() {
     loadSuggested();
   }, [show]);
 
+  useEffect(() => {
+    getAggregateCreditsShow(id).then((data) => {
+      console.log("Numero attori:", data.cast.length);
+      setCredits(data);
+    });
+  }, [id]);
+
   if (!show) {
     return <p>Caricamento...</p>;
+  }
+
+  function scrollCastLeft() {
+    castRowRef.current.scrollBy({ left: -400, behavior: "smooth" });
+  }
+
+  function scrollCastRight() {
+    castRowRef.current.scrollBy({ left: 400, behavior: "smooth" });
   }
 
   return (
@@ -66,7 +87,7 @@ function ShowDetail() {
       <div className={styles.header}>
         <img
           className={styles.poster}
-          src={show.poster_path ? `${IMG_URL}${show.poster_path}` : ""}
+          src={show.poster_path ? `${IMG_URL_LARGE}${show.poster_path}` : ""}
           alt={show.name}
         />
         <div className={styles.info}>
@@ -76,21 +97,22 @@ function ShowDetail() {
             {show.vote_count > 0 ? ` (${show.vote_count} voti)` : ""}
           </p>
           <p>{show.overview}</p>
+
+          <div className={styles.details}>
+            <p>
+              <strong>Lingua originale:</strong> {show.original_language}
+            </p>
+            <p>
+              <strong>Prima trasmissione:</strong> {show.first_air_date}
+            </p>
+            <p>
+              <strong>Numero di stagioni:</strong> {show.number_of_seasons}
+            </p>
+            <p>
+              <strong>Numero di episodi:</strong> {show.number_of_episodes}
+            </p>
+          </div>
         </div>
-      </div>
-      <div className={styles.details}>
-        <p>
-          <strong>Lingua originale:</strong> {show.original_language}
-        </p>
-        <p>
-          <strong>Prima trasmissione:</strong> {show.first_air_date}
-        </p>
-        <p>
-          <strong>Numero di stagioni:</strong> {show.number_of_seasons}
-        </p>
-        <p>
-          <strong>Numero di episodi:</strong> {show.number_of_episodes}
-        </p>
       </div>
 
       <div className={styles.productionSection}>
@@ -116,33 +138,36 @@ function ShowDetail() {
       <div className={styles.castSection}>
         <h2>Cast</h2>
         {credits && credits.cast.length > 0 ? (
-          <ul>
-            {credits.cast.slice(0, 10).map((member) => (
-              <li key={member.id}>
-                <strong>{member.name}</strong> - {member.character}
-              </li>
-            ))}
-          </ul>
+          <div className={styles.castWrapper}>
+            <button className={styles.arrowLeft} onClick={scrollCastLeft}>
+              ‹
+            </button>
+
+            <div className={styles.castRow} ref={castRowRef}>
+              {credits.cast.slice(0, 50).map((member) => (
+                <CastCard key={member.id} member={member} />
+              ))}
+            </div>
+
+            <div className={styles.fade} />
+
+            <button className={styles.arrowRight} onClick={scrollCastRight}>
+              ›
+            </button>
+          </div>
         ) : (
-          <p> Nessun attore disponibile.</p>
+          <p>Nessun attore disponibile.</p>
         )}
       </div>
 
       <div className={styles.videoSection}>
         <h2>Video</h2>
-        {videos &&
-          videos
-            .filter((v) => v.type === "Trailer")
-            .map((video) => (
-              <iframe
-                key={video.id}
-                width="560"
-                height="315"
-                src={`https://www.youtube.com/embed/${video.key}`}
-                title={video.name}
-                allowFullScreen
-              />
-            ))}
+        <div className={styles.videoRow}>
+          {videos &&
+            videos
+              .filter((v) => v.type === "Trailer")
+              .map((video) => <VideoCard key={video.id} video={video} />)}
+        </div>
       </div>
 
       <div className={styles.seasonsSection}>
