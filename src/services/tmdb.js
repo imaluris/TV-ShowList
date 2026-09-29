@@ -3,13 +3,13 @@ const BASE_URL = "https://api.themoviedb.org/3";
 export const IMG_URL = "https://image.tmdb.org/t/p/w200";
 export const IMG_URL_LARGE = "https://image.tmdb.org/t/p/w500";
 
-export async function getPopularShows() {
+export async function getPopularShows(mediaType) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/trending/tv/day?${params}`);
+  const response = await fetch(`${BASE_URL}/trending/${mediaType}/day?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -19,7 +19,7 @@ export async function getPopularShows() {
   return data.results;
 }
 
-export async function getTopByProvider(providerId, region = "IT") {
+export async function getTopByProvider(mediaType, providerId, region = "IT") {
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_watch_providers: providerId,
@@ -28,7 +28,7 @@ export async function getTopByProvider(providerId, region = "IT") {
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+  const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -39,13 +39,13 @@ export async function getTopByProvider(providerId, region = "IT") {
   return data.results.slice(0, 10); // solo i primi 10
 }
 
-export async function getShowDetails(id) {
+export async function getShowDetails(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/tv/${id}?${params}`);
+  const response = await fetch(`${BASE_URL}/${mediaType}/${id}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -54,13 +54,13 @@ export async function getShowDetails(id) {
   return data;
 }
 
-export async function getCreditsShow(id) {
+export async function getCreditsShow(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/tv/${id}/credits?${params}`);
+  const response = await fetch(`${BASE_URL}/${mediaType}/${id}/credits?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -69,12 +69,12 @@ export async function getCreditsShow(id) {
   return data;
 }
 
-export async function getVideoShow(id) {
+export async function getVideoShow(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
   });
 
-  const response = await fetch(`${BASE_URL}/tv/${id}/videos?${params}`);
+  const response = await fetch(`${BASE_URL}/${mediaType}/${id}/videos?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -83,13 +83,13 @@ export async function getVideoShow(id) {
   return data.results;
 }
 
-export async function getSimilarShows(id) {
+export async function getSimilarShows(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/tv/${id}/similar?${params}`);
+  const response = await fetch(`${BASE_URL}/${mediaType}/${id}/similar?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -98,14 +98,14 @@ export async function getSimilarShows(id) {
   return data.results;
 }
 
-export async function getRecommendedShows(id) {
+export async function getRecommendedShows(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
   const response = await fetch(
-    `${BASE_URL}/tv/${id}/recommendations?${params}`,
+    `${BASE_URL}/${mediaType}/${id}/recommendations?${params}`,
   );
 
   if (!response.ok) {
@@ -115,7 +115,7 @@ export async function getRecommendedShows(id) {
   return data.results;
 }
 
-export async function getShowsByGenres(genreIds) {
+export async function getShowsByGenres(mediaType, genreIds) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_genres: genreIds.join(","),
@@ -123,7 +123,7 @@ export async function getShowsByGenres(genreIds) {
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+  const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -133,14 +133,14 @@ export async function getShowsByGenres(genreIds) {
   return data.results;
 }
 
-export async function getWatchProviders(region = "IT") {
+export async function getWatchProviders(mediaType, region = "IT") {
   const params = new URLSearchParams({
     api_key: API_KEY,
     watch_region: region,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/watch/providers/tv?${params}`);
+  const response = await fetch(`${BASE_URL}/watch/providers/${mediaType}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -150,13 +150,13 @@ export async function getWatchProviders(region = "IT") {
   return data.results;
 }
 
-export async function getGenres() {
+export async function getGenres(mediaType) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/genre/tv/list?${params}`);
+  const response = await fetch(`${BASE_URL}/genre/${mediaType}/list?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -166,7 +166,20 @@ export async function getGenres() {
   return data.genres;
 }
 
-export async function getAggregateCreditsShow(id) {
+export async function getAggregateCreditsShow(mediaType, id) {
+  // I film non hanno /aggregate_credits (solo le serie TV ce l'hanno).
+  // Per i film usiamo /credits e normalizziamo il cast nello stesso
+  // formato (roles[0].character), così CastCard non deve sapere la
+  // differenza tra i due casi.
+  if (mediaType === "movie") {
+    const data = await getCreditsShow("movie", id);
+    const cast = data.cast.map((member) => ({
+      ...member,
+      roles: [{ character: member.character }],
+    }));
+    return { ...data, cast };
+  }
+
   const params = new URLSearchParams({
     api_key: API_KEY,
     language: "it-IT",
@@ -200,7 +213,7 @@ export async function searchCompany(query) {
   return data.results; // [{ id, name, logo_path }, ...]
 }
 
-export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
+export async function discoverShowsByGenre(mediaType, genreId, filters = {}, page = 1) {
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_genres: genreId,
@@ -208,6 +221,11 @@ export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
     sort_by: filters.sortBy || "popularity.desc",
     page: String(page),
   });
+
+  // Le serie usano first_air_date, i film primary_release_date: nomi di
+  // parametro diversi per lo stesso concetto ("quando è uscito").
+  const dateField = mediaType === "movie" ? "primary_release_date" : "first_air_date";
+  const yearField = mediaType === "movie" ? "primary_release_year" : "first_air_date_year";
 
   if (filters.minVote) {
     params.set("vote_average.gte", filters.minVote);
@@ -217,13 +235,13 @@ export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
   }
 
   if (filters.year) {
-    params.set("first_air_date_year", filters.year);
+    params.set(yearField, filters.year);
   } else {
     if (filters.yearFrom) {
-      params.set("first_air_date.gte", `${filters.yearFrom}-01-01`);
+      params.set(`${dateField}.gte`, `${filters.yearFrom}-01-01`);
     }
     if (filters.yearTo) {
-      params.set("first_air_date.lte", `${filters.yearTo}-12-31`);
+      params.set(`${dateField}.lte`, `${filters.yearTo}-12-31`);
     }
   }
 
@@ -236,7 +254,7 @@ export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
     params.set("with_companies", filters.companyId);
   }
 
-  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+  const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -246,22 +264,24 @@ export async function discoverShowsByGenre(genreId, filters = {}, page = 1) {
   return { results: data.results, totalPages: data.total_pages };
 }
 
-export async function getNewShowsByProvider(providerId, region = "IT") {
+export async function getNewShowsByProvider(mediaType, providerId, region = "IT") {
   const today = new Date();
   const weekAgo = new Date();
   weekAgo.setDate(today.getDate() - 7);
+
+  const dateField = mediaType === "movie" ? "primary_release_date" : "first_air_date";
 
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_watch_providers: providerId,
     watch_region: region,
-    "first_air_date.gte": weekAgo.toISOString().slice(0, 10),
-    "first_air_date.lte": today.toISOString().slice(0, 10),
-    sort_by: "first_air_date.desc",
+    [`${dateField}.gte`]: weekAgo.toISOString().slice(0, 10),
+    [`${dateField}.lte`]: today.toISOString().slice(0, 10),
+    sort_by: `${dateField}.desc`,
     language: "it-IT",
   });
 
-  const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
+  const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
 
   if (!response.ok) {
     throw new Error(`Errore nella fetch: ${response.status}`);
@@ -272,6 +292,11 @@ export async function getNewShowsByProvider(providerId, region = "IT") {
 }
 
 export async function getExclusivesByNetwork(networkId) {
+  // Solo per le serie TV: i "network" sono un concetto TV (emittente/
+  // servizio streaming). Per i film non esiste un equivalente diretto in
+  // TMDB — se in futuro vogliamo "esclusive film" dovremo ripensarla con
+  // with_companies invece di with_networks. Per ora questa funzione viene
+  // chiamata solo quando mediaType === "tv" (lo gestiamo in Provider.jsx).
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_networks: networkId,
@@ -312,9 +337,6 @@ export async function getSeasonDetails(showId, seasonNumber) {
 
   const dataIt = await resIt.json();
 
-  // TMDB spesso non ha la traduzione italiana dell'overview a livello di
-  // singolo episodio. Se manca, usiamo l'overview inglese come fallback
-  // invece di lasciare il campo vuoto.
   if (resEn.ok) {
     const dataEn = await resEn.json();
 
@@ -366,8 +388,6 @@ export async function getEpisodeDetails(showId, seasonNumber, episodeNumber) {
 
   const dataIt = await resIt.json();
 
-  // Stesso problema visto per le stagioni: se manca la traduzione italiana
-  // dell'overview, usiamo quella inglese come fallback.
   if (resEn.ok && !dataIt.overview) {
     const dataEn = await resEn.json();
     dataIt.overview = dataEn.overview || "";
@@ -408,7 +428,7 @@ export async function getPersonImages(personId) {
   }
 
   const data = await response.json();
-  return data.profiles; // array di foto della persona
+  return data.profiles;
 }
 
 export async function getPersonDetails(personId) {
@@ -456,5 +476,22 @@ export async function getPersonCombinedCredits(personId) {
   }
 
   const data = await response.json();
-  return data.cast; // film e serie insieme, ognuno con media_type: "movie" o "tv"
+  return data.cast;
+}
+
+export async function searchShows(mediaType, query) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+    query,
+  });
+
+  const response = await fetch(`${BASE_URL}/search/${mediaType}?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results;
 }

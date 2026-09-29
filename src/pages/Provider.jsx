@@ -8,12 +8,14 @@ import {
   getGenres,
   IMG_URL,
 } from "../services/tmdb";
+import { useMediaType } from "../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../constants/streamingServices";
 import ShowRow from "../components/ShowRow";
 import styles from "./Provider.module.css";
 
 function Provider() {
   const { id } = useParams();
+  const { mediaType, isMovie } = useMediaType();
   const [providerInfo, setProviderInfo] = useState(null);
   const [popular, setPopular] = useState([]);
   const [newShows, setNewShows] = useState([]);
@@ -23,7 +25,7 @@ function Provider() {
 
   // Nome/logo della piattaforma, e a quale network TMDB corrisponde (per le esclusive)
   useEffect(() => {
-    getWatchProviders().then((allProviders) => {
+    getWatchProviders(mediaType).then((allProviders) => {
       const found = allProviders.find((p) => String(p.provider_id) === id);
       setProviderInfo(found || null);
 
@@ -34,24 +36,29 @@ function Provider() {
         setNetworkId(match ? match.network : null);
       }
     });
-  }, [id]);
+  }, [id, mediaType]);
 
   useEffect(() => {
-    getTopByProvider(id).then(setPopular);
-  }, [id]);
+    getTopByProvider(mediaType, id).then(setPopular);
+  }, [id, mediaType]);
 
   useEffect(() => {
-    getNewShowsByProvider(id).then(setNewShows);
-  }, [id]);
+    getNewShowsByProvider(mediaType, id).then(setNewShows);
+  }, [id, mediaType]);
 
   useEffect(() => {
-    if (!networkId) return;
+    // Le "esclusive" via network TMDB esistono solo per le serie TV
+    // (vedi nota in getExclusivesByNetwork, tmdb.js)
+    if (isMovie || !networkId) {
+      setExclusives([]);
+      return;
+    }
     getExclusivesByNetwork(networkId).then(setExclusives);
-  }, [networkId]);
+  }, [networkId, isMovie]);
 
   useEffect(() => {
-    getGenres().then(setGenres);
-  }, []);
+    getGenres(mediaType).then(setGenres);
+  }, [mediaType]);
 
   return (
     <div className={styles.providerPage}>
@@ -77,7 +84,7 @@ function Provider() {
       <ShowRow title="Popolari del momento" shows={popular} />
       <ShowRow title="Nuove della settimana" shows={newShows} />
 
-      {networkId && exclusives.length > 0 && (
+      {!isMovie && networkId && exclusives.length > 0 && (
         <ShowRow title="Esclusive" shows={exclusives} />
       )}
 

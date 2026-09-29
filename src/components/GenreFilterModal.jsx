@@ -1,16 +1,27 @@
 import { useState, useEffect } from "react";
 import { getWatchProviders, searchCompany } from "../services/tmdb";
+import { useMediaType } from "../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../constants/streamingServices";
 import styles from "./GenreFilterModal.module.css";
 
-const SORT_OPTIONS = [
+const SORT_OPTIONS_TV = [
   { value: "popularity.desc", label: "Popolarità" },
   { value: "vote_average.desc", label: "Voto medio" },
   { value: "first_air_date.desc", label: "Data di uscita (più recenti)" },
   { value: "name.asc", label: "Nome (A-Z)" },
 ];
 
+const SORT_OPTIONS_MOVIE = [
+  { value: "popularity.desc", label: "Popolarità" },
+  { value: "vote_average.desc", label: "Voto medio" },
+  { value: "primary_release_date.desc", label: "Data di uscita (più recenti)" },
+  { value: "title.asc", label: "Nome (A-Z)" },
+];
+
 function GenreFilterModal({ isOpen, onClose, onApply }) {
+  const { mediaType, isMovie } = useMediaType();
+  const sortOptions = isMovie ? SORT_OPTIONS_MOVIE : SORT_OPTIONS_TV;
+
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [minVote, setMinVote] = useState("");
   const [yearMode, setYearMode] = useState("exact"); // "exact" oppure "range"
@@ -27,7 +38,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
   useEffect(() => {
     if (!isOpen) return;
 
-    getWatchProviders().then((allProviders) => {
+    getWatchProviders(mediaType).then((allProviders) => {
       const matched = STREAMING_KEYWORDS.map(({ label, keyword }) => {
         const found = allProviders.find((p) =>
           p.provider_name.toLowerCase().includes(keyword),
@@ -37,7 +48,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
 
       setProviders(matched);
     });
-  }, [isOpen]);
+  }, [isOpen, mediaType]);
 
   if (!isOpen) return null;
 
@@ -83,13 +94,13 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h2>Filtra serie TV</h2>
+        <h2>{isMovie ? "Filtra film" : "Filtra serie TV"}</h2>
 
         <form onSubmit={handleSubmit}>
           <label className={styles.field}>
             Ordina per
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              {SORT_OPTIONS.map((opt) => (
+              {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>

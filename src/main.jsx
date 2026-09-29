@@ -4,12 +4,15 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import { MediaTypeProvider } from "./contexts/MediaTypeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <MediaTypeProvider>
+          <App />
+        </MediaTypeProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

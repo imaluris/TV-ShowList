@@ -65,7 +65,7 @@ function SeasonDetail() {
       <div className={styles.header}>
         <div className={styles.posterWrapper}>
           <img src={posterSrc} alt={season.name} className={styles.poster} />
-          <Link to={`/show/${showId}`} className={styles.backButton}>
+          <Link to={`/show/tv/${showId}`} className={styles.backButton}>
             <ArrowLeft size={20} />
           </Link>
         </div>

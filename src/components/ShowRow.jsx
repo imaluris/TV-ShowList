@@ -5,6 +5,10 @@ import styles from "./ShowRow.module.css";
 function ShowRow({ title, shows }) {
   const rowRef = useRef(null);
 
+  if (!shows || shows.length === 0) {
+    return null;
+  }
+
   function scrollLeft() {
     rowRef.current.scrollBy({ left: -400, behavior: "smooth" });
   }

@@ -28,7 +28,7 @@ function App() {
         }
       />
       <Route
-        path="/show/:id"
+        path="/show/:mediaType/:id"
         element={
           <ProtectedRoute>
             <ShowDetail />

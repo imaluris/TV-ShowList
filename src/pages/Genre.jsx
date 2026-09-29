@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { discoverShowsByGenre, getGenres } from "../services/tmdb";
+import { useMediaType } from "../contexts/MediaTypeContext";
 import ShowCard from "../components/ShowCard";
 import GenreFilterModal from "../components/GenreFilterModal";
 import styles from "./Genre.module.css";
 
 function Genre() {
   const { id } = useParams();
+  const { mediaType, isMovie } = useMediaType();
   const [shows, setShows] = useState([]);
   const [genreName, setGenreName] = useState("");
+  const [genreExists, setGenreExists] = useState(true);
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const presetProviderId = searchParams.get("provider") || "";
@@ -20,29 +23,41 @@ function Genre() {
   const [totalPages, setTotalPages] = useState(1);
 
   // Il nome del genere non dipende dai filtri: basta caricarlo una volta
+  // (ma va ricaricato se cambia mediaType, perché gli ID dei generi sono
+  // diversi tra film e serie TV)
   useEffect(() => {
-    getGenres().then((genresData) => {
+    getGenres(mediaType).then((genresData) => {
       const genre = genresData.find((g) => String(g.id) === String(id));
       setGenreName(genre ? genre.name : "");
+      setGenreExists(Boolean(genre));
     });
-  }, [id]);
+  }, [id, mediaType]);
 
-  // Le serie invece vanno ricaricate ogni volta che cambiano genere o filtri
+  // Le serie/i film invece vanno ricaricati ogni volta che cambiano genere,
+  // filtri o mediaType — ma solo se il genere esiste davvero per il
+  // mediaType corrente (vedi genreExists sopra)
   useEffect(() => {
+    if (!genreExists) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
-    discoverShowsByGenre(id, filters, 1).then(({ results, totalPages }) => {
-      setShows(results);
-      setTotalPages(totalPages);
-      setPage(1);
-      setLoading(false);
-    });
-  }, [id, filters]);
+    discoverShowsByGenre(mediaType, id, filters, 1).then(
+      ({ results, totalPages }) => {
+        setShows(results);
+        setTotalPages(totalPages);
+        setPage(1);
+        setLoading(false);
+      },
+    );
+  }, [id, filters, mediaType, genreExists]);
 
   function loadMore() {
     const nextPage = page + 1;
 
-    discoverShowsByGenre(id, filters, nextPage).then(
+    discoverShowsByGenre(mediaType, id, filters, nextPage).then(
       ({ results, totalPages }) => {
         setShows((prev) => [...prev, ...results]);
         setTotalPages(totalPages);
@@ -69,10 +84,19 @@ function Genre() {
         </button>
       </div>
 
-      {loading ? (
+      {!genreExists ? (
+        <p>
+          Questo genere non esiste per {isMovie ? "i film" : "le serie TV"}.{" "}
+          <Link to="/">Torna alla Home</Link>.
+        </p>
+      ) : loading ? (
         <p>Caricamento...</p>
       ) : shows.length === 0 ? (
-        <p>Nessuna serie TV trovata con questi filtri.</p>
+        <p>
+          {isMovie
+            ? "Nessun film trovato con questi filtri."
+            : "Nessuna serie TV trovata con questi filtri."}
+        </p>
       ) : (
         <div className={styles.grid}>
           {shows.map((show) => (
