@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
+import styles from "./Login.module.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,42 +10,55 @@ function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-async function handleSubmit(event) {
-  event.preventDefault();
-  setError("");
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    navigate("/");
-  } catch (err) {
-    setError(err.message);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    }
   }
-}
 
   return (
-    <div>
-      <h1>Accedi</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Accedi</button>
-      </form>
-      {error && <p>{error}</p>}
-      <p>
-        Non hai un account? <Link to="/register">Registrati</Link>
-      </p>
+    <div className={styles.authPage}>
+      <div className={styles.authCard}>
+        <h1 className={styles.title}>Accedi</h1>
+        <p className={styles.subtitle}>Bentornato, accedi al tuo account</p>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            required
+          />
+          <button type="submit" className={styles.submitButton}>
+            Accedi
+          </button>
+        </form>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <p className={styles.footerText}>
+          Non hai un account?{" "}
+          <Link to="/register" className={styles.footerLink}>
+            Registrati
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

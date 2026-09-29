@@ -6,6 +6,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/config";
+import styles from "./Register.module.css";
 
 function Register() {
   const [nomeUtente, setNomeUtente] = useState("");
@@ -30,40 +31,54 @@ function Register() {
 
   let messaggioErrore = null;
   if (error) {
-    messaggioErrore = <p>{error}</p>;
+    messaggioErrore = <p className={styles.error}>{error}</p>;
   }
 
   return (
-    <div>
-      <h1>Registrati</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nome utente"
-          value={nomeUtente}
-          onChange={(e) => setNomeUtente(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password (min 6 caratteri)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Registrati</button>
-      </form>
-      {messaggioErrore}
-      <p>
-        Hai già un account? <Link to="/login">Accedi</Link>
-      </p>
+    <div className={styles.authPage}>
+      <div className={styles.authCard}>
+        <h1 className={styles.title}>Registrati</h1>
+        <p className={styles.subtitle}>Crea un account per iniziare</p>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            placeholder="Nome utente"
+            value={nomeUtente}
+            onChange={(e) => setNomeUtente(e.target.value)}
+            className={styles.input}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password (min 6 caratteri)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            required
+          />
+          <button type="submit" className={styles.submitButton}>
+            Registrati
+          </button>
+        </form>
+
+        {messaggioErrore}
+
+        <p className={styles.footerText}>
+          Hai già un account?{" "}
+          <Link to="/login" className={styles.footerLink}>
+            Accedi
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

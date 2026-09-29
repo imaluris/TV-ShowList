@@ -8,7 +8,7 @@ import { MediaTypeProvider } from "./contexts/MediaTypeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/TVShowList">
       <AuthProvider>
         <MediaTypeProvider>
           <App />

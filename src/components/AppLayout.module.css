@@ -2,3 +2,8 @@
   padding-top: 64px;
   padding-bottom: 72px;
 }
+
+.contentNoTopBar {
+  padding-top: 0;
+  padding-bottom: 72px;
+}
