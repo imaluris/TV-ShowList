@@ -23,7 +23,7 @@ function SeasonDetail() {
   }, [showId, seasonNumber]);
 
   useEffect(() => {
-    getAggregateCreditsShow(showId).then((data) => {
+    getAggregateCreditsShow("tv", showId).then((data) => {
       setShowCredits(data);
     });
   }, [showId]);
