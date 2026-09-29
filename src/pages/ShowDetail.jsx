@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   getShowDetails,
   getCreditsShow,
@@ -15,6 +15,7 @@ import SeasonCard from "../components/SeasonCard";
 import CastCard from "../components/CastCard";
 import { useRef } from "react";
 import VideoCard from "../components/VideoCard";
+import { ArrowLeft } from "lucide-react";
 
 function ShowDetail() {
   const { id } = useParams();
@@ -85,11 +86,16 @@ function ShowDetail() {
   return (
     <div className={styles.detailPage}>
       <div className={styles.header}>
-        <img
-          className={styles.poster}
-          src={show.poster_path ? `${IMG_URL_LARGE}${show.poster_path}` : ""}
-          alt={show.name}
-        />
+        <div className={styles.posterWrapper}>
+          <img
+            className={styles.poster}
+            src={show.poster_path ? `${IMG_URL_LARGE}${show.poster_path}` : ""}
+            alt={show.name}
+          />
+          <Link to="/" className={styles.backButton}>
+            <ArrowLeft size={20} />
+          </Link>
+        </div>
         <div className={styles.info}>
           <h1>{show.name}</h1>
           <p className={styles.meta}>

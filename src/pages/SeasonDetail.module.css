@@ -1,17 +1,15 @@
-.detailPage {
+.seasonPage {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
 }
 
 @media (max-width: 600px) {
-  .detailPage {
+  .seasonPage {
     padding: 1.5rem 0.75rem 3rem;
   }
 }
 
-/* Header: poster + info affiancati */
-/* Header: poster + info affiancati — DESKTOP */
 .header {
   display: flex;
   gap: 2rem;
@@ -57,28 +55,6 @@
   background: #fff;
 }
 
-.backButton svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* MOBILE: sovrascrive solo sotto i 600px */
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-  }
-
-  .posterWrapper {
-    width: calc(100% + 1.5rem);
-    max-width: none;
-    height: 480px;
-    aspect-ratio: auto;
-    margin: -1.5rem -0.75rem 0;
-    border-radius: 0;
-    border: none;
-  }
-}
-
 .info h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -97,56 +73,28 @@
   max-width: 65ch;
 }
 
-/* Info secondarie dentro l'header, sotto la overview */
-.details {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .posterWrapper {
+    width: calc(100% + 1.5rem);
+    max-width: none;
+    height: 480px;
+    aspect-ratio: auto;
+    margin: -1.5rem -0.75rem 0;
+    border-radius: 0;
+    border: none;
+  }
 }
 
-.details p {
-  margin: 0.3rem 0;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-.details strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* Blocchi info secondari (produzione, reti) */
-.productionSection,
-.networkSection {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.productionSection p,
-.networkSection p {
-  margin: 0.35rem 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.productionSection strong,
-.networkSection strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* Sezioni con titolo (Cast, Video, Stagioni, Simili) */
-.castSection,
-.videoSection,
-.seasonsSection,
-.similarSection {
+/* Sezione cast — stessa struttura di ShowDetail */
+.castSection {
   margin-bottom: 2.5rem;
 }
 
-.castSection h2,
-.videoSection h2,
-.seasonsSection h2 {
+.castSection h2 {
   font-size: 1.4rem;
   margin-bottom: 0.75rem;
 }
@@ -158,6 +106,7 @@
   padding-bottom: 0.5rem;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
+  overflow-anchor: none;
 }
 
 .castRow::-webkit-scrollbar {
@@ -219,7 +168,6 @@
   right: 0;
 }
 
-/* Nascondi le frecce su touch/mobile: lì lo scroll con il dito è già naturale */
 @media (pointer: coarse) {
   .castWrapper .arrowLeft,
   .castWrapper .arrowRight {
@@ -227,37 +175,14 @@
   }
 }
 
-.videoRow {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scrollbar-width: none;
-  scroll-snap-type: x mandatory;
+/* Sezione episodi */
+.episodesSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
 }
 
-.videoRow::-webkit-scrollbar {
-  display: none;
-}
-
-.seasonsColumn {
+.episodesList {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.seasonsColumn button {
-  align-self: flex-start;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-}
-
-.seasonsColumn button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  gap: 0.75rem;
 }

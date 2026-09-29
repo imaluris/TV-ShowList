@@ -1,0 +1,55 @@
+.card {
+  display: block;
+  width: 150px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.posterWrapper {
+  position: relative;
+}
+
+.posterWrapper img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.rating {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(12, 13, 16, 0.85);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+}
+
+.info {
+  padding: 0.6rem;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.caption {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

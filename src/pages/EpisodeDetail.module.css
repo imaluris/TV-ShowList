@@ -1,34 +1,26 @@
-.detailPage {
+.episodePage {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
 }
 
 @media (max-width: 600px) {
-  .detailPage {
+  .episodePage {
     padding: 1.5rem 0.75rem 3rem;
   }
 }
 
-/* Header: poster + info affiancati */
-/* Header: poster + info affiancati — DESKTOP */
-.header {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-.posterWrapper {
+.imageWrapper {
   position: relative;
-  width: 220px;
-  aspect-ratio: 2 / 3;
-  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
 }
 
-.poster {
+.image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -57,30 +49,21 @@
   background: #fff;
 }
 
-.backButton svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* MOBILE: sovrascrive solo sotto i 600px */
 @media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-  }
-
-  .posterWrapper {
+  .imageWrapper {
     width: calc(100% + 1.5rem);
-    max-width: none;
-    height: 480px;
-    aspect-ratio: auto;
-    margin: -1.5rem -0.75rem 0;
+    margin: -1.5rem -0.75rem 1.5rem;
     border-radius: 0;
     border: none;
   }
 }
 
+.info {
+  margin-bottom: 2.5rem;
+}
+
 .info h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
@@ -97,56 +80,8 @@
   max-width: 65ch;
 }
 
-/* Info secondarie dentro l'header, sotto la overview */
-.details {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.details p {
-  margin: 0.3rem 0;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-.details strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* Blocchi info secondari (produzione, reti) */
-.productionSection,
-.networkSection {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.productionSection p,
-.networkSection p {
-  margin: 0.35rem 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.productionSection strong,
-.networkSection strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* Sezioni con titolo (Cast, Video, Stagioni, Simili) */
-.castSection,
-.videoSection,
-.seasonsSection,
-.similarSection {
-  margin-bottom: 2.5rem;
-}
-
-.castSection h2,
-.videoSection h2,
-.seasonsSection h2 {
+/* Sezione cast — stessa struttura di ShowDetail/SeasonDetail */
+.castSection h2 {
   font-size: 1.4rem;
   margin-bottom: 0.75rem;
 }
@@ -158,6 +93,7 @@
   padding-bottom: 0.5rem;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
+  overflow-anchor: none;
 }
 
 .castRow::-webkit-scrollbar {
@@ -219,45 +155,9 @@
   right: 0;
 }
 
-/* Nascondi le frecce su touch/mobile: lì lo scroll con il dito è già naturale */
 @media (pointer: coarse) {
   .castWrapper .arrowLeft,
   .castWrapper .arrowRight {
     display: none;
   }
-}
-
-.videoRow {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scrollbar-width: none;
-  scroll-snap-type: x mandatory;
-}
-
-.videoRow::-webkit-scrollbar {
-  display: none;
-}
-
-.seasonsColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.seasonsColumn button {
-  align-self: flex-start;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-}
-
-.seasonsColumn button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
 }

@@ -7,6 +7,9 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ShowDetail from "./pages/ShowDetail.jsx";
 import Genre from "./pages/Genre.jsx";
 import Provider from "./pages/Provider.jsx";
+import SeasonDetail from "./pages/SeasonDetail.jsx";
+import EpisodeDetail from "./pages/EpisodeDetail.jsx";
+import PersonDetail from "./pages/PersonDetail.jsx";
 
 function App() {
   return (
@@ -45,6 +48,30 @@ function App() {
         element={
           <ProtectedRoute>
             <Provider />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/show/:showId/season/:seasonNumber"
+        element={
+          <ProtectedRoute>
+            <SeasonDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/show/:showId/season/:seasonNumber/episode/:episodeNumber"
+        element={
+          <ProtectedRoute>
+            <EpisodeDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/person/:id"
+        element={
+          <ProtectedRoute>
+            <PersonDetail />
           </ProtectedRoute>
         }
       />

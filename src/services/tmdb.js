@@ -288,3 +288,173 @@ export async function getExclusivesByNetwork(networkId) {
   const data = await response.json();
   return data.results.slice(0, 10);
 }
+
+export async function getSeasonDetails(showId, seasonNumber) {
+  const paramsIt = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+    append_to_response: "credits",
+  });
+
+  const paramsEn = new URLSearchParams({
+    api_key: API_KEY,
+    language: "en-US",
+  });
+
+  const [resIt, resEn] = await Promise.all([
+    fetch(`${BASE_URL}/tv/${showId}/season/${seasonNumber}?${paramsIt}`),
+    fetch(`${BASE_URL}/tv/${showId}/season/${seasonNumber}?${paramsEn}`),
+  ]);
+
+  if (!resIt.ok) {
+    throw new Error(`Errore nella fetch: ${resIt.status}`);
+  }
+
+  const dataIt = await resIt.json();
+
+  // TMDB spesso non ha la traduzione italiana dell'overview a livello di
+  // singolo episodio. Se manca, usiamo l'overview inglese come fallback
+  // invece di lasciare il campo vuoto.
+  if (resEn.ok) {
+    const dataEn = await resEn.json();
+
+    const overviewByEpisodeNumber = {};
+    dataEn.episodes.forEach((ep) => {
+      overviewByEpisodeNumber[ep.episode_number] = ep.overview;
+    });
+
+    dataIt.episodes = dataIt.episodes.map((episode) => ({
+      ...episode,
+      overview:
+        episode.overview ||
+        overviewByEpisodeNumber[episode.episode_number] ||
+        "",
+    }));
+
+    if (!dataIt.overview) {
+      dataIt.overview = dataEn.overview || "";
+    }
+  }
+
+  return dataIt;
+}
+
+export async function getEpisodeDetails(showId, seasonNumber, episodeNumber) {
+  const paramsIt = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+    append_to_response: "credits",
+  });
+
+  const paramsEn = new URLSearchParams({
+    api_key: API_KEY,
+    language: "en-US",
+  });
+
+  const [resIt, resEn] = await Promise.all([
+    fetch(
+      `${BASE_URL}/tv/${showId}/season/${seasonNumber}/episode/${episodeNumber}?${paramsIt}`,
+    ),
+    fetch(
+      `${BASE_URL}/tv/${showId}/season/${seasonNumber}/episode/${episodeNumber}?${paramsEn}`,
+    ),
+  ]);
+
+  if (!resIt.ok) {
+    throw new Error(`Errore nella fetch: ${resIt.status}`);
+  }
+
+  const dataIt = await resIt.json();
+
+  // Stesso problema visto per le stagioni: se manca la traduzione italiana
+  // dell'overview, usiamo quella inglese come fallback.
+  if (resEn.ok && !dataIt.overview) {
+    const dataEn = await resEn.json();
+    dataIt.overview = dataEn.overview || "";
+  }
+
+  return dataIt;
+}
+
+export async function getSeasonCredits(showId, seasonNumber) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+  });
+
+  const response = await fetch(
+    `${BASE_URL}/tv/${showId}/season/${seasonNumber}/credits?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data; // { cast: [...], crew: [...] }
+}
+
+export async function getPersonImages(personId) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+  });
+
+  const response = await fetch(
+    `${BASE_URL}/person/${personId}/images?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.profiles; // array di foto della persona
+}
+
+export async function getPersonDetails(personId) {
+  const paramsIt = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+  });
+
+  const paramsEn = new URLSearchParams({
+    api_key: API_KEY,
+    language: "en-US",
+  });
+
+  const [resIt, resEn] = await Promise.all([
+    fetch(`${BASE_URL}/person/${personId}?${paramsIt}`),
+    fetch(`${BASE_URL}/person/${personId}?${paramsEn}`),
+  ]);
+
+  if (!resIt.ok) {
+    throw new Error(`Errore nella fetch: ${resIt.status}`);
+  }
+
+  const dataIt = await resIt.json();
+
+  if (resEn.ok && !dataIt.biography) {
+    const dataEn = await resEn.json();
+    dataIt.biography = dataEn.biography || "";
+  }
+
+  return dataIt;
+}
+
+export async function getPersonCombinedCredits(personId) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    language: "it-IT",
+  });
+
+  const response = await fetch(
+    `${BASE_URL}/person/${personId}/combined_credits?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.cast; // film e serie insieme, ognuno con media_type: "movie" o "tv"
+}

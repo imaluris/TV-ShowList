@@ -3,6 +3,8 @@
   flex-shrink: 0;
   scroll-snap-align: start;
   text-align: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .card img {
