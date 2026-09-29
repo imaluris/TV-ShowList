@@ -11,11 +11,9 @@ import {
 } from "../services/tmdb";
 import ShowRow from "../components/ShowRow";
 import StreamingIcon from "../components/StreamingIcon";
-import SearchOverlay from "../components/SearchOverlay";
 import styles from "./Home.module.css";
 import { STREAMING_KEYWORDS } from "../constants/streamingServices";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
 
 const PROVIDERS = [
   { id: 8, name: "Netflix" },
@@ -26,12 +24,11 @@ const PROVIDERS = [
 
 function Home() {
   const { currentUser } = useAuth();
-  const { mediaType, setMediaType, isMovie } = useMediaType();
+  const { mediaType, setMediaType } = useMediaType();
   const [popularShows, setPopularShows] = useState([]);
   const [showsByProvider, setShowsByProvider] = useState({});
   const [streamingIcons, setStreamingIcons] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     getPopularShows(mediaType).then((shows) => {
@@ -113,19 +110,6 @@ function Home() {
             Film
           </button>
         </div>
-
-        <button
-          type="button"
-          className={styles.searchTrigger}
-          onClick={() => setIsSearchOpen(true)}
-        >
-          <Search size={18} />
-          <span>{isMovie ? "Cerca un film..." : "Cerca una serie TV..."}</span>
-        </button>
-
-        {isSearchOpen && (
-          <SearchOverlay onClose={() => setIsSearchOpen(false)} />
-        )}
 
         <ShowRow title="Popolari del momento" shows={popularShows} />
 

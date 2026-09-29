@@ -1,0 +1,43 @@
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(0);
+  transition: transform 0.25s ease;
+}
+
+.topBar.hidden {
+  transform: translateY(-100%);
+}
+
+.searchTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.65rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.searchTrigger:hover {
+  border-color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .topBar {
+    padding: 0.6rem 0.75rem;
+  }
+}
