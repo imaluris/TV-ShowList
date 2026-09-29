@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/config";
 import { useAuth } from "../contexts/AuthContext";
 import { useMediaType } from "../contexts/MediaTypeContext";
 import {
@@ -73,42 +71,34 @@ function Home() {
     });
   }, [mediaType]);
 
-  async function handleLogout() {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error("Errore durante il logout:", err);
-    }
-  }
-
   return (
     <div className={styles.homePage}>
       <div>
-        <button onClick={handleLogout}>Esci</button>
-
-        <div className={styles.mediaTypeToggle}>
-          <button
-            type="button"
-            className={
-              mediaType === "tv"
-                ? styles.mediaTypeButtonActive
-                : styles.mediaTypeButton
-            }
-            onClick={() => setMediaType("tv")}
-          >
-            Serie TV
-          </button>
-          <button
-            type="button"
-            className={
-              mediaType === "movie"
-                ? styles.mediaTypeButtonActive
-                : styles.mediaTypeButton
-            }
-            onClick={() => setMediaType("movie")}
-          >
-            Film
-          </button>
+        <div className={styles.mediaTypeToggleRow}>
+          <div className={styles.mediaTypeToggle}>
+            <button
+              type="button"
+              className={
+                mediaType === "tv"
+                  ? styles.mediaTypeButtonActive
+                  : styles.mediaTypeButton
+              }
+              onClick={() => setMediaType("tv")}
+            >
+              Serie TV
+            </button>
+            <button
+              type="button"
+              className={
+                mediaType === "movie"
+                  ? styles.mediaTypeButtonActive
+                  : styles.mediaTypeButton
+              }
+              onClick={() => setMediaType("movie")}
+            >
+              Film
+            </button>
+          </div>
         </div>
 
         <ShowRow title="Popolari del momento" shows={popularShows} />

@@ -10,3 +10,23 @@
   color: var(--text);
   margin-bottom: 0.5rem;
 }
+
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  border: 1px solid #e5484d;
+  border-radius: 20px;
+  color: #e5484d;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.logoutButton:hover {
+  background: #e5484d;
+  color: var(--bg);
+}
