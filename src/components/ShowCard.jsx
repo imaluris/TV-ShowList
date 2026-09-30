@@ -6,7 +6,7 @@ import { useMediaType } from "../contexts/MediaTypeContext";
 import { useAuth } from "../contexts/AuthContext";
 import {
   LIBRARY_STATUS,
-  getLibraryItem,
+  subscribeToLibraryItem,
   setLibraryStatus,
   removeFromLibrary,
 } from "../services/firestore";
@@ -35,9 +35,16 @@ function ShowCard({ show }) {
   useEffect(() => {
     if (!currentUser) return;
 
-    getLibraryItem(currentUser.uid, mediaType, show.id).then((item) => {
-      setStatus(item ? item.status : null);
-    });
+    const unsubscribe = subscribeToLibraryItem(
+      currentUser.uid,
+      mediaType,
+      show.id,
+      (item) => {
+        setStatus(item ? item.status : null);
+      },
+    );
+
+    return unsubscribe;
   }, [currentUser, mediaType, show.id]);
 
   useEffect(() => {
@@ -64,12 +71,10 @@ function ShowCard({ show }) {
     if (!currentUser) return;
 
     if (status === value) {
-      setStatus(null);
       await removeFromLibrary(currentUser.uid, mediaType, show.id);
       return;
     }
 
-    setStatus(value);
     await setLibraryStatus(currentUser.uid, {
       mediaType,
       tmdbId: show.id,

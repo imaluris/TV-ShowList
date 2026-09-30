@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { IMG_URL } from "../services/tmdb";
 import { useAuth } from "../contexts/AuthContext";
 import {
-  getLibraryItem,
+  subscribeToLibraryItem,
   toggleSeasonWatched,
   isSeasonWatched,
 } from "../services/firestore";
@@ -29,9 +29,16 @@ function SeasonCard({ showId, mediaType, title, posterPath, season }) {
   useEffect(() => {
     if (!currentUser) return;
 
-    getLibraryItem(currentUser.uid, mediaType, showId).then((item) => {
-      setWatchedEpisodes(item?.watchedEpisodes || []);
-    });
+    const unsubscribe = subscribeToLibraryItem(
+      currentUser.uid,
+      mediaType,
+      showId,
+      (item) => {
+        setWatchedEpisodes(item?.watchedEpisodes || []);
+      },
+    );
+
+    return unsubscribe;
   }, [currentUser, mediaType, showId]);
 
   const watched = isSeasonWatched(
@@ -45,7 +52,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, season }) {
     e.stopPropagation();
     if (!currentUser) return;
 
-    const nextWatched = await toggleSeasonWatched(currentUser.uid, {
+    await toggleSeasonWatched(currentUser.uid, {
       mediaType,
       tmdbId: showId,
       seasonNumber: season.season_number,
@@ -53,8 +60,6 @@ function SeasonCard({ showId, mediaType, title, posterPath, season }) {
       title,
       posterPath,
     });
-
-    setWatchedEpisodes(nextWatched);
   }
 
   return (

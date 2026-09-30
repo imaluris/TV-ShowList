@@ -3,7 +3,7 @@ import { Bookmark, Check, Plus } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import {
   LIBRARY_STATUS,
-  getLibraryItem,
+  subscribeToLibraryItem,
   setLibraryStatus,
   removeFromLibrary,
 } from "../services/firestore";
@@ -14,7 +14,7 @@ const OPTIONS = [
   { value: LIBRARY_STATUS.WATCHED, label: "Vista", icon: Check },
 ];
 
-function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath }) {
+function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons }) {
   const { currentUser } = useAuth();
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,13 +25,19 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath }) {
     if (!currentUser) return;
 
     setLoading(true);
-    getLibraryItem(currentUser.uid, mediaType, tmdbId).then((item) => {
-      setStatus(item ? item.status : null);
-      setLoading(false);
-    });
+    const unsubscribe = subscribeToLibraryItem(
+      currentUser.uid,
+      mediaType,
+      tmdbId,
+      (item) => {
+        setStatus(item ? item.status : null);
+        setLoading(false);
+      },
+    );
+
+    return unsubscribe;
   }, [currentUser, mediaType, tmdbId]);
 
-  // Chiude la tendina se clicchi fuori.
   useEffect(() => {
     function handleClickOutside(event) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -47,20 +53,18 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath }) {
     setIsOpen(false);
     if (!currentUser) return;
 
-    // Riselezionare lo stato già attivo rimuove il titolo dalla libreria.
     if (status === value) {
-      setStatus(null);
       await removeFromLibrary(currentUser.uid, mediaType, tmdbId);
       return;
     }
 
-    setStatus(value); // aggiornamento ottimista
     await setLibraryStatus(currentUser.uid, {
       mediaType,
       tmdbId,
       status: value,
       title,
       posterPath,
+      seasons,
     });
   }
 

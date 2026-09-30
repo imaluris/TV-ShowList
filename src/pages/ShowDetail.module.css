@@ -215,10 +215,12 @@
   opacity: 1;
 }
 
-.castWrapper .arrowLeft:hover,
-.castWrapper .arrowRight:hover {
-  background: var(--accent);
-  color: var(--bg);
+@media (hover: hover) {
+  .castWrapper .arrowLeft:hover,
+  .castWrapper .arrowRight:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
 }
 
 .castWrapper .arrowLeft {

@@ -99,6 +99,11 @@ function ShowDetail() {
               tmdbId={show.id}
               title={title}
               posterPath={show.poster_path}
+              seasons={
+                !isMovie
+                  ? show.seasons.filter((s) => s.season_number !== 0)
+                  : undefined
+              }
             />
           </div>
 

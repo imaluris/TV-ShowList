@@ -37,6 +37,16 @@ function getSeasonKeys(seasonNumber, episodeCount) {
   return keys;
 }
 
+// Tutte le chiavi episodio di tutte le stagioni passate (usato quando
+// si marca l'intera serie come "Vista").
+function getAllEpisodeKeys(seasons) {
+  const keys = [];
+  seasons.forEach((season) => {
+    keys.push(...getSeasonKeys(season.season_number, season.episode_count));
+  });
+  return keys;
+}
+
 // Se stai spuntando qualcosa come visto e la serie non ha ancora uno
 // stato (o era "Da vedere"), la fa diventare "In corso" in automatico.
 // Se è già "In corso" o "Vista", non la tocca.
@@ -67,9 +77,27 @@ export async function getLibraryItem(uid, mediaType, tmdbId) {
   return snapshot.exists() ? snapshot.data() : null;
 }
 
-export async function setLibraryStatus(uid, { mediaType, tmdbId, status, title, posterPath }) {
+// Ascolto in tempo reale sul singolo documento libreria: onChange viene
+// richiamata subito e ogni volta che il documento cambia (anche se la
+// modifica arriva da un altro componente della stessa pagina).
+export function subscribeToLibraryItem(uid, mediaType, tmdbId, onChange) {
+  const ref = getLibraryDocRef(uid, mediaType, tmdbId);
+  return onSnapshot(ref, (snapshot) => {
+    onChange(snapshot.exists() ? snapshot.data() : null);
+  });
+}
+
+export async function setLibraryStatus(
+  uid,
+  { mediaType, tmdbId, status, title, posterPath, seasons },
+) {
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
+
+  // Se segni l'intera serie come "Vista" (e hai passato le stagioni),
+  // spuntiamo automaticamente anche tutti gli episodi.
+  const shouldMarkAllWatched =
+    status === LIBRARY_STATUS.WATCHED && mediaType === "tv" && seasons?.length > 0;
 
   await setDoc(
     ref,
@@ -79,6 +107,9 @@ export async function setLibraryStatus(uid, { mediaType, tmdbId, status, title, 
       status,
       title,
       posterPath,
+      ...(shouldMarkAllWatched
+        ? { watchedEpisodes: getAllEpisodeKeys(seasons) }
+        : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },

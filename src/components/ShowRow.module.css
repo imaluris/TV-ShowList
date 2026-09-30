@@ -51,10 +51,12 @@
   opacity: 1;
 }
 
-.arrowLeft:hover,
-.arrowRight:hover {
-  background: var(--accent);
-  color: var(--bg);
+@media (hover: hover) {
+  .arrowLeft:hover,
+  .arrowRight:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
 }
 
 .arrowLeft {
@@ -63,4 +65,11 @@
 
 .arrowRight {
   right: 0;
+}
+
+@media (pointer: coarse) {
+  .arrowLeft,
+  .arrowRight {
+    display: none;
+  }
 }
