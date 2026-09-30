@@ -1,0 +1,83 @@
+.page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.header h1 {
+  font-size: 1.6rem;
+}
+
+.buttonsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.actionButton,
+.dangerButton,
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.actionButton {
+  color: var(--text);
+}
+
+.actionButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.dangerButton {
+  color: #e5484d;
+}
+
+.dangerButton:hover {
+  border-color: #e5484d;
+  background: rgba(229, 72, 77, 0.1);
+}
+
+.logoutButton {
+  color: #e5484d;
+  border-color: #e5484d;
+}
+
+.logoutButton:hover {
+  background: #e5484d;
+  color: var(--bg);
+}

@@ -1,0 +1,39 @@
+.profilePage {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.email {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1.05rem;
+  word-break: break-all;
+  text-align: center;
+}
+
+.rowsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}

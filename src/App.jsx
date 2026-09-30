@@ -1,18 +1,23 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import VerifyEmail from "./pages/VerifyEmail.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import AppLayout from "./components/AppLayout.jsx";
-import ShowDetail from "./pages/ShowDetail.jsx";
-import Genre from "./pages/Genre.jsx";
-import Provider from "./pages/Provider.jsx";
-import SeasonDetail from "./pages/SeasonDetail.jsx";
-import EpisodeDetail from "./pages/EpisodeDetail.jsx";
-import PersonDetail from "./pages/PersonDetail.jsx";
-import Library from "./pages/Library.jsx";
-import Profile from "./pages/Profile.jsx";
+import Home from "./pages/home/Home.jsx";
+import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
+import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
+import ProtectedRoute from "./components/layout/ProtectedRoute.jsx";
+import AppLayout from "./components/layout/AppLayout.jsx";
+import ShowDetail from "./pages/show/ShowDetail.jsx";
+import Genre from "./pages/show/Genre.jsx";
+import Provider from "./pages/show/Provider.jsx";
+import SeasonDetail from "./pages/show/SeasonDetail.jsx";
+import EpisodeDetail from "./pages/show/EpisodeDetail.jsx";
+import PersonDetail from "./pages/show/PersonDetail.jsx";
+import Library from "./pages/library/Library.jsx";
+import Profile from "./pages/profile/Profile.jsx";
+import Appearance from "./pages/profile/Appearance.jsx";
+import Language from "./pages/profile/Language.jsx";
+import Genres from "./pages/profile/Genres.jsx";
+import About from "./pages/profile/About.jsx";
+import Account from "./pages/profile/Account.jsx";
 
 function App() {
   return (
@@ -47,6 +52,11 @@ function App() {
         <Route path="/person/:id" element={<PersonDetail />} />
         <Route path="/library" element={<Library />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/appearance" element={<Appearance />} />
+        <Route path="/profile/language" element={<Language />} />
+        <Route path="/profile/genres" element={<Genres />} />
+        <Route path="/profile/about" element={<About />} />
+        <Route path="/profile/account" element={<Account />} />
       </Route>
     </Routes>
   );
