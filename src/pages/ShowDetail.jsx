@@ -13,6 +13,7 @@ import ShowRow from "../components/ShowRow";
 import SeasonCard from "../components/SeasonCard";
 import CastCard from "../components/CastCard";
 import VideoCard from "../components/VideoCard";
+import LibraryStatusButtons from "../components/LibraryStatusButtons";
 import { ArrowLeft } from "lucide-react";
 
 function ShowDetail() {
@@ -91,7 +92,16 @@ function ShowDetail() {
           </Link>
         </div>
         <div className={styles.info}>
-          <h1>{title}</h1>
+          <div className={styles.titleRow}>
+            <h1>{title}</h1>
+            <LibraryStatusButtons
+              mediaType={mediaType}
+              tmdbId={show.id}
+              title={title}
+              posterPath={show.poster_path}
+            />
+          </div>
+
           <p className={styles.meta}>
             {show.genres.map((g) => g.name).join(", ")} • ⭐ {show.vote_average}
             {show.vote_count > 0 ? ` (${show.vote_count} voti)` : ""}
