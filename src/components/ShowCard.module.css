@@ -8,6 +8,8 @@
   overflow: hidden;
   border: 1px solid var(--border);
   transition: border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .card:hover {
@@ -37,10 +39,15 @@
   border-radius: 20px;
 }
 
-.menuButton {
+.menuWrapper {
   position: absolute;
   top: 4px;
   right: 4px;
+  z-index: 5;
+}
+
+.menuButton,
+.menuButtonActive {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -55,6 +62,50 @@
 
 .menuButton:hover {
   background: rgba(12, 13, 16, 0.9);
+}
+
+.menuButtonActive {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 130px;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.option,
+.optionActive {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.option:hover {
+  background: var(--surface);
+}
+
+.optionActive {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .info {

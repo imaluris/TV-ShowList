@@ -256,8 +256,8 @@
   gap: 0.5rem;
 }
 
-.seasonsColumn button {
-  align-self: flex-start;
+.showMoreButton {
+  align-self: center;
   background: none;
   border: 1px solid var(--border);
   color: var(--text-muted);
@@ -267,7 +267,7 @@
   margin-top: 0.5rem;
 }
 
-.seasonsColumn button:hover {
+.showMoreButton:hover {
   border-color: var(--accent);
   color: var(--accent);
 }

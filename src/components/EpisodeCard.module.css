@@ -9,6 +9,8 @@
   transition: border-color 0.15s ease;
   text-decoration: none;
   color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .card:hover {
@@ -68,4 +70,32 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.checkmark,
+.checkmarkActive {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-self: center;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.checkmark:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkmarkActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
 }

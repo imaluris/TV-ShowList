@@ -1,8 +1,19 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Check } from "lucide-react";
 import { IMG_URL } from "../services/tmdb";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  getLibraryItem,
+  toggleEpisodeWatched,
+  isEpisodeWatched,
+} from "../services/firestore";
 import styles from "./EpisodeCard.module.css";
 
-function EpisodeCard({ showId, seasonNumber, episode }) {
+function EpisodeCard({ showId, mediaType, title, posterPath, seasonNumber, episode }) {
+  const { currentUser } = useAuth();
+  const [watchedEpisodes, setWatchedEpisodes] = useState([]);
+
   const thumbSrc = episode.still_path
     ? `${IMG_URL}${episode.still_path}`
     : null;
@@ -13,6 +24,37 @@ function EpisodeCard({ showId, seasonNumber, episode }) {
         month: "short",
       })
     : null;
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    getLibraryItem(currentUser.uid, mediaType, showId).then((item) => {
+      setWatchedEpisodes(item?.watchedEpisodes || []);
+    });
+  }, [currentUser, mediaType, showId]);
+
+  const watched = isEpisodeWatched(
+    watchedEpisodes,
+    seasonNumber,
+    episode.episode_number,
+  );
+
+  async function handleToggle(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!currentUser) return;
+
+    const nextWatched = await toggleEpisodeWatched(currentUser.uid, {
+      mediaType,
+      tmdbId: showId,
+      seasonNumber,
+      episodeNumber: episode.episode_number,
+      title,
+      posterPath,
+    });
+
+    setWatchedEpisodes(nextWatched);
+  }
 
   return (
     <Link
@@ -41,6 +83,15 @@ function EpisodeCard({ showId, seasonNumber, episode }) {
           {episode.overview || "Nessuna descrizione disponibile."}
         </p>
       </div>
+
+      <button
+        type="button"
+        className={watched ? styles.checkmarkActive : styles.checkmark}
+        onClick={handleToggle}
+        aria-label={watched ? "Segna episodio da vedere" : "Segna episodio visto"}
+      >
+        <Check size={18} />
+      </button>
     </Link>
   );
 }

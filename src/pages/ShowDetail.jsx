@@ -212,11 +212,21 @@ function ShowDetail() {
             return (
               <div className={styles.seasonsColumn}>
                 {seasonsToShow.map((season) => (
-                  <SeasonCard key={season.id} showId={show.id} season={season} />
+                  <SeasonCard
+                    key={season.id}
+                    showId={show.id}
+                    mediaType={mediaType}
+                    title={title}
+                    posterPath={show.poster_path}
+                    season={season}
+                  />
                 ))}
 
                 {!showAllSeasons && seasonsSorted.length > 3 && (
-                  <button onClick={() => setShowAllSeasons(true)}>
+                  <button
+                    className={styles.showMoreButton}
+                    onClick={() => setShowAllSeasons(true)}
+                  >
                     Vedi altre ▼
                   </button>
                 )}

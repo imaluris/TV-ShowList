@@ -7,6 +7,8 @@
   border-radius: 12px;
   padding: 0.75rem 1rem;
   transition: border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .card:hover {
@@ -44,10 +46,14 @@
   color: var(--text-muted);
 }
 
-.checkmark {
+.checkmark,
+.checkmarkActive {
+  box-sizing: border-box;
   flex-shrink: 0;
+  align-self: center;
   width: 40px;
   height: 40px;
+  padding: 0;
   border-radius: 50%;
   background: var(--surface-raised);
   border: 1px solid var(--border);
@@ -55,5 +61,15 @@
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  font-size: 1.1rem;
+}
+
+.checkmark:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkmarkActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
 }

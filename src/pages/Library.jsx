@@ -56,16 +56,18 @@ function Library() {
       <h1 className={styles.title}>Libreria</h1>
 
       <div className={styles.tabRow}>
-        {TABS.map(({ value, label }) => (
-          <button
-            key={value}
-            type="button"
-            className={activeTab === value ? styles.tabActive : styles.tab}
-            onClick={() => setActiveTab(value)}
-          >
-            {label}
-          </button>
-        ))}
+        <div className={styles.tabGroup}>
+          {TABS.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              className={activeTab === value ? styles.tabActive : styles.tab}
+              onClick={() => setActiveTab(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (

@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
+  getShowDetails,
   getSeasonDetails,
   getAggregateCreditsShow,
   IMG_URL_LARGE,
 } from "../services/tmdb";
+import { getTitle } from "../utils/media";
 import CastCard from "../components/CastCard";
 import EpisodeCard from "../components/EpisodeCard";
 import styles from "./SeasonDetail.module.css";
@@ -12,9 +14,16 @@ import { ArrowLeft } from "lucide-react";
 
 function SeasonDetail() {
   const { showId, seasonNumber } = useParams();
+  const [show, setShow] = useState(null);
   const [season, setSeason] = useState(null);
   const [showCredits, setShowCredits] = useState(null);
   const castRowRef = useRef(null);
+
+  useEffect(() => {
+    getShowDetails("tv", showId).then((data) => {
+      setShow(data);
+    });
+  }, [showId]);
 
   useEffect(() => {
     getSeasonDetails(showId, seasonNumber).then((data) => {
@@ -28,13 +37,15 @@ function SeasonDetail() {
     });
   }, [showId]);
 
-  if (!season || !showCredits) {
+  if (!show || !season || !showCredits) {
     return <p>Caricamento...</p>;
   }
 
   const posterSrc = season.poster_path
     ? `${IMG_URL_LARGE}${season.poster_path}`
     : "https://placehold.co/300x450?text=No+Image";
+
+  const showTitle = getTitle(show);
 
   // Cast aggregato dello show (già con roles[0].character pronto) unito
   // agli eventuali attori specifici di questa stagione non già presenti,
@@ -111,6 +122,9 @@ function SeasonDetail() {
             <EpisodeCard
               key={episode.id}
               showId={showId}
+              mediaType="tv"
+              title={showTitle}
+              posterPath={show.poster_path}
               seasonNumber={seasonNumber}
               episode={episode}
             />
