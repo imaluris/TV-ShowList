@@ -18,6 +18,27 @@ const SORT_OPTIONS_MOVIE = [
   { value: "title.asc", label: "Nome (A-Z)" },
 ];
 
+// Paesi di produzione selezionabili (codice ISO usato da TMDB).
+const COUNTRIES = [
+  { value: "IT", label: "Italia" },
+  { value: "US", label: "Stati Uniti" },
+  { value: "GB", label: "Regno Unito" },
+  { value: "FR", label: "Francia" },
+  { value: "DE", label: "Germania" },
+  { value: "ES", label: "Spagna" },
+  { value: "JP", label: "Giappone" },
+  { value: "KR", label: "Corea del Sud" },
+  { value: "IN", label: "India" },
+  { value: "CN", label: "Cina" },
+  { value: "CA", label: "Canada" },
+  { value: "AU", label: "Australia" },
+  { value: "SE", label: "Svezia" },
+  { value: "DK", label: "Danimarca" },
+  { value: "TR", label: "Turchia" },
+  { value: "MX", label: "Messico" },
+  { value: "BR", label: "Brasile" },
+];
+
 function GenreFilterModal({ isOpen, onClose, onApply }) {
   const { mediaType, isMovie } = useMediaType();
   const sortOptions = isMovie ? SORT_OPTIONS_MOVIE : SORT_OPTIONS_TV;
@@ -29,6 +50,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
   const [yearFrom, setYearFrom] = useState("");
   const [yearTo, setYearTo] = useState("");
   const [providerId, setProviderId] = useState("");
+  const [country, setCountry] = useState("");
   const [providers, setProviders] = useState([]);
   const [companyQuery, setCompanyQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -73,7 +95,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
 
     const yearFilters = yearMode === "exact" ? { year } : { yearFrom, yearTo };
 
-    onApply({ sortBy, minVote, providerId, companyId, ...yearFilters });
+    onApply({ sortBy, minVote, providerId, country, companyId, ...yearFilters });
     onClose();
   }
 
@@ -85,6 +107,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
     setYearFrom("");
     setYearTo("");
     setProviderId("");
+    setCountry("");
     setCompanyQuery("");
     setCompanyError("");
     onApply({});
@@ -183,6 +206,18 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
               {providers.map((provider) => (
                 <option key={provider.id} value={provider.id}>
                   {provider.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={styles.field}>
+            Paese di produzione
+            <select value={country} onChange={(e) => setCountry(e.target.value)}>
+              <option value="">Tutti</option>
+              {COUNTRIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
                 </option>
               ))}
             </select>

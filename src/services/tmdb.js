@@ -274,6 +274,11 @@ export async function discoverShowsByGenre(mediaType, genreId, filters = {}, pag
     params.set("with_companies", filters.companyId);
   }
 
+  // Paese di produzione (codice ISO, es. "IT", "US").
+  if (filters.country) {
+    params.set("with_origin_country", filters.country);
+  }
+
   const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
 
   if (!response.ok) {
