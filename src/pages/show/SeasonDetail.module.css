@@ -1,12 +1,12 @@
 .seasonPage {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: 2rem 1.5rem 0;
 }
 
 @media (max-width: 600px) {
   .seasonPage {
-    padding: 1.5rem 0.75rem 3rem;
+    padding: 1.5rem 0.75rem 0;
   }
 }
 
