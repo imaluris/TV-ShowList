@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Bookmark, Check } from "lucide-react";
-import { IMG_URL } from "../../services/tmdb";
+import { Bookmark, Check, RotateCcw, Trash2 } from "lucide-react";
+import { IMG_URL, getShowDetails } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -17,6 +17,44 @@ const OPTIONS = [
   { value: LIBRARY_STATUS.TO_WATCH, label: "Da vedere", icon: Bookmark },
   { value: LIBRARY_STATUS.WATCHED, label: "Vista", icon: Check },
 ];
+
+// Voci speciali: non sono stati.
+// "Azzera" riporta la serie a "Da vedere" cancellando le spunte,
+// "Rimuovi" la toglie del tutto dalla libreria.
+const RESET_VALUE = "reset";
+const REMOVE_VALUE = "remove";
+const RESET_OPTION = { value: RESET_VALUE, label: "Azzera", icon: RotateCcw };
+const REMOVE_OPTION = {
+  value: REMOVE_VALUE,
+  label: "Rimuovi",
+  icon: Trash2,
+};
+
+// Una serie TV è "iniziata" se è in corso o vista: ha del progresso da perdere.
+function isStartedSeries(status, mediaType) {
+  return (
+    mediaType === "tv" &&
+    (status === LIBRARY_STATUS.WATCHING || status === LIBRARY_STATUS.WATCHED)
+  );
+}
+
+// Quali voci mostrare nel menu in base allo stato attuale.
+function getVisibleOptions(status, mediaType) {
+  // Non è in libreria: si può solo aggiungerla.
+  if (!status) return OPTIONS;
+
+  const started = isStartedSeries(status, mediaType);
+
+  // Stati scegliibili: mai quello attuale, e mai "Da vedere"
+  // per una serie già iniziata (per quello c'è "Azzera").
+  const stateOptions = OPTIONS.filter(
+    (option) =>
+      option.value !== status &&
+      !(started && option.value === LIBRARY_STATUS.TO_WATCH),
+  );
+
+  return [...stateOptions, ...(started ? [RESET_OPTION] : []), REMOVE_OPTION];
+}
 
 function ShowCard({ show }) {
   const { mediaType } = useMediaType();
@@ -70,9 +108,45 @@ function ShowCard({ show }) {
     setIsOpen(false);
     if (!currentUser) return;
 
-    if (status === value) {
+    if (value === RESET_VALUE) {
+      const confirmed = window.confirm(
+        `Azzerare tutti gli episodi visti di "${title}"?`,
+      );
+      if (!confirmed) return;
+
+      await setLibraryStatus(currentUser.uid, {
+        mediaType,
+        tmdbId: show.id,
+        status: LIBRARY_STATUS.TO_WATCH,
+        title,
+        posterPath: show.poster_path,
+      });
+      return;
+    }
+
+    if (value === REMOVE_VALUE) {
+      // Rimuovere una serie già iniziata cancella anche le spunte: chiediamo conferma.
+      if (isStartedSeries(status, mediaType)) {
+        const confirmed = window.confirm(
+          `Rimuovere "${title}" dalla libreria? Perderai anche gli episodi visti.`,
+        );
+        if (!confirmed) return;
+      }
+
       await removeFromLibrary(currentUser.uid, mediaType, show.id);
       return;
+    }
+
+    // La card non conosce le stagioni: se segni una serie come "Vista",
+    // le scarichiamo adesso per poter marcare tutti gli episodi.
+    let seasons;
+    if (value === LIBRARY_STATUS.WATCHED && mediaType === "tv") {
+      try {
+        const details = await getShowDetails("tv", show.id);
+        seasons = details.seasons;
+      } catch (err) {
+        console.error("Impossibile caricare le stagioni:", err);
+      }
     }
 
     await setLibraryStatus(currentUser.uid, {
@@ -81,8 +155,11 @@ function ShowCard({ show }) {
       status: value,
       title,
       posterPath: show.poster_path,
+      seasons,
     });
   }
+
+  const visibleOptions = getVisibleOptions(status, mediaType);
 
   return (
     <Link to={`/show/${mediaType}/${show.id}`} className={styles.card}>
@@ -104,11 +181,11 @@ function ShowCard({ show }) {
 
           {isOpen && (
             <div className={styles.dropdown}>
-              {OPTIONS.map(({ value, label, icon: Icon }) => (
+              {visibleOptions.map(({ value, label, icon: Icon }) => (
                 <button
                   key={value}
                   type="button"
-                  className={status === value ? styles.optionActive : styles.option}
+                  className={styles.option}
                   onClick={(e) => handleSelect(e, value)}
                 >
                   <Icon size={14} />

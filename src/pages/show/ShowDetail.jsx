@@ -7,6 +7,8 @@ import {
   getAggregateCreditsShow,
   IMG_URL_LARGE,
 } from "../../services/tmdb";
+import { useAuth } from "../../contexts/AuthContext";
+import { refreshLibrarySeasons } from "../../services/firestore";
 import { getTitle } from "../../utils/media";
 import styles from "./ShowDetail.module.css";
 import ShowRow from "../../components/show/ShowRow";
@@ -18,6 +20,7 @@ import { ArrowLeft } from "lucide-react";
 
 function ShowDetail() {
   const { mediaType, id } = useParams();
+  const { currentUser } = useAuth();
   const isMovie = mediaType === "movie";
   const [show, setShow] = useState(null);
   const [credits, setCredits] = useState(null);
@@ -43,6 +46,14 @@ function ShowDetail() {
       setVideos(data);
     });
   }, [mediaType, id]);
+
+  // Se la serie è già in libreria, allinea le stagioni salvate a quelle
+  // attuali di TMDB (nuove stagioni o nuovi episodi).
+  useEffect(() => {
+    if (!show || !currentUser || mediaType !== "tv") return;
+
+    refreshLibrarySeasons(currentUser.uid, mediaType, show.id, show.seasons);
+  }, [show, currentUser, mediaType]);
 
   useEffect(() => {
     if (!show) return;

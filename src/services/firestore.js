@@ -112,6 +112,10 @@ export async function setLibraryStatus(
     mediaType === "tv" &&
     slimmed?.length > 0;
 
+  // Se la rimetti in "Da vedere" (o azzeri), cancelliamo le spunte:
+  // una serie da vedere non può avere episodi già visti.
+  const shouldClearWatched = status === LIBRARY_STATUS.TO_WATCH;
+
   await setDoc(
     ref,
     {
@@ -124,8 +128,40 @@ export async function setLibraryStatus(
       ...(shouldMarkAllWatched
         ? { watchedEpisodes: getAllEpisodeKeys(slimmed) }
         : {}),
+      ...(shouldClearWatched ? { watchedEpisodes: [] } : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
+    },
+    { merge: true },
+  );
+}
+
+// Allinea le stagioni salvate a quelle attuali di TMDB (es. è uscita una
+// nuova stagione). Lavora solo su serie già in libreria e scrive solo se
+// qualcosa è davvero cambiato.
+export async function refreshLibrarySeasons(uid, mediaType, tmdbId, seasons) {
+  if (mediaType !== "tv" || !seasons?.length) return;
+
+  const ref = getLibraryDocRef(uid, mediaType, tmdbId);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.data();
+  const slimmed = slimSeasons(seasons);
+
+  if (JSON.stringify(slimmed) === JSON.stringify(data.seasons)) return;
+
+  // Serie segnate "Viste" prima di questa funzione non hanno la lista
+  // degli episodi: per quelle aggiorniamo solo le stagioni, lo stato resta.
+  const hasWatchedList = Array.isArray(data.watchedEpisodes);
+
+  await setDoc(
+    ref,
+    {
+      seasons: slimmed,
+      ...(hasWatchedList
+        ? { status: getStatusFromWatched(data.watchedEpisodes, slimmed) }
+        : {}),
     },
     { merge: true },
   );

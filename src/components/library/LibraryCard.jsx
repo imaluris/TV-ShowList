@@ -9,6 +9,15 @@ function LibraryCard({ uid, item, onRemoved }) {
     ? `${IMG_URL}${item.posterPath}`
     : "https://placehold.co/200x300?text=No+Image";
 
+  // Avanzamento: episodi spuntati sul totale salvato nel documento.
+  const totalEpisodes = item.seasons
+    ? item.seasons.reduce((sum, season) => sum + season.episode_count, 0)
+    : 0;
+  const watchedCount = Math.min(item.watchedEpisodes?.length || 0, totalEpisodes);
+  const showProgress =
+    item.mediaType === "tv" && totalEpisodes > 0 && watchedCount > 0;
+  const percent = totalEpisodes > 0 ? Math.round((watchedCount / totalEpisodes) * 100) : 0;
+
   async function handleRemove(e) {
     e.preventDefault();
     await removeFromLibrary(uid, item.mediaType, item.tmdbId);
@@ -32,6 +41,17 @@ function LibraryCard({ uid, item, onRemoved }) {
 
       <div className={styles.info}>
         <p className={styles.title}>{item.title}</p>
+
+        {showProgress && (
+          <>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill} style={{ width: `${percent}%` }} />
+            </div>
+            <p className={styles.progressText}>
+              {watchedCount}/{totalEpisodes} episodi
+            </p>
+          </>
+        )}
       </div>
     </Link>
   );

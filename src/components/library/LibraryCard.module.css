@@ -5,6 +5,7 @@
   overflow: hidden;
   border: 1px solid var(--border);
   transition: border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .card:hover {
@@ -52,4 +53,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.progressBar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.progressText {
+  margin: 0.3rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
