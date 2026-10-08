@@ -78,6 +78,13 @@ function ShowDetail() {
 
   const title = getTitle(show);
 
+  // Stagioni "vere" (senza la 0, gli speciali). Vengono passate ai
+  // componenti che salvano su Firestore, così il documento della serie
+  // sa quanti episodi ha in totale.
+  const seasons = !isMovie
+    ? show.seasons.filter((season) => season.season_number !== 0)
+    : undefined;
+
   return (
     <div className={styles.detailPage}>
       <div className={styles.header}>
@@ -99,11 +106,7 @@ function ShowDetail() {
               tmdbId={show.id}
               title={title}
               posterPath={show.poster_path}
-              seasons={
-                !isMovie
-                  ? show.seasons.filter((s) => s.season_number !== 0)
-                  : undefined
-              }
+              seasons={seasons}
             />
           </div>
 
@@ -205,10 +208,7 @@ function ShowDetail() {
         <div className={styles.seasonsSection}>
           <h2>Stagioni</h2>
           {(() => {
-            const seasonsSorted = show.seasons
-              .filter((season) => season.season_number !== 0)
-              .slice()
-              .reverse();
+            const seasonsSorted = seasons.slice().reverse();
 
             const seasonsToShow = showAllSeasons
               ? seasonsSorted
@@ -223,6 +223,7 @@ function ShowDetail() {
                     mediaType={mediaType}
                     title={title}
                     posterPath={show.poster_path}
+                    seasons={seasons}
                     season={season}
                   />
                 ))}

@@ -37,27 +37,36 @@ function getSeasonKeys(seasonNumber, episodeCount) {
   return keys;
 }
 
-// Tutte le chiavi episodio di tutte le stagioni passate (usato quando
-// si marca l'intera serie come "Vista").
-function getAllEpisodeKeys(seasons) {
+// Dei dati TMDB di ogni stagione teniamo solo i due numeri che ci servono
+// e scartiamo la stagione 0 (gli speciali).
+function slimSeasons(seasons) {
+  return seasons
+    .filter((season) => season.season_number !== 0)
+    .map((season) => ({
+      season_number: season.season_number,
+      episode_count: season.episode_count,
+    }));
+}
+
+// Tutte le chiavi episodio di tutte le stagioni (già "snellite").
+function getAllEpisodeKeys(slimmedSeasons) {
   const keys = [];
-  seasons.forEach((season) => {
+  slimmedSeasons.forEach((season) => {
     keys.push(...getSeasonKeys(season.season_number, season.episode_count));
   });
   return keys;
 }
 
-// Se stai spuntando qualcosa come visto e la serie non ha ancora uno
-// stato (o era "Da vedere"), la fa diventare "In corso" in automatico.
-// Se è già "In corso" o "Vista", non la tocca.
-function nextStatusOnMark(currentStatus) {
-  if (
-    currentStatus === LIBRARY_STATUS.WATCHING ||
-    currentStatus === LIBRARY_STATUS.WATCHED
-  ) {
-    return currentStatus;
-  }
-  return LIBRARY_STATUS.WATCHING;
+// Lo stato della serie dipende da quanti episodi sono spuntati:
+// tutti -> Vista, almeno uno -> In corso, nessuno -> Da vedere.
+function getStatusFromWatched(watchedEpisodes, slimmedSeasons) {
+  const allKeys = slimmedSeasons?.length ? getAllEpisodeKeys(slimmedSeasons) : [];
+  const isComplete =
+    allKeys.length > 0 && allKeys.every((key) => watchedEpisodes.includes(key));
+
+  if (isComplete) return LIBRARY_STATUS.WATCHED;
+  if (watchedEpisodes.length > 0) return LIBRARY_STATUS.WATCHING;
+  return LIBRARY_STATUS.TO_WATCH;
 }
 
 export function isEpisodeWatched(watchedEpisodes, seasonNumber, episodeNumber) {
@@ -94,10 +103,14 @@ export async function setLibraryStatus(
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
 
-  // Se segni l'intera serie come "Vista" (e hai passato le stagioni),
+  const slimmed = seasons?.length ? slimSeasons(seasons) : null;
+
+  // Se segni l'intera serie come "Vista" (e conosciamo le stagioni),
   // spuntiamo automaticamente anche tutti gli episodi.
   const shouldMarkAllWatched =
-    status === LIBRARY_STATUS.WATCHED && mediaType === "tv" && seasons?.length > 0;
+    status === LIBRARY_STATUS.WATCHED &&
+    mediaType === "tv" &&
+    slimmed?.length > 0;
 
   await setDoc(
     ref,
@@ -107,8 +120,9 @@ export async function setLibraryStatus(
       status,
       title,
       posterPath,
+      ...(slimmed ? { seasons: slimmed } : {}),
       ...(shouldMarkAllWatched
-        ? { watchedEpisodes: getAllEpisodeKeys(seasons) }
+        ? { watchedEpisodes: getAllEpisodeKeys(slimmed) }
         : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
@@ -138,7 +152,7 @@ export function subscribeToLibrary(uid, onChange) {
 
 export async function toggleEpisodeWatched(
   uid,
-  { mediaType, tmdbId, seasonNumber, episodeNumber, title, posterPath },
+  { mediaType, tmdbId, seasonNumber, episodeNumber, title, posterPath, seasons },
 ) {
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
@@ -146,6 +160,9 @@ export async function toggleEpisodeWatched(
   const currentWatched = data?.watchedEpisodes || [];
   const key = getEpisodeKey(seasonNumber, episodeNumber);
   const alreadyWatched = currentWatched.includes(key);
+
+  // Stagioni appena ricevute, oppure quelle già salvate nel documento.
+  const knownSeasons = seasons?.length ? slimSeasons(seasons) : data?.seasons;
 
   const nextWatched = alreadyWatched
     ? currentWatched.filter((k) => k !== key)
@@ -159,7 +176,8 @@ export async function toggleEpisodeWatched(
       title,
       posterPath,
       watchedEpisodes: nextWatched,
-      ...(alreadyWatched ? {} : { status: nextStatusOnMark(data?.status) }),
+      status: getStatusFromWatched(nextWatched, knownSeasons),
+      ...(knownSeasons ? { seasons: knownSeasons } : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -171,7 +189,7 @@ export async function toggleEpisodeWatched(
 
 export async function toggleSeasonWatched(
   uid,
-  { mediaType, tmdbId, seasonNumber, episodeCount, title, posterPath },
+  { mediaType, tmdbId, seasonNumber, episodeCount, title, posterPath, seasons },
 ) {
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
@@ -179,6 +197,9 @@ export async function toggleSeasonWatched(
   const currentWatched = data?.watchedEpisodes || [];
   const seasonKeys = getSeasonKeys(seasonNumber, episodeCount);
   const fullyWatched = seasonKeys.every((key) => currentWatched.includes(key));
+
+  // Stagioni appena ricevute, oppure quelle già salvate nel documento.
+  const knownSeasons = seasons?.length ? slimSeasons(seasons) : data?.seasons;
 
   const nextWatched = fullyWatched
     ? currentWatched.filter((key) => !seasonKeys.includes(key))
@@ -192,7 +213,8 @@ export async function toggleSeasonWatched(
       title,
       posterPath,
       watchedEpisodes: nextWatched,
-      ...(fullyWatched ? {} : { status: nextStatusOnMark(data?.status) }),
+      status: getStatusFromWatched(nextWatched, knownSeasons),
+      ...(knownSeasons ? { seasons: knownSeasons } : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },

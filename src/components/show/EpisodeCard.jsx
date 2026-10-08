@@ -10,7 +10,15 @@ import {
 } from "../../services/firestore";
 import styles from "./EpisodeCard.module.css";
 
-function EpisodeCard({ showId, mediaType, title, posterPath, seasonNumber, episode }) {
+function EpisodeCard({
+  showId,
+  mediaType,
+  title,
+  posterPath,
+  seasons,
+  seasonNumber,
+  episode,
+}) {
   const { currentUser } = useAuth();
   const [watchedEpisodes, setWatchedEpisodes] = useState([]);
 
@@ -58,6 +66,7 @@ function EpisodeCard({ showId, mediaType, title, posterPath, seasonNumber, episo
       episodeNumber: episode.episode_number,
       title,
       posterPath,
+      seasons,
     });
   }
 

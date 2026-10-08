@@ -47,6 +47,10 @@ function SeasonDetail() {
 
   const showTitle = getTitle(show);
 
+  // Stagioni "vere" (senza la 0, gli speciali): servono a EpisodeCard per
+  // salvare nel documento Firestore quanti episodi ha la serie in totale.
+  const seasons = show.seasons.filter((s) => s.season_number !== 0);
+
   // Cast aggregato dello show (già con roles[0].character pronto) unito
   // agli eventuali attori specifici di questa stagione non già presenti,
   // così i protagonisti compaiono per primi e la lista è completa.
@@ -125,6 +129,7 @@ function SeasonDetail() {
               mediaType="tv"
               title={showTitle}
               posterPath={show.poster_path}
+              seasons={seasons}
               seasonNumber={seasonNumber}
               episode={episode}
             />

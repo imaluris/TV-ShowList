@@ -10,7 +10,7 @@ import {
 } from "../../services/firestore";
 import styles from "./SeasonCard.module.css";
 
-function SeasonCard({ showId, mediaType, title, posterPath, season }) {
+function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
   const { currentUser } = useAuth();
   const [watchedEpisodes, setWatchedEpisodes] = useState([]);
 
@@ -59,6 +59,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, season }) {
       episodeCount: season.episode_count,
       title,
       posterPath,
+      seasons,
     });
   }
 
