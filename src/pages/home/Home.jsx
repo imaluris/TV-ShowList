@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import {
   getPopularShows,
   getTopByProvider,
   getWatchProviders,
   getGenres,
-  getShowsByAnyGenre,
 } from "../../services/tmdb";
-import { getPreferredGenres } from "../../services/profile";
+import { useRecommendations } from "../../hooks/useRecommendations";
 import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
 import styles from "./Home.module.css";
@@ -23,13 +21,12 @@ const PROVIDERS = [
 ];
 
 function Home() {
-  const { currentUser } = useAuth();
   const { mediaType, setMediaType } = useMediaType();
   const [popularShows, setPopularShows] = useState([]);
   const [showsByProvider, setShowsByProvider] = useState({});
   const [streamingIcons, setStreamingIcons] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [recommended, setRecommended] = useState([]);
+  const { forYou, genreRows, becauseRows } = useRecommendations(mediaType);
 
   useEffect(() => {
     getPopularShows(mediaType).then((shows) => {
@@ -68,30 +65,6 @@ function Home() {
     });
   }, [mediaType]);
 
-  // "Consigliati per te": titoli di uno qualsiasi dei generi preferiti salvati.
-  // Se l'utente non ne ha scelti, la riga resta vuota (ShowRow non mostra nulla).
-  useEffect(() => {
-    let cancelled = false;
-    setRecommended([]);
-
-    async function loadRecommended() {
-      try {
-        const genreIds = await getPreferredGenres(currentUser.uid, mediaType);
-        if (genreIds.length === 0) return;
-
-        const shows = await getShowsByAnyGenre(mediaType, genreIds);
-        if (!cancelled) setRecommended(shows);
-      } catch (err) {
-        console.error("Impossibile caricare i consigliati:", err);
-      }
-    }
-
-    loadRecommended();
-    return () => {
-      cancelled = true;
-    };
-  }, [currentUser.uid, mediaType]);
-
   useEffect(() => {
     getGenres(mediaType).then((data) => {
       setGenres(data);
@@ -128,7 +101,26 @@ function Home() {
           </div>
         </div>
 
-        <ShowRow title="Consigliati per te" shows={recommended} />
+        <ShowRow title="Consigliati per te" shows={forYou} />
+
+        {becauseRows.map((row) => (
+          <ShowRow
+            key={row.id}
+            title={`Perché hai visto ${row.title}`}
+            shows={row.shows}
+          />
+        ))}
+
+        {genreRows.map((row) => {
+          const genre = genres.find((g) => g.id === row.id);
+          return (
+            <ShowRow
+              key={row.id}
+              title={genre ? `Perché ti piace ${genre.name}` : "Dai tuoi generi preferiti"}
+              shows={row.shows}
+            />
+          );
+        })}
 
         <ShowRow title="Popolari del momento" shows={popularShows} />
 

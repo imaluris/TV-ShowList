@@ -1,6 +1,7 @@
 import {
   doc,
   getDoc,
+  getDocs,
   setDoc,
   deleteDoc,
   collection,
@@ -169,6 +170,16 @@ export async function refreshLibrarySeasons(uid, mediaType, tmdbId, seasons) {
 
 export async function removeFromLibrary(uid, mediaType, tmdbId) {
   await deleteDoc(getLibraryDocRef(uid, mediaType, tmdbId));
+}
+
+// Lettura una tantum di tutta la libreria (la più recente per prima).
+export async function getLibrary(uid) {
+  const q = query(
+    collection(db, "users", uid, "library"),
+    orderBy("updatedAt", "desc"),
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
 }
 
 export function subscribeToLibrary(uid, onChange) {
