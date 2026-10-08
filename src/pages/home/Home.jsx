@@ -6,7 +6,9 @@ import {
   getTopByProvider,
   getWatchProviders,
   getGenres,
+  getShowsByAnyGenre,
 } from "../../services/tmdb";
+import { getPreferredGenres } from "../../services/profile";
 import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
 import styles from "./Home.module.css";
@@ -27,6 +29,7 @@ function Home() {
   const [showsByProvider, setShowsByProvider] = useState({});
   const [streamingIcons, setStreamingIcons] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [recommended, setRecommended] = useState([]);
 
   useEffect(() => {
     getPopularShows(mediaType).then((shows) => {
@@ -65,6 +68,30 @@ function Home() {
     });
   }, [mediaType]);
 
+  // "Consigliati per te": titoli di uno qualsiasi dei generi preferiti salvati.
+  // Se l'utente non ne ha scelti, la riga resta vuota (ShowRow non mostra nulla).
+  useEffect(() => {
+    let cancelled = false;
+    setRecommended([]);
+
+    async function loadRecommended() {
+      try {
+        const genreIds = await getPreferredGenres(currentUser.uid, mediaType);
+        if (genreIds.length === 0) return;
+
+        const shows = await getShowsByAnyGenre(mediaType, genreIds);
+        if (!cancelled) setRecommended(shows);
+      } catch (err) {
+        console.error("Impossibile caricare i consigliati:", err);
+      }
+    }
+
+    loadRecommended();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUser.uid, mediaType]);
+
   useEffect(() => {
     getGenres(mediaType).then((data) => {
       setGenres(data);
@@ -100,6 +127,8 @@ function Home() {
             </button>
           </div>
         </div>
+
+        <ShowRow title="Consigliati per te" shows={recommended} />
 
         <ShowRow title="Popolari del momento" shows={popularShows} />
 

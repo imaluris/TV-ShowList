@@ -133,6 +133,26 @@ export async function getShowsByGenres(mediaType, genreIds) {
   return data.results;
 }
 
+// Come getShowsByGenres, ma restituisce titoli di UNO QUALSIASI dei generi
+// (separatore "|" = OR di TMDB), invece di richiederli tutti insieme.
+export async function getShowsByAnyGenre(mediaType, genreIds) {
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+    with_genres: genreIds.join("|"),
+    sort_by: "popularity.desc",
+    language: "it-IT",
+  });
+
+  const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results;
+}
+
 export async function getWatchProviders(mediaType, region = "IT") {
   const params = new URLSearchParams({
     api_key: API_KEY,

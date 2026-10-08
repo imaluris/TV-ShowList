@@ -2,29 +2,58 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { getGenres } from "../../services/tmdb";
+import { getPreferredGenres, setPreferredGenres } from "../../services/profile";
 import { useMediaType } from "../../contexts/MediaTypeContext";
+import { useAuth } from "../../contexts/AuthContext";
 import styles from "./Genres.module.css";
 
 function Genres() {
   const { mediaType } = useMediaType();
+  const { currentUser } = useAuth();
   const [genres, setGenres] = useState([]);
-  const [selected, setSelected] = useState(() => {
-    const saved = localStorage.getItem("preferred-genres");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [selected, setSelected] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getGenres(mediaType).then(setGenres);
   }, [mediaType]);
 
+  // I generi scelti vivono su Firestore, separati per film e serie TV.
   useEffect(() => {
-    localStorage.setItem("preferred-genres", JSON.stringify(selected));
-  }, [selected]);
+    let cancelled = false;
 
-  function toggleGenre(id) {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
-    );
+    setSelected([]);
+    getPreferredGenres(currentUser.uid, mediaType)
+      .then((ids) => {
+        if (!cancelled) setSelected(ids);
+      })
+      .catch((err) => {
+        console.error("Impossibile caricare i generi preferiti:", err);
+        if (!cancelled) setError("Non riesco a caricare i generi salvati.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUser.uid, mediaType]);
+
+  async function toggleGenre(id) {
+    const previous = selected;
+    const next = previous.includes(id)
+      ? previous.filter((g) => g !== id)
+      : [...previous, id];
+
+    // Aggiorniamo subito lo schermo; se il salvataggio fallisce torniamo indietro.
+    setSelected(next);
+    setError("");
+
+    try {
+      await setPreferredGenres(currentUser.uid, mediaType, next);
+    } catch (err) {
+      console.error("Impossibile salvare i generi preferiti:", err);
+      setSelected(previous);
+      setError("Salvataggio non riuscito, riprova.");
+    }
   }
 
   return (
@@ -38,8 +67,10 @@ function Genres() {
 
       <p className={styles.note}>
         Seleziona i generi che preferisci ({mediaType === "movie" ? "film" : "serie tv"}):
-        verranno usati in futuro per consigliarti titoli.
+        li usiamo per mostrarti titoli consigliati nella Home.
       </p>
+
+      {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.genreGrid}>
         {genres.map((genre) => (
