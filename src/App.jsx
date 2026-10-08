@@ -18,6 +18,8 @@ import Language from "./pages/profile/Language.jsx";
 import Genres from "./pages/profile/Genres.jsx";
 import About from "./pages/profile/About.jsx";
 import Account from "./pages/profile/Account.jsx";
+import AccountEdit from "./pages/profile/AccountEdit.jsx";
+import AccountDelete from "./pages/profile/AccountDelete.jsx";
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
         <Route path="/profile/genres" element={<Genres />} />
         <Route path="/profile/about" element={<About />} />
         <Route path="/profile/account" element={<Account />} />
+        <Route path="/profile/account/edit" element={<AccountEdit />} />
+        <Route path="/profile/account/delete" element={<AccountDelete />} />
       </Route>
     </Routes>
   );

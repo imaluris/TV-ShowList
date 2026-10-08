@@ -23,15 +23,15 @@ function Account() {
       </div>
 
       <div className={styles.buttonsList}>
-        <button type="button" className={styles.actionButton}>
+        <Link to="/profile/account/edit" className={styles.actionButton}>
           <UserCog size={20} />
           <span>Modifica account</span>
-        </button>
+        </Link>
 
-        <button type="button" className={styles.dangerButton}>
+        <Link to="/profile/account/delete" className={styles.dangerButton}>
           <Trash2 size={20} />
           <span>Elimina account</span>
-        </button>
+        </Link>
 
         <button type="button" className={styles.logoutButton} onClick={handleLogout}>
           <LogOut size={20} />
