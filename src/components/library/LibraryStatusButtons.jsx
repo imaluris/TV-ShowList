@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Bookmark, Check, Clock, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { Bookmark, Check, Clock, Plus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   LIBRARY_STATUS,
@@ -7,24 +7,13 @@ import {
   setLibraryStatus,
   removeFromLibrary,
 } from "../../services/firestore";
+import {
+  RESET_VALUE,
+  REMOVE_VALUE,
+  isStartedSeries,
+  getVisibleOptions,
+} from "./libraryMenu";
 import styles from "./LibraryStatusButtons.module.css";
-
-const OPTIONS = [
-  { value: LIBRARY_STATUS.TO_WATCH, label: "Da vedere", icon: Bookmark },
-  { value: LIBRARY_STATUS.WATCHED, label: "Vista", icon: Check },
-];
-
-// Voci speciali: non sono stati.
-// "Azzera" riporta la serie a "Da vedere" cancellando le spunte,
-// "Rimuovi" la toglie del tutto dalla libreria.
-const RESET_VALUE = "reset";
-const REMOVE_VALUE = "remove";
-const RESET_OPTION = { value: RESET_VALUE, label: "Azzera", icon: RotateCcw };
-const REMOVE_OPTION = {
-  value: REMOVE_VALUE,
-  label: "Rimuovi",
-  icon: Trash2,
-};
 
 // Icona del pulsante in base allo stato attuale (Plus se non c'è stato).
 const STATUS_ICONS = {
@@ -32,32 +21,6 @@ const STATUS_ICONS = {
   [LIBRARY_STATUS.WATCHING]: Clock,
   [LIBRARY_STATUS.WATCHED]: Check,
 };
-
-// Una serie TV è "iniziata" se è in corso o vista: ha del progresso da perdere.
-function isStartedSeries(status, mediaType) {
-  return (
-    mediaType === "tv" &&
-    (status === LIBRARY_STATUS.WATCHING || status === LIBRARY_STATUS.WATCHED)
-  );
-}
-
-// Quali voci mostrare nel menu in base allo stato attuale.
-function getVisibleOptions(status, mediaType) {
-  // Non è in libreria: si può solo aggiungerla.
-  if (!status) return OPTIONS;
-
-  const started = isStartedSeries(status, mediaType);
-
-  // Stati scegliibili: mai quello attuale, e mai "Da vedere"
-  // per una serie già iniziata (per quello c'è "Azzera").
-  const stateOptions = OPTIONS.filter(
-    (option) =>
-      option.value !== status &&
-      !(started && option.value === LIBRARY_STATUS.TO_WATCH),
-  );
-
-  return [...stateOptions, ...(started ? [RESET_OPTION] : []), REMOVE_OPTION];
-}
 
 function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons }) {
   const { currentUser } = useAuth();

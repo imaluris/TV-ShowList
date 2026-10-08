@@ -238,6 +238,13 @@ export async function toggleSeasonWatched(
   uid,
   { mediaType, tmdbId, seasonNumber, episodeCount, title, posterPath, seasons },
 ) {
+  // Una stagione senza episodi (es. non ancora uscita) non si può spuntare:
+  // senza questo controllo risulterebbe "già vista" e svuoterebbe le spunte.
+  if (!episodeCount) {
+    const snapshot = await getDoc(getLibraryDocRef(uid, mediaType, tmdbId));
+    return snapshot.exists() ? snapshot.data().watchedEpisodes || [] : [];
+  }
+
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
   const data = existing.exists() ? existing.data() : null;
