@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/config";
+import GoogleButton from "../../components/auth/GoogleButton";
 import styles from "./Login.module.css";
 
 function Login() {
@@ -51,6 +52,8 @@ function Login() {
         </form>
 
         {error && <p className={styles.error}>{error}</p>}
+
+        <GoogleButton label="Accedi con Google" />
 
         <p className={styles.footerText}>
           Non hai un account?{" "}

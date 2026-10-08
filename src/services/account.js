@@ -1,7 +1,9 @@
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
+  reauthenticateWithPopup,
   updatePassword,
+  updateProfile,
   verifyBeforeUpdateEmail,
   deleteUser,
 } from "firebase/auth";
@@ -13,14 +15,22 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
+import { createGoogleProvider, hasPasswordProvider } from "./auth";
 
 // Firebase vuole che le operazioni delicate (cambio email/password,
 // eliminazione) siano fatte da chi è entrato di recente: riconfermiamo
-// l'identità con la password attuale.
+// l'identità con la password attuale, oppure con Google per chi è entrato
+// con Google e non ha una password.
 async function reauthenticate(currentPassword) {
   const user = auth.currentUser;
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  await reauthenticateWithCredential(user, credential);
+
+  if (hasPasswordProvider(user)) {
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+  } else {
+    await reauthenticateWithPopup(user, createGoogleProvider());
+  }
+
   return user;
 }
 
@@ -36,6 +46,9 @@ export function getAuthErrorMessage(err) {
       return "Questa email è già usata da un altro account.";
     case "auth/invalid-email":
       return "L'indirizzo email non è valido.";
+    case "auth/popup-closed-by-user":
+    case "auth/cancelled-popup-request":
+      return "Operazione annullata.";
     case "auth/too-many-requests":
       return "Troppi tentativi. Riprova tra qualche minuto.";
     case "auth/requires-recent-login":
@@ -50,6 +63,11 @@ export function getAuthErrorMessage(err) {
 export async function requestEmailChange(currentPassword, newEmail) {
   const user = await reauthenticate(currentPassword);
   await verifyBeforeUpdateEmail(user, newEmail);
+}
+
+// Il nome visualizzato non richiede riautenticazione.
+export async function changeDisplayName(newName) {
+  await updateProfile(auth.currentUser, { displayName: newName });
 }
 
 export async function changePassword(currentPassword, newPassword) {

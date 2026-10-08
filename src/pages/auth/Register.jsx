@@ -6,6 +6,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
+import GoogleButton from "../../components/auth/GoogleButton";
 import styles from "./Register.module.css";
 
 function Register() {
@@ -71,6 +72,8 @@ function Register() {
         </form>
 
         {messaggioErrore}
+
+        <GoogleButton label="Registrati con Google" />
 
         <p className={styles.footerText}>
           Hai già un account?{" "}

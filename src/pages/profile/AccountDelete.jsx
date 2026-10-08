@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { hasPasswordProvider } from "../../services/auth";
 import { deleteAccount, getAuthErrorMessage } from "../../services/account";
 import styles from "./AccountForm.module.css";
 
 function AccountDelete() {
+  const { currentUser } = useAuth();
+  const usesPassword = hasPasswordProvider(currentUser);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -38,19 +42,23 @@ function AccountDelete() {
         <h2>Questa azione è definitiva</h2>
         <p className={styles.hint}>
           Verranno eliminati il tuo account e tutti i tuoi dati: la libreria con le
-          serie e i film, gli episodi visti e i generi preferiti. Non si può annullare.
-          Per confermare inserisci la tua password.
+          serie e i film, gli episodi visti e i generi preferiti. Non si può annullare.{" "}
+          {usesPassword
+            ? "Per confermare inserisci la tua password."
+            : "Per confermare ti chiederemo di accedere di nuovo con Google."}
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={styles.input}
-            required
-          />
+          {usesPassword && (
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
+              required
+            />
+          )}
           <button type="submit" className={styles.dangerSubmitButton} disabled={busy}>
             {busy ? "Eliminazione..." : "Elimina definitivamente il mio account"}
           </button>

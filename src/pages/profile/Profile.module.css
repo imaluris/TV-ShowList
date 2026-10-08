@@ -22,6 +22,30 @@
   justify-content: center;
   color: var(--accent);
   margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.name {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0 0 0.15rem;
+  text-align: center;
+}
+
+/* Con il nome sopra, l'email diventa la riga secondaria. */
+.name + .email {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.9rem;
+  margin-top: 0;
 }
 
 .email {

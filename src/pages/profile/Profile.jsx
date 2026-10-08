@@ -12,8 +12,20 @@ function Profile() {
     <div className={styles.profilePage}>
       <div className={styles.avatarSection}>
         <div className={styles.avatar}>
-          <User size={36} />
+          {currentUser?.photoURL ? (
+            <img
+              src={currentUser.photoURL}
+              alt=""
+              className={styles.avatarImage}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <User size={36} />
+          )}
         </div>
+        {currentUser?.displayName && (
+          <p className={styles.name}>{currentUser.displayName}</p>
+        )}
         <p className={styles.email}>{currentUser?.email}</p>
       </div>
 

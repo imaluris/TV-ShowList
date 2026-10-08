@@ -2,15 +2,22 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { hasPasswordProvider } from "../../services/auth";
 import {
   requestEmailChange,
   changePassword,
+  changeDisplayName,
   getAuthErrorMessage,
 } from "../../services/account";
 import styles from "./AccountForm.module.css";
 
 function AccountEdit() {
-  const { currentUser } = useAuth();
+  const { currentUser, refreshCurrentUser } = useAuth();
+  const usesPassword = hasPasswordProvider(currentUser);
+
+  const [displayName, setDisplayName] = useState(currentUser.displayName || "");
+  const [nameStatus, setNameStatus] = useState({ error: "", success: "" });
+  const [nameBusy, setNameBusy] = useState(false);
 
   const [emailForm, setEmailForm] = useState({ password: "", newEmail: "" });
   const [emailStatus, setEmailStatus] = useState({ error: "", success: "" });
@@ -23,6 +30,23 @@ function AccountEdit() {
   });
   const [passwordStatus, setPasswordStatus] = useState({ error: "", success: "" });
   const [passwordBusy, setPasswordBusy] = useState(false);
+
+  async function handleNameSubmit(event) {
+    event.preventDefault();
+    setNameStatus({ error: "", success: "" });
+    setNameBusy(true);
+
+    try {
+      await changeDisplayName(displayName.trim());
+      // Ricarica l'utente così il nuovo nome appare subito nel profilo.
+      await refreshCurrentUser();
+      setNameStatus({ error: "", success: "Nome aggiornato." });
+    } catch (err) {
+      setNameStatus({ error: getAuthErrorMessage(err), success: "" });
+    } finally {
+      setNameBusy(false);
+    }
+  }
 
   async function handleEmailSubmit(event) {
     event.preventDefault();
@@ -75,82 +99,116 @@ function AccountEdit() {
       </div>
 
       <section className={styles.section}>
-        <h2>Email</h2>
-        <p className={styles.hint}>
-          Email attuale: {currentUser.email}. Per sicurezza serve la password attuale.
-        </p>
+        <h2>Nome</h2>
+        <p className={styles.hint}>Il nome che vedi nel tuo profilo.</p>
 
-        <form onSubmit={handleEmailSubmit} className={styles.form}>
+        <form onSubmit={handleNameSubmit} className={styles.form}>
           <input
-            type="email"
-            placeholder="Nuova email"
-            value={emailForm.newEmail}
-            onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
+            type="text"
+            placeholder="Nome utente"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
             className={styles.input}
             required
           />
-          <input
-            type="password"
-            placeholder="Password attuale"
-            value={emailForm.password}
-            onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })}
-            className={styles.input}
-            required
-          />
-          <button type="submit" className={styles.submitButton} disabled={emailBusy}>
-            {emailBusy ? "Invio..." : "Cambia email"}
+          <button type="submit" className={styles.submitButton} disabled={nameBusy}>
+            {nameBusy ? "Salvataggio..." : "Salva nome"}
           </button>
         </form>
 
-        {emailStatus.error && <p className={styles.error}>{emailStatus.error}</p>}
-        {emailStatus.success && <p className={styles.success}>{emailStatus.success}</p>}
+        {nameStatus.error && <p className={styles.error}>{nameStatus.error}</p>}
+        {nameStatus.success && <p className={styles.success}>{nameStatus.success}</p>}
       </section>
 
-      <section className={styles.section}>
-        <h2>Password</h2>
-        <p className={styles.hint}>Scegli una nuova password di almeno 6 caratteri.</p>
+      {usesPassword ? (
+        <>
+        <section className={styles.section}>
+          <h2>Email</h2>
+          <p className={styles.hint}>
+            Email attuale: {currentUser.email}. Per sicurezza serve la password attuale.
+          </p>
 
-        <form onSubmit={handlePasswordSubmit} className={styles.form}>
-          <input
-            type="password"
-            placeholder="Password attuale"
-            value={passwordForm.password}
-            onChange={(e) =>
-              setPasswordForm({ ...passwordForm, password: e.target.value })
-            }
-            className={styles.input}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Nuova password"
-            value={passwordForm.newPassword}
-            onChange={(e) =>
-              setPasswordForm({ ...passwordForm, newPassword: e.target.value })
-            }
-            className={styles.input}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Ripeti la nuova password"
-            value={passwordForm.confirm}
-            onChange={(e) =>
-              setPasswordForm({ ...passwordForm, confirm: e.target.value })
-            }
-            className={styles.input}
-            required
-          />
-          <button type="submit" className={styles.submitButton} disabled={passwordBusy}>
-            {passwordBusy ? "Salvataggio..." : "Cambia password"}
-          </button>
-        </form>
+          <form onSubmit={handleEmailSubmit} className={styles.form}>
+            <input
+              type="email"
+              placeholder="Nuova email"
+              value={emailForm.newEmail}
+              onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
+              className={styles.input}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password attuale"
+              value={emailForm.password}
+              onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })}
+              className={styles.input}
+              required
+            />
+            <button type="submit" className={styles.submitButton} disabled={emailBusy}>
+              {emailBusy ? "Invio..." : "Cambia email"}
+            </button>
+          </form>
 
-        {passwordStatus.error && <p className={styles.error}>{passwordStatus.error}</p>}
-        {passwordStatus.success && (
-          <p className={styles.success}>{passwordStatus.success}</p>
-        )}
-      </section>
+          {emailStatus.error && <p className={styles.error}>{emailStatus.error}</p>}
+          {emailStatus.success && <p className={styles.success}>{emailStatus.success}</p>}
+        </section>
+
+        <section className={styles.section}>
+          <h2>Password</h2>
+          <p className={styles.hint}>Scegli una nuova password di almeno 6 caratteri.</p>
+
+          <form onSubmit={handlePasswordSubmit} className={styles.form}>
+            <input
+              type="password"
+              placeholder="Password attuale"
+              value={passwordForm.password}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, password: e.target.value })
+              }
+              className={styles.input}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Nuova password"
+              value={passwordForm.newPassword}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+              }
+              className={styles.input}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Ripeti la nuova password"
+              value={passwordForm.confirm}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, confirm: e.target.value })
+              }
+              className={styles.input}
+              required
+            />
+            <button type="submit" className={styles.submitButton} disabled={passwordBusy}>
+              {passwordBusy ? "Salvataggio..." : "Cambia password"}
+            </button>
+          </form>
+
+          {passwordStatus.error && <p className={styles.error}>{passwordStatus.error}</p>}
+          {passwordStatus.success && (
+            <p className={styles.success}>{passwordStatus.success}</p>
+          )}
+        </section>
+        </>
+      ) : (
+        <section className={styles.section}>
+          <h2>Accesso con Google</h2>
+          <p className={styles.hint}>
+            Hai effettuato l'accesso con Google ({currentUser.email}): email e
+            password si gestiscono dal tuo account Google.
+          </p>
+        </section>
+      )}
     </div>
   );
 }
