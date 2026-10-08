@@ -33,3 +33,17 @@
 .navItemActive {
   color: var(--accent);
 }
+
+/* Schermi larghi: le tre voci restano vicine al centro invece di
+   distribuirsi su tutta la larghezza. */
+@media (min-width: 900px) {
+  .bottomNav {
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .navItem,
+  .navItemActive {
+    flex: 0 0 140px;
+  }
+}
