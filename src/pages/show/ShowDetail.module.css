@@ -184,7 +184,7 @@
   right: 0;
   bottom: 0.5rem;
   width: 150px;
-  background: linear-gradient(to right, transparent, rgba(12, 13, 16, 0.75));
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--bg) 75%, transparent));
   pointer-events: none;
   z-index: 1;
 }
@@ -199,7 +199,7 @@
   border-radius: 50%;
   background: rgba(12, 13, 16, 0.85);
   border: none;
-  color: var(--text);
+  color: var(--overlay-text);
   font-size: 1.4rem;
   line-height: 1;
   display: flex;

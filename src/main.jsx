@@ -5,15 +5,18 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { MediaTypeProvider } from "./contexts/MediaTypeContext.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter basename="/TVShowList">
-      <AuthProvider>
-        <MediaTypeProvider>
-          <App />
-        </MediaTypeProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <MediaTypeProvider>
+            <App />
+          </MediaTypeProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 );

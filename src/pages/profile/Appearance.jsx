@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { ArrowLeft, Check } from "lucide-react";
+import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./Appearance.module.css";
 
 const OPTIONS = [
@@ -10,13 +10,7 @@ const OPTIONS = [
 ];
 
 function Appearance() {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("theme-preference") || "system",
-  );
-
-  useEffect(() => {
-    localStorage.setItem("theme-preference", theme);
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
 
   return (
     <div className={styles.page}>
@@ -42,7 +36,7 @@ function Appearance() {
       </div>
 
       <p className={styles.note}>
-        Il cambio tema effettivo non è ancora attivo: per ora l'app resta sempre scura.
+        Con "Sistema" l'app segue il tema chiaro o scuro del tuo dispositivo.
       </p>
     </div>
   );

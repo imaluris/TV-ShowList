@@ -4,7 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c0d10" />
     <title>TV-ShowList</title>
+    <script>
+      // Applica il tema salvato prima che React parta, per evitare il lampo di colore sbagliato.
+      (function () {
+        try {
+          var pref = localStorage.getItem("theme-preference");
+          var light =
+            pref === "light" ||
+            (pref !== "dark" &&
+              window.matchMedia("(prefers-color-scheme: light)").matches);
+          document.documentElement.dataset.theme = light ? "light" : "dark";
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", light ? "#f6f4ee" : "#0c0d10");
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

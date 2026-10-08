@@ -7,6 +7,27 @@
   --accent: #e8a33d;
   --accent-dim: #b87f2a;
   --border: #262a32;
+
+  /* Testo sopra i pulsanti scuri semitrasparenti che stanno sulle locandine:
+     resta chiaro in entrambi i temi. */
+  --overlay-text: #f2f0ea;
+
+  color-scheme: dark;
+}
+
+/* Tema chiaro: viene attivato da ThemeContext con data-theme="light"
+   sull'elemento <html>. */
+:root[data-theme="light"] {
+  --bg: #f6f4ee;
+  --surface: #ffffff;
+  --surface-raised: #efece4;
+  --text: #1b1c20;
+  --text-muted: #5f636c;
+  --accent: #a8620a;
+  --accent-dim: #8a4f08;
+  --border: #ddd8cc;
+
+  color-scheme: light;
 }
 
 * {

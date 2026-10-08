@@ -32,7 +32,7 @@
   border-radius: 50%;
   background: rgba(12, 13, 16, 0.7);
   border: none;
-  color: var(--text);
+  color: var(--overlay-text);
   display: flex;
   align-items: center;
   justify-content: center;
