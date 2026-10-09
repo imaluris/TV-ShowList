@@ -17,6 +17,7 @@ import CastCard from "../../components/show/CastCard";
 import VideoCard from "../../components/show/VideoCard";
 import LibraryStatusButtons from "../../components/library/LibraryStatusButtons";
 import { ArrowLeft } from "lucide-react";
+import DetailSkeleton from "../../components/ui/DetailSkeleton";
 
 function ShowDetail() {
   const { mediaType, id } = useParams();
@@ -76,7 +77,7 @@ function ShowDetail() {
   }, [show, mediaType]);
 
   if (!show) {
-    return <p>Caricamento...</p>;
+    return <DetailSkeleton />;
   }
 
   function scrollCastLeft() {

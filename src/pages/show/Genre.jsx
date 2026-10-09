@@ -3,6 +3,7 @@ import { useParams, useSearchParams, Link } from "react-router-dom";
 import { discoverShowsByGenre, getGenres } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import ShowCard from "../../components/show/ShowCard";
+import SkeletonGrid from "../../components/ui/SkeletonGrid";
 import GenreFilterModal from "../../components/layout/GenreFilterModal";
 import styles from "./Genre.module.css";
 
@@ -90,7 +91,7 @@ function Genre() {
           <Link to="/">Torna alla Home</Link>.
         </p>
       ) : loading ? (
-        <p>Caricamento...</p>
+        <SkeletonGrid />
       ) : shows.length === 0 ? (
         <p>
           {isMovie

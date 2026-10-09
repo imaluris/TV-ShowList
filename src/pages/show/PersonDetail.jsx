@@ -11,6 +11,7 @@ import KnownForCard from "../../components/show/KnownForCard";
 import CreditListItem from "../../components/show/CreditListItem";
 import { ArrowLeft, X } from "lucide-react";
 import styles from "./PersonDetail.module.css";
+import DetailSkeleton from "../../components/ui/DetailSkeleton";
 
 function calculateAge(birthday, deathday) {
   if (!birthday) return null;
@@ -81,7 +82,7 @@ function PersonDetail() {
   }, [id]);
 
   if (!person || !credits) {
-    return <p>Caricamento...</p>;
+    return <DetailSkeleton />;
   }
 
   const photoSrc = person.profile_path

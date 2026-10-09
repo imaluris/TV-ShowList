@@ -8,6 +8,7 @@ import {
 import CastCard from "../../components/show/CastCard";
 import { ArrowLeft } from "lucide-react";
 import styles from "./EpisodeDetail.module.css";
+import DetailSkeleton from "../../components/ui/DetailSkeleton";
 
 function EpisodeDetail() {
   const { showId, seasonNumber, episodeNumber } = useParams();
@@ -29,7 +30,7 @@ function EpisodeDetail() {
   }, [showId]);
 
   if (!episode || !showCredits) {
-    return <p>Caricamento...</p>;
+    return <DetailSkeleton />;
   }
 
   const imageSrc = episode.still_path

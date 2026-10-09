@@ -11,14 +11,16 @@ import {
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
 import ShowRow from "../../components/show/ShowRow";
+import SkeletonRow from "../../components/ui/SkeletonRow";
 import styles from "./Provider.module.css";
 
 function Provider() {
   const { id } = useParams();
   const { mediaType, isMovie } = useMediaType();
   const [providerInfo, setProviderInfo] = useState(null);
-  const [popular, setPopular] = useState([]);
-  const [newShows, setNewShows] = useState([]);
+  // null = ancora in caricamento (si vede lo scheletro), [] = nessun risultato
+  const [popular, setPopular] = useState(null);
+  const [newShows, setNewShows] = useState(null);
   const [exclusives, setExclusives] = useState([]);
   const [networkId, setNetworkId] = useState(null);
   const [genres, setGenres] = useState([]);
@@ -81,8 +83,16 @@ function Provider() {
         </div>
       </div>
 
-      <ShowRow title="Popolari del momento" shows={popular} />
-      <ShowRow title="Nuove della settimana" shows={newShows} />
+      {popular === null ? (
+        <SkeletonRow />
+      ) : (
+        <ShowRow title="Popolari del momento" shows={popular} />
+      )}
+      {newShows === null ? (
+        <SkeletonRow />
+      ) : (
+        <ShowRow title="Nuove della settimana" shows={newShows} />
+      )}
 
       {!isMovie && networkId && exclusives.length > 0 && (
         <ShowRow title="Esclusive" shows={exclusives} />

@@ -38,8 +38,12 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 6vw, 2rem);
   text-align: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .filterButton {
@@ -59,7 +63,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 1.25rem;
 }
 
@@ -81,4 +85,11 @@
 .loadMoreButton:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+
+@media (max-width: 400px) {
+  .grid {
+    gap: 0.9rem;
+  }
 }

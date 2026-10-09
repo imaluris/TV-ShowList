@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Bookmark, Clock, Check } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
+import SegmentedControl from "../../components/ui/SegmentedControl";
+import SkeletonGrid from "../../components/ui/SkeletonGrid";
 import LibraryCard from "../../components/library/LibraryCard";
 import styles from "./Library.module.css";
 
@@ -56,22 +58,16 @@ function Library() {
       <h1 className={styles.title}>Libreria</h1>
 
       <div className={styles.tabRow}>
-        <div className={styles.tabGroup}>
-          {TABS.map(({ value, label }) => (
-            <button
-              key={value}
-              type="button"
-              className={activeTab === value ? styles.tabActive : styles.tab}
-              onClick={() => setActiveTab(value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          label="Stato"
+          options={TABS}
+          value={activeTab}
+          onChange={setActiveTab}
+        />
       </div>
 
       {loading ? (
-        <p className={styles.message}>Caricamento...</p>
+        <SkeletonGrid cards={6} />
       ) : filteredItems.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>

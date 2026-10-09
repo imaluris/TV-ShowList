@@ -11,6 +11,7 @@ import CastCard from "../../components/show/CastCard";
 import EpisodeCard from "../../components/show/EpisodeCard";
 import styles from "./SeasonDetail.module.css";
 import { ArrowLeft } from "lucide-react";
+import DetailSkeleton from "../../components/ui/DetailSkeleton";
 
 function SeasonDetail() {
   const { showId, seasonNumber } = useParams();
@@ -38,7 +39,7 @@ function SeasonDetail() {
   }, [showId]);
 
   if (!show || !season || !showCredits) {
-    return <p>Caricamento...</p>;
+    return <DetailSkeleton />;
   }
 
   const posterSrc = season.poster_path
