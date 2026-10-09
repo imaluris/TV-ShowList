@@ -44,6 +44,11 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
   const sortOptions = isMovie ? SORT_OPTIONS_MOVIE : SORT_OPTIONS_TV;
 
   const [sortBy, setSortBy] = useState("popularity.desc");
+  // Se l'ordinamento scelto non esiste per il tipo corrente (es. "Nome" di
+  // una serie passando ai film) si ripiega sulla popolarità.
+  const activeSortBy = sortOptions.some((opt) => opt.value === sortBy)
+    ? sortBy
+    : "popularity.desc";
   const [minVote, setMinVote] = useState("");
   const [yearMode, setYearMode] = useState("exact"); // "exact" oppure "range"
   const [year, setYear] = useState("");
@@ -95,7 +100,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
 
     const yearFilters = yearMode === "exact" ? { year } : { yearFrom, yearTo };
 
-    onApply({ sortBy, minVote, providerId, country, companyId, ...yearFilters });
+    onApply({ sortBy: activeSortBy, minVote, providerId, country, companyId, ...yearFilters });
     onClose();
   }
 
@@ -122,7 +127,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
         <form onSubmit={handleSubmit}>
           <label className={styles.field}>
             Ordina per
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <select value={activeSortBy} onChange={(e) => setSortBy(e.target.value)}>
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
