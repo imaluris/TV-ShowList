@@ -14,13 +14,13 @@ function VerifyEmail() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshCurrentUser]);
 
   useEffect(() => {
     if (currentUser?.emailVerified) {
       navigate("/");
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   async function handleLogout() {
     await signOut(auth);

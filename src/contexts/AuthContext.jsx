@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, reload } from "firebase/auth";
 import { auth } from "../firebase/config";
 
@@ -36,10 +36,12 @@ useEffect(() => {
   // Ricarica i dati dell'utente da Firebase (es. dopo che ha confermato
   // l'email) e forza React ad accorgersene, creando un oggetto NUOVO
   // con { ...auth.currentUser } invece di riusare lo stesso oggetto.
-  async function refreshCurrentUser() {
+  // useCallback: la funzione resta la stessa tra un render e l'altro, così
+  // può stare tra le dipendenze di un useEffect senza farlo ripartire.
+  const refreshCurrentUser = useCallback(async () => {
     await reload(auth.currentUser);
     setCurrentUser({ ...auth.currentUser });
-  }
+  }, []);
 
   const value = {
     currentUser,
