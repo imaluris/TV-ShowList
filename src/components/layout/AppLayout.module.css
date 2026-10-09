@@ -12,7 +12,7 @@
 
 /* Breve dissolvenza a ogni cambio di pagina. */
 .page {
-  animation: pageIn 0.28s ease both;
+  animation: pageIn 0.28s ease backwards;
 }
 
 @keyframes pageIn {

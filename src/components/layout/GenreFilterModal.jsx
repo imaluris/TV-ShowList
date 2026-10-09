@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { getWatchProviders, searchCompany } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
@@ -121,10 +122,27 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h2>{isMovie ? "Filtra film" : "Filtra serie TV"}</h2>
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-label={isMovie ? "Filtra film" : "Filtra serie TV"}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles.header}>
+          <h2>{isMovie ? "Filtra film" : "Filtra serie TV"}</h2>
+          <button
+            type="button"
+            className={styles.closeButton}
+            onClick={onClose}
+            aria-label="Chiudi"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.body}>
           <label className={styles.field}>
             Ordina per
             <select value={activeSortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -239,6 +257,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </label>
 
           {companyError && <p className={styles.error}>{companyError}</p>}
+          </div>
 
           <div className={styles.actions}>
             <button
