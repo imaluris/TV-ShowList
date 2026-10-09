@@ -12,13 +12,17 @@
   border-color: var(--accent);
 }
 
+/* L'altezza è fissata dal contenitore (2:3), non dall'immagine: così anche
+   il segnaposto "No Image" produce una card alta quanto le altre. */
 .posterWrapper {
   position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
 }
 
 .posterWrapper img {
   width: 100%;
-  aspect-ratio: 2 / 3;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
