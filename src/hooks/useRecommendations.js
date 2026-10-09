@@ -28,7 +28,7 @@ function safe(promise) {
   });
 }
 
-const EMPTY = { forYou: [], genreRows: [], becauseRows: [] };
+const EMPTY = { key: null, forYou: [], genreRows: [], becauseRows: [] };
 
 // Costruisce i consigliati per la Home a partire da:
 //  - i generi preferiti salvati su Firestore
@@ -37,6 +37,7 @@ const EMPTY = { forYou: [], genreRows: [], becauseRows: [] };
 //  - forYou: titoli di uno qualsiasi dei generi preferiti
 //  - genreRows: righe per 2 generi preferiti scelti a caso ({ id, shows })
 //  - becauseRows: "Perché hai visto X" per 2 titoli scelti a caso tra gli ultimi 10 ({ id, title, shows })
+//  - loading: true finché le righe per il mediaType corrente non sono pronte
 export function useRecommendations(mediaType) {
   const { currentUser } = useAuth();
   const uid = currentUser.uid;
@@ -93,7 +94,7 @@ export function useRecommendations(mediaType) {
         ),
       ]);
 
-      if (!cancelled) setResult({ forYou, genreRows, becauseRows });
+      if (!cancelled) setResult({ key: mediaType, forYou, genreRows, becauseRows });
     }
 
     load();
@@ -102,5 +103,11 @@ export function useRecommendations(mediaType) {
     };
   }, [uid, mediaType]);
 
-  return result;
+  // Se il risultato salvato è di un altro mediaType (l'utente ha appena
+  // cambiato tra Film e Serie TV) lo consideriamo "in caricamento".
+  if (result.key !== mediaType) {
+    return { ...EMPTY, loading: true };
+  }
+
+  return { ...result, loading: false };
 }

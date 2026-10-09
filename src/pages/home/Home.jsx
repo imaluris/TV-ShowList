@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import {
   getPopularShows,
@@ -9,9 +10,11 @@ import {
 import { useRecommendations } from "../../hooks/useRecommendations";
 import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
+import Hero from "../../components/home/Hero";
+import HomeSkeleton from "../../components/home/HomeSkeleton";
+import SegmentedControl from "../../components/ui/SegmentedControl";
 import styles from "./Home.module.css";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
-import { Link } from "react-router-dom";
 
 const PROVIDERS = [
   { id: 8, name: "Netflix" },
@@ -20,17 +23,25 @@ const PROVIDERS = [
   { id: 337, name: "Disney+" },
 ];
 
+const MEDIA_OPTIONS = [
+  { value: "tv", label: "Serie TV" },
+  { value: "movie", label: "Film" },
+];
+
+// Ogni dato caricato ricorda per quale mediaType è stato scaricato: se non
+// coincide con quello attuale, la Home sa che deve ancora aspettare.
 function Home() {
   const { mediaType, setMediaType } = useMediaType();
-  const [popularShows, setPopularShows] = useState([]);
-  const [showsByProvider, setShowsByProvider] = useState({});
-  const [streamingIcons, setStreamingIcons] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const { forYou, genreRows, becauseRows } = useRecommendations(mediaType);
+  const [popular, setPopular] = useState({ type: null, shows: [] });
+  const [byProvider, setByProvider] = useState({ type: null, shows: {} });
+  const [icons, setIcons] = useState({ type: null, list: [] });
+  const [genresData, setGenresData] = useState({ type: null, list: [] });
+  const recommendations = useRecommendations(mediaType);
+  const { forYou, genreRows, becauseRows } = recommendations;
 
   useEffect(() => {
     getPopularShows(mediaType).then((shows) => {
-      setPopularShows(shows);
+      setPopular({ type: mediaType, shows });
     });
   }, [mediaType]);
 
@@ -40,12 +51,12 @@ function Home() {
         PROVIDERS.map((provider) => getTopByProvider(mediaType, provider.id)),
       );
 
-      const byProvider = {};
+      const shows = {};
       PROVIDERS.forEach((provider, index) => {
-        byProvider[provider.id] = results[index];
+        shows[provider.id] = results[index];
       });
 
-      setShowsByProvider(byProvider);
+      setByProvider({ type: mediaType, shows });
     }
 
     loadProviderShows();
@@ -61,104 +72,102 @@ function Home() {
           ? { ...found, provider_name: label }
           : { provider_name: label, provider_id: null, logo_path: null };
       });
-      setStreamingIcons(matched);
+      setIcons({ type: mediaType, list: matched });
     });
   }, [mediaType]);
 
   useEffect(() => {
-    getGenres(mediaType).then((data) => {
-      setGenres(data);
+    getGenres(mediaType).then((list) => {
+      setGenresData({ type: mediaType, list });
     });
   }, [mediaType]);
 
+  // La pagina si mostra solo quando tutto è arrivato: prima, gli skeleton.
+  const ready =
+    popular.type === mediaType &&
+    byProvider.type === mediaType &&
+    icons.type === mediaType &&
+    genresData.type === mediaType &&
+    !recommendations.loading;
+
+  const genres = genresData.list;
+
   return (
     <div className={styles.homePage}>
-      <div>
-        <div className={styles.mediaTypeToggleRow}>
-          <div className={styles.mediaTypeToggle}>
-            <button
-              type="button"
-              className={
-                mediaType === "tv"
-                  ? styles.mediaTypeButtonActive
-                  : styles.mediaTypeButton
-              }
-              onClick={() => setMediaType("tv")}
-            >
-              Serie TV
-            </button>
-            <button
-              type="button"
-              className={
-                mediaType === "movie"
-                  ? styles.mediaTypeButtonActive
-                  : styles.mediaTypeButton
-              }
-              onClick={() => setMediaType("movie")}
-            >
-              Film
-            </button>
-          </div>
-        </div>
+      <div className={styles.mediaTypeToggleRow}>
+        <SegmentedControl
+          label="Cosa vuoi guardare"
+          options={MEDIA_OPTIONS}
+          value={mediaType}
+          onChange={setMediaType}
+        />
+      </div>
 
-        <ShowRow title="Consigliati per te" shows={forYou} />
+      {!ready ? (
+        <HomeSkeleton />
+      ) : (
+        <div className={styles.reveal}>
+          <Hero key={mediaType} shows={popular.shows} mediaType={mediaType} />
 
-        {becauseRows.map((row) => (
-          <ShowRow
-            key={row.id}
-            title={`Perché hai visto ${row.title}`}
-            shows={row.shows}
-          />
-        ))}
+          <ShowRow title="Consigliati per te" shows={forYou} />
 
-        {genreRows.map((row) => {
-          const genre = genres.find((g) => g.id === row.id);
-          return (
+          {becauseRows.map((row) => (
             <ShowRow
               key={row.id}
-              title={genre ? `Perché ti piace ${genre.name}` : "Dai tuoi generi preferiti"}
+              title={`Perché hai visto ${row.title}`}
               shows={row.shows}
             />
-          );
-        })}
+          ))}
 
-        <ShowRow title="Popolari del momento" shows={popularShows} />
+          {genreRows.map((row) => {
+            const genre = genres.find((g) => g.id === row.id);
+            return (
+              <ShowRow
+                key={row.id}
+                title={genre ? `Perché ti piace ${genre.name}` : "Dai tuoi generi preferiti"}
+                shows={row.shows}
+              />
+            );
+          })}
 
-        <div className={styles.genresSection}>
-          <h2>Generi</h2>
-          <div className={styles.genresWrapper}>
-            <div className={styles.genresGrid}>
-              {genres.map((genre) => (
-                <Link
-                  key={genre.id}
-                  to={`/genre/${genre.id}`}
-                  className={styles.genreButton}
-                >
-                  {genre.name}
-                </Link>
+          <ShowRow title="Popolari del momento" shows={popular.shows} />
+
+          <div className={styles.genresSection}>
+            <h2>Generi</h2>
+            <div className={styles.genresWrapper}>
+              <div className={styles.genresGrid}>
+                {genres.map((genre) => (
+                  <Link
+                    key={genre.id}
+                    to={`/genre/${genre.id}`}
+                    className={styles.genreButton}
+                  >
+                    {genre.name}
+                  </Link>
+                ))}
+              </div>
+              <div className={styles.fade} />
+            </div>
+          </div>
+
+          <div className={styles.streamingSection}>
+            <h2>Piattaforme streaming</h2>
+            <div className={styles.streamingGrid}>
+              {icons.list.map((provider, index) => (
+                <StreamingIcon key={index} provider={provider} />
               ))}
             </div>
-            <div className={styles.fade} />
           </div>
-        </div>
 
-        <div className={styles.streamingSection}>
-          <h2>Piattaforme streaming</h2>
-          <div className={styles.streamingGrid}>
-            {streamingIcons.map((provider, index) => (
-              <StreamingIcon key={index} provider={provider} />
-            ))}
-          </div>
+          {PROVIDERS.map((provider) => (
+            <ShowRow
+              key={provider.id}
+              title={"Top 10 su " + provider.name}
+              shows={byProvider.shows[provider.id] || []}
+            />
+          ))}
         </div>
-
-        {PROVIDERS.map((provider) => (
-          <ShowRow
-            key={provider.id}
-            title={"Top 10 su " + provider.name}
-            shows={showsByProvider[provider.id] || []}
-          />
-        ))}
-      </div>
+      )}
     </div>
   );
 }
