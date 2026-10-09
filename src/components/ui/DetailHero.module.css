@@ -1,13 +1,16 @@
 .hero {
   position: relative;
   padding-top: calc(env(safe-area-inset-top) + 190px);
-  overflow: hidden;
+  /* Niente overflow: hidden qui, altrimenti il menu dello stato verrebbe
+     tagliato. L'immagine di sfondo si ritaglia da sola (.media). */
+  isolation: isolate;
 }
 
 .media {
   position: absolute;
   inset: 0;
   z-index: -1;
+  overflow: hidden;
 }
 
 .backdrop,
@@ -66,6 +69,8 @@
 }
 
 .inner {
+  position: relative;
+  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem 1.25rem;
