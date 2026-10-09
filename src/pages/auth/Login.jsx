@@ -25,6 +25,13 @@ function Login() {
 
   return (
     <div className={styles.authPage}>
+      <div className={styles.brand}>
+        <span className={styles.mark}>
+          <span className={styles.play} />
+        </span>
+        <span className={styles.brandName}>TV ShowList</span>
+      </div>
+
       <div className={styles.authCard}>
         <h1 className={styles.title}>Accedi</h1>
         <p className={styles.subtitle}>Bentornato, accedi al tuo account</p>
@@ -32,6 +39,7 @@ function Login() {
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="email"
+            autoComplete="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -40,6 +48,7 @@ function Login() {
           />
           <input
             type="password"
+            autoComplete="current-password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

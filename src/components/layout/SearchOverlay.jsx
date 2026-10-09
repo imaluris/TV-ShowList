@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { searchShows, IMG_URL } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { getTitle, getDate } from "../../utils/media";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, Search, X } from "lucide-react";
+import Skeleton from "../ui/Skeleton";
 import styles from "./SearchOverlay.module.css";
 
 function SearchOverlay({ onClose }) {
@@ -73,9 +74,25 @@ function SearchOverlay({ onClose }) {
 
       <div className={styles.results}>
         {searching ? (
-          <p className={styles.message}>Ricerca...</p>
-        ) : query.trim() && results.length === 0 ? (
-          <p className={styles.message}>Nessun risultato per "{query}".</p>
+          Array.from({ length: 5 }, (_, i) => (
+            <div key={i} className={styles.skeletonRow}>
+              <Skeleton className={styles.skeletonPoster} />
+              <div className={styles.skeletonText}>
+                <Skeleton className={styles.skeletonLine} />
+                <Skeleton className={styles.skeletonLineShort} />
+              </div>
+            </div>
+          ))
+        ) : !query.trim() ? (
+          <div className={styles.empty}>
+            <Search size={28} />
+            <p>{isMovie ? "Scrivi il titolo di un film" : "Scrivi il titolo di una serie TV"}</p>
+          </div>
+        ) : results.length === 0 ? (
+          <div className={styles.empty}>
+            <Search size={28} />
+            <p>Nessun risultato per "{query}".</p>
+          </div>
         ) : (
           results.map((item) => {
             const title = getTitle(item);
@@ -98,7 +115,7 @@ function SearchOverlay({ onClose }) {
                 className={styles.resultRow}
                 onClick={() => handleSelect(item)}
               >
-                <img src={posterSrc} alt={title} className={styles.poster} />
+                <img src={posterSrc} alt={title} className={styles.poster} loading="lazy" />
                 <div className={styles.resultInfo}>
                   <p className={styles.resultTitle}>{title}</p>
                   {dateFormatted && (

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { hasPasswordProvider } from "../../services/auth";
 import {
@@ -9,6 +7,7 @@ import {
   changeDisplayName,
   getAuthErrorMessage,
 } from "../../services/account";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./AccountForm.module.css";
 
 function AccountEdit() {
@@ -90,13 +89,9 @@ function AccountEdit() {
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile/account" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Modifica account</h1>
-      </div>
+    <div>
+      <PageHeader title="Modifica account" backTo="/profile/account" />
+      <div className={styles.page}>
 
       <section className={styles.section}>
         <h2>Nome</h2>
@@ -209,6 +204,7 @@ function AccountEdit() {
           </p>
         </section>
       )}
+      </div>
     </div>
   );
 }

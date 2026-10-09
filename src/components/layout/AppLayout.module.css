@@ -6,7 +6,7 @@
 }
 
 .contentNoTopBar {
-  padding-top: env(safe-area-inset-top);
+  padding-top: 0;
   padding-bottom: 72px;
 }
 

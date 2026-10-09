@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { hasPasswordProvider } from "../../services/auth";
 import { deleteAccount, getAuthErrorMessage } from "../../services/account";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./AccountForm.module.css";
 
 function AccountDelete() {
@@ -30,13 +29,9 @@ function AccountDelete() {
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile/account" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Elimina account</h1>
-      </div>
+    <div>
+      <PageHeader title="Elimina account" backTo="/profile/account" />
+      <div className={styles.page}>
 
       <section className={styles.section}>
         <h2>Questa azione è definitiva</h2>
@@ -66,6 +61,7 @@ function AccountDelete() {
 
         {error && <p className={styles.error}>{error}</p>}
       </section>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import SkeletonGrid from "../../components/ui/SkeletonGrid";
 import LibraryCard from "../../components/library/LibraryCard";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Library.module.css";
 
 const TABS = [
@@ -54,8 +55,9 @@ function Library() {
   const EmptyIcon = currentTab.icon;
 
   return (
-    <div className={styles.libraryPage}>
-      <h1 className={styles.title}>Libreria</h1>
+    <div>
+      <PageHeader title="Libreria" />
+      <div className={styles.libraryPage}>
 
       <div className={styles.tabRow}>
         <SegmentedControl
@@ -88,6 +90,7 @@ function Library() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

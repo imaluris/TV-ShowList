@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Language.module.css";
 
 const LANGUAGES = [
@@ -9,13 +9,9 @@ const LANGUAGES = [
 
 function Language() {
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Regione e lingua</h1>
-      </div>
+    <div>
+      <PageHeader title="Regione e lingua" backTo="/profile" />
+      <div className={styles.page}>
 
       <div className={styles.optionsList}>
         {LANGUAGES.map((lang) => (
@@ -37,6 +33,7 @@ function Language() {
       <p className={styles.note}>
         Al momento l'app è disponibile solo in italiano. Altre lingue arriveranno in futuro.
       </p>
+      </div>
     </div>
   );
 }

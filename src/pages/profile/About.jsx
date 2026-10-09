@@ -1,16 +1,11 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./About.module.css";
 
 function About() {
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Informazioni sull'app</h1>
-      </div>
+    <div>
+      <PageHeader title="Informazioni sull'app" backTo="/profile" />
+      <div className={styles.page}>
 
       <div className={styles.card}>
         <p className={styles.appName}>TV ShowList</p>
@@ -23,6 +18,7 @@ function About() {
           </a>
           .
         </p>
+      </div>
       </div>
     </div>
   );

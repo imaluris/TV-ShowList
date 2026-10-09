@@ -37,6 +37,13 @@ function Register() {
 
   return (
     <div className={styles.authPage}>
+      <div className={styles.brand}>
+        <span className={styles.mark}>
+          <span className={styles.play} />
+        </span>
+        <span className={styles.brandName}>TV ShowList</span>
+      </div>
+
       <div className={styles.authCard}>
         <h1 className={styles.title}>Registrati</h1>
         <p className={styles.subtitle}>Crea un account per iniziare</p>
@@ -52,6 +59,7 @@ function Register() {
           />
           <input
             type="email"
+            autoComplete="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -60,6 +68,7 @@ function Register() {
           />
           <input
             type="password"
+            autoComplete="new-password"
             placeholder="Password (min 6 caratteri)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

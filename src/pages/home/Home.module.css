@@ -31,31 +31,14 @@
   }
 }
 
-.streamingSection {
-  margin-bottom: 2.5rem;
-}
-
-.streamingSection h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-}
-
 .streamingGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 1.5rem;
-  max-width: 500px;
+  column-gap: 0.75rem;
+  max-width: 520px;
   margin: 0 auto;
-}
-
-.genresSection {
-  margin-bottom: 2.5rem;
-}
-
-.genresSection h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
+  row-gap: 1.25rem;
 }
 
 .genresGrid {

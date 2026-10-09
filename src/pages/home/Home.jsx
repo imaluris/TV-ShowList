@@ -12,6 +12,7 @@ import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
 import Hero from "../../components/home/Hero";
 import HomeSkeleton from "../../components/home/HomeSkeleton";
+import Section from "../../components/ui/Section";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import styles from "./Home.module.css";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
@@ -132,8 +133,7 @@ function Home() {
 
           <ShowRow title="Popolari del momento" shows={popular.shows} />
 
-          <div className={styles.genresSection}>
-            <h2>Generi</h2>
+          <Section title="Generi">
             <div className={styles.genresWrapper}>
               <div className={styles.genresGrid}>
                 {genres.map((genre) => (
@@ -148,16 +148,15 @@ function Home() {
               </div>
               <div className={styles.fade} />
             </div>
-          </div>
+          </Section>
 
-          <div className={styles.streamingSection}>
-            <h2>Piattaforme streaming</h2>
+          <Section title="Piattaforme streaming">
             <div className={styles.streamingGrid}>
               {icons.list.map((provider, index) => (
                 <StreamingIcon key={index} provider={provider} />
               ))}
             </div>
-          </div>
+          </Section>
 
           {PROVIDERS.map((provider) => (
             <ShowRow

@@ -3,6 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import styles from "./Login.module.css";
 
 function VerifyEmail() {
   const { currentUser, refreshCurrentUser } = useAuth();
@@ -27,10 +28,25 @@ function VerifyEmail() {
   }
 
   return (
-    <div>
-      <h1>Verifica la tua email</h1>
-      <p>Ti abbiamo mandato un'email con un link di conferma. Appena la confermi, sarai reindirizzato automaticamente.</p>
-      <button onClick={handleLogout}>Esci</button>
+    <div className={styles.authPage}>
+      <div className={styles.brand}>
+        <span className={styles.mark}>
+          <span className={styles.play} />
+        </span>
+        <span className={styles.brandName}>TV ShowList</span>
+      </div>
+
+      <div className={styles.authCard}>
+        <h1 className={styles.title}>Controlla la tua email</h1>
+        <p className={styles.subtitle}>Un ultimo passaggio</p>
+        <p className={styles.message}>
+          Ti abbiamo mandato un link di conferma. Appena lo apri, entri
+          automaticamente nell'app.
+        </p>
+        <button type="button" className={styles.secondaryButton} onClick={handleLogout}>
+          Esci
+        </button>
+      </div>
     </div>
   );
 }

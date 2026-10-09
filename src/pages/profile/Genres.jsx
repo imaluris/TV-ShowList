@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { getGenres } from "../../services/tmdb";
 import { getPreferredGenres, setPreferredGenres } from "../../services/profile";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { useAuth } from "../../contexts/AuthContext";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Genres.module.css";
 
 // Dopo l'ultimo click aspettiamo questo tempo prima di salvare: così una
@@ -97,13 +96,9 @@ function Genres() {
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Generi preferiti</h1>
-      </div>
+    <div>
+      <PageHeader title="Generi preferiti" backTo="/profile" />
+      <div className={styles.page}>
 
       <p className={styles.note}>
         Seleziona i generi che preferisci ({mediaType === "movie" ? "film" : "serie tv"}):
@@ -125,6 +120,7 @@ function Genres() {
             {genre.name}
           </button>
         ))}
+      </div>
       </div>
     </div>
   );

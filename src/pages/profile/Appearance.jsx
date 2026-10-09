@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Appearance.module.css";
 
 const OPTIONS = [
@@ -13,13 +13,9 @@ function Appearance() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <Link to="/profile" className={styles.backButton}>
-          <ArrowLeft size={20} />
-        </Link>
-        <h1>Aspetto</h1>
-      </div>
+    <div>
+      <PageHeader title="Aspetto" backTo="/profile" />
+      <div className={styles.page}>
 
       <div className={styles.optionsList}>
         {OPTIONS.map((option) => (
@@ -38,6 +34,7 @@ function Appearance() {
       <p className={styles.note}>
         Con "Sistema" l'app segue il tema chiaro o scuro del tuo dispositivo.
       </p>
+      </div>
     </div>
   );
 }
