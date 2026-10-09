@@ -51,7 +51,7 @@
 }
 
 .error {
-  color: #e05252;
+  color: var(--danger);
   font-size: 0.85rem;
   margin: -0.5rem 0 1rem;
 }

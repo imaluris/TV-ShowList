@@ -39,7 +39,7 @@
 }
 
 .removeButton:hover {
-  background: #e5484d;
+  background: var(--danger);
 }
 
 .info {

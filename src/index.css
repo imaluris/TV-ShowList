@@ -7,6 +7,8 @@
   --accent: #e8a33d;
   --accent-dim: #b87f2a;
   --border: #262a32;
+  --danger: #e5484d;
+  --danger-soft: rgba(229, 72, 77, 0.12);
 
   /* Testo sopra i pulsanti scuri semitrasparenti che stanno sulle locandine:
      resta chiaro in entrambi i temi. */
@@ -26,6 +28,8 @@
   --accent: #a8620a;
   --accent-dim: #8a4f08;
   --border: #ddd8cc;
+  --danger: #c4262c;
+  --danger-soft: rgba(196, 38, 44, 0.1);
 
   color-scheme: light;
 }

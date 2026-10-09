@@ -69,9 +69,9 @@
 }
 
 .error {
-  background: rgba(229, 72, 77, 0.12);
-  border: 1px solid #e5484d;
-  color: #e5484d;
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
   padding: 0.6rem 0.9rem;
   border-radius: 8px;
   font-size: 0.85rem;

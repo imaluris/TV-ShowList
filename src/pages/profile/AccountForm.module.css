@@ -90,7 +90,7 @@
 }
 
 .dangerSubmitButton {
-  background: #e5484d;
+  background: var(--danger);
   color: #fff;
 }
 
@@ -101,7 +101,7 @@
 }
 
 .error {
-  color: #e5484d;
+  color: var(--danger);
   font-size: 0.85rem;
   margin: 0.75rem 0 0;
 }

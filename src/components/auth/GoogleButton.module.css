@@ -40,7 +40,7 @@
 }
 
 .error {
-  color: #e5484d;
+  color: var(--danger);
   font-size: 0.85rem;
   margin: 0.75rem 0 0;
   text-align: center;

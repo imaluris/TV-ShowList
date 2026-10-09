@@ -64,20 +64,20 @@
 }
 
 .dangerButton {
-  color: #e5484d;
+  color: var(--danger);
 }
 
 .dangerButton:hover {
-  border-color: #e5484d;
-  background: rgba(229, 72, 77, 0.1);
+  border-color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .logoutButton {
-  color: #e5484d;
-  border-color: #e5484d;
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .logoutButton:hover {
-  background: #e5484d;
+  background: var(--danger);
   color: var(--bg);
 }
