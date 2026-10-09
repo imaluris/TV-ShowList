@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Bookmark, Check, Clock, Plus } from "lucide-react";
+import { Bookmark, Check, ChevronDown, Clock, Plus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   LIBRARY_STATUS,
@@ -13,9 +13,16 @@ import {
   isStartedSeries,
   getVisibleOptions,
 } from "./libraryMenu";
+import Skeleton from "../ui/Skeleton";
 import styles from "./LibraryStatusButtons.module.css";
 
 // Icona del pulsante in base allo stato attuale (Plus se non c'è stato).
+const STATUS_LABELS = {
+  [LIBRARY_STATUS.TO_WATCH]: "Da vedere",
+  [LIBRARY_STATUS.WATCHING]: "In corso",
+  [LIBRARY_STATUS.WATCHED]: "Vista",
+};
+
 const STATUS_ICONS = {
   [LIBRARY_STATUS.TO_WATCH]: Bookmark,
   [LIBRARY_STATUS.WATCHING]: Clock,
@@ -101,7 +108,7 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
     });
   }
 
-  if (loading) return null;
+  if (loading) return <Skeleton className={styles.placeholder} />;
 
   const visibleOptions = getVisibleOptions(status, mediaType);
   const TriggerIcon = STATUS_ICONS[status] || Plus;
@@ -114,7 +121,9 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
         onClick={() => setIsOpen((open) => !open)}
         aria-label="Aggiungi alla libreria"
       >
-        <TriggerIcon size={20} />
+        <TriggerIcon size={18} />
+        <span>{STATUS_LABELS[status] || "Aggiungi"}</span>
+        <ChevronDown size={16} className={isOpen ? styles.chevronOpen : styles.chevron} />
       </button>
 
       {isOpen && (

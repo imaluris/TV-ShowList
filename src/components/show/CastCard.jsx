@@ -11,7 +11,9 @@ function CastCard({ member }) {
 
   return (
     <Link to={`/person/${member.id}`} className={styles.card}>
-      <img src={photoSrc} alt={member.name} />
+      <div className={styles.photo}>
+        <img src={photoSrc} alt={member.name} loading="lazy" />
+      </div>
       <p className={styles.name}>{member.name}</p>
       <p className={styles.character}>{character}</p>
     </Link>

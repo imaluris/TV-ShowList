@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
 import { IMG_URL } from "../../services/tmdb";
 import styles from "./CreditListItem.module.css";
 
@@ -19,8 +21,8 @@ function CreditListItem({ item }) {
   const mediaLabel = item.media_type === "movie" ? "Film" : "Serie TV";
 
   return (
-    <div className={styles.card}>
-      <img src={posterSrc} alt={title} className={styles.poster} />
+    <Link to={`/show/${item.media_type === "movie" ? "movie" : "tv"}/${item.id}`} className={styles.card}>
+      <img src={posterSrc} alt={title} className={styles.poster} loading="lazy" />
 
       <div className={styles.info}>
         <p className={styles.title}>{title}</p>
@@ -29,13 +31,15 @@ function CreditListItem({ item }) {
         )}
         <p className={styles.meta}>
           {item.vote_average > 0 && (
-            <span>⭐ {item.vote_average.toFixed(1)}</span>
+            <span className={styles.rating}>
+              <Star size={12} fill="currentColor" /> {item.vote_average.toFixed(1)}
+            </span>
           )}
           <span className={styles.badge}>{mediaLabel}</span>
           <span>{dateFormatted}</span>
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 

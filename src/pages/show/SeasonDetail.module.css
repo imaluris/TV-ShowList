@@ -1,190 +1,33 @@
-.seasonPage {
+.page {
+  padding-bottom: 1rem;
+}
+
+.container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 0;
+  padding: 0 1rem;
 }
 
-@media (max-width: 600px) {
-  .seasonPage {
-    padding: 1.5rem 0.75rem 0;
-  }
-}
-
-.header {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-.posterWrapper {
-  position: relative;
-  width: 220px;
-  aspect-ratio: 2 / 3;
-  flex-shrink: 0;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-
-.poster {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.backButton {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  color: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  z-index: 2;
-}
-
-.backButton:hover {
-  background: #fff;
-}
-
-.info h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.meta {
-  color: var(--accent);
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.info > p:last-child {
+.overview {
+  margin: 0.25rem 0 0;
+  max-width: 70ch;
   color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 65ch;
+  line-height: 1.65;
 }
 
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-  }
-
-  .posterWrapper {
-    width: calc(100% + 1.5rem);
-    max-width: none;
-    height: 480px;
-    aspect-ratio: auto;
-    margin: -1.5rem -0.75rem 0;
-    border-radius: 0;
-    border: none;
-  }
-}
-
-/* Sezione cast — stessa struttura di ShowDetail */
-.castSection {
-  margin-bottom: 2.5rem;
-}
-
-.castSection h2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.castRow {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scrollbar-width: none;
-  scroll-snap-type: x mandatory;
-  overflow-anchor: none;
-}
-
-.castRow::-webkit-scrollbar {
-  display: none;
-}
-
-.castWrapper {
-  position: relative;
-}
-
-.castWrapper .fade {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0.5rem;
-  width: 150px;
-  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--bg) 75%, transparent));
-  pointer-events: none;
-  z-index: 1;
-}
-
-.castWrapper .arrowLeft,
-.castWrapper .arrowRight {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(12, 13, 16, 0.85);
-  border: none;
-  color: var(--overlay-text);
-  font-size: 1.4rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.castWrapper:hover .arrowLeft,
-.castWrapper:hover .arrowRight {
-  opacity: 1;
-}
-
-@media (hover: hover) {
-  .castWrapper .arrowLeft:hover,
-  .castWrapper .arrowRight:hover {
-    background: var(--accent);
-    color: var(--bg);
-  }
-}
-
-.castWrapper .arrowLeft {
-  left: 0;
-}
-
-.castWrapper .arrowRight {
-  right: 0;
-}
-
-@media (pointer: coarse) {
-  .castWrapper .arrowLeft,
-  .castWrapper .arrowRight {
-    display: none;
-  }
-}
-
-/* Sezione episodi */
-.episodesSection h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
+.empty {
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .episodesList {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+@media (min-width: 800px) {
+  .container {
+    padding: 0 1.5rem;
+  }
 }

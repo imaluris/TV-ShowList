@@ -1,24 +1,25 @@
-import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   getShowDetails,
   getSeasonDetails,
   getAggregateCreditsShow,
-  IMG_URL_LARGE,
 } from "../../services/tmdb";
 import { getTitle } from "../../utils/media";
 import CastCard from "../../components/show/CastCard";
 import EpisodeCard from "../../components/show/EpisodeCard";
 import styles from "./SeasonDetail.module.css";
-import { ArrowLeft } from "lucide-react";
 import DetailSkeleton from "../../components/ui/DetailSkeleton";
+import DetailHero from "../../components/ui/DetailHero";
+import Section from "../../components/ui/Section";
+import Chips from "../../components/ui/Chips";
+import Rail from "../../components/ui/Rail";
 
 function SeasonDetail() {
   const { showId, seasonNumber } = useParams();
   const [show, setShow] = useState(null);
   const [season, setSeason] = useState(null);
   const [showCredits, setShowCredits] = useState(null);
-  const castRowRef = useRef(null);
 
   useEffect(() => {
     getShowDetails("tv", showId).then((data) => {
@@ -42,10 +43,6 @@ function SeasonDetail() {
     return <DetailSkeleton />;
   }
 
-  const posterSrc = season.poster_path
-    ? `${IMG_URL_LARGE}${season.poster_path}`
-    : "https://placehold.co/300x450?text=No+Image";
-
   const showTitle = getTitle(show);
 
   // Stagioni "vere" (senza la 0, gli speciali): servono a EpisodeCard per
@@ -68,74 +65,50 @@ function SeasonDetail() {
 
   const cast = [...showCast, ...extraGuests];
 
-  function scrollCastLeft() {
-    castRowRef.current.scrollBy({ left: -400, behavior: "smooth" });
-  }
-
-  function scrollCastRight() {
-    castRowRef.current.scrollBy({ left: 400, behavior: "smooth" });
-  }
+  const airYear = season.air_date ? season.air_date.slice(0, 4) : "";
 
   return (
-    <div className={styles.seasonPage}>
-      <div className={styles.header}>
-        <div className={styles.posterWrapper}>
-          <img src={posterSrc} alt={season.name} className={styles.poster} />
-          <Link to={`/show/tv/${showId}`} className={styles.backButton}>
-            <ArrowLeft size={20} />
-          </Link>
-        </div>
-        <div className={styles.info}>
-          <h1>{season.name}</h1>
-          <p className={styles.meta}>
-            {season.episodes.length} episodi
-            {season.air_date ? ` • ${season.air_date}` : ""}
-          </p>
-          <p>{season.overview || "Nessuna descrizione disponibile."}</p>
-        </div>
-      </div>
+    <div className={styles.page}>
+      <DetailHero
+        backdrop={show.backdrop_path}
+        poster={season.poster_path}
+        subtitle={showTitle}
+        title={season.name}
+        backTo={`/show/tv/${showId}`}
+        meta={<Chips items={[`${season.episodes.length} episodi`, airYear]} />}
+      />
 
-      <div className={styles.castSection}>
-        <h2>Cast</h2>
-        {cast.length > 0 ? (
-          <div className={styles.castWrapper}>
-            <button className={styles.arrowLeft} onClick={scrollCastLeft}>
-              ‹
-            </button>
+      <div className={styles.container}>
+        {season.overview && <p className={styles.overview}>{season.overview}</p>}
 
-            <div className={styles.castRow} ref={castRowRef}>
+        <Section title="Episodi">
+          <div className={styles.episodesList}>
+            {season.episodes.map((episode) => (
+              <EpisodeCard
+                key={episode.id}
+                showId={showId}
+                mediaType="tv"
+                title={showTitle}
+                posterPath={show.poster_path}
+                seasons={seasons}
+                seasonNumber={seasonNumber}
+                episode={episode}
+              />
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Cast">
+          {cast.length > 0 ? (
+            <Rail>
               {cast.slice(0, 50).map((member) => (
                 <CastCard key={member.id} member={member} />
               ))}
-            </div>
-
-            <div className={styles.fade} />
-
-            <button className={styles.arrowRight} onClick={scrollCastRight}>
-              ›
-            </button>
-          </div>
-        ) : (
-          <p>Nessun attore disponibile.</p>
-        )}
-      </div>
-
-      <div className={styles.episodesSection}>
-        <h2>Episodi</h2>
-        <div className={styles.episodesList}>
-          {season.episodes.map((episode) => (
-            <EpisodeCard
-              key={episode.id}
-              showId={showId}
-              mediaType="tv"
-              title={showTitle}
-              posterPath={show.poster_path}
-              seasons={seasons}
-              seasonNumber={seasonNumber}
-              episode={episode}
-            />
-          ))}
-        </div>
+            </Rail>
+          ) : (
+            <p className={styles.empty}>Nessun attore disponibile.</p>
+          )}
+        </Section>
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ import { useMediaType } from "../../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
 import ShowRow from "../../components/show/ShowRow";
 import SkeletonRow from "../../components/ui/SkeletonRow";
+import Section from "../../components/ui/Section";
+import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Provider.module.css";
 
 function Provider() {
@@ -63,26 +65,22 @@ function Provider() {
   }, [mediaType]);
 
   return (
-    <div className={styles.providerPage}>
-      <div className={styles.topBar}>
-        <Link to="/" className={styles.backButton}>
-          ‹
-        </Link>
-
-        <div className={styles.providerHeader}>
-          {providerInfo?.logo_path ? (
+    <div>
+      <PageHeader
+        title={providerInfo ? providerInfo.provider_name : "Piattaforma"}
+        backTo="/"
+        logo={
+          providerInfo?.logo_path ? (
             <img
               src={`${IMG_URL}${providerInfo.logo_path}`}
-              alt={providerInfo.provider_name}
+              alt=""
               className={styles.logo}
             />
-          ) : null}
-          <h1 className={styles.title}>
-            {providerInfo ? providerInfo.provider_name : "Piattaforma"}
-          </h1>
-        </div>
-      </div>
+          ) : null
+        }
+      />
 
+      <div className={styles.container}>
       {popular === null ? (
         <SkeletonRow />
       ) : (
@@ -98,8 +96,7 @@ function Provider() {
         <ShowRow title="Esclusive" shows={exclusives} />
       )}
 
-      <div className={styles.genresSection}>
-        <h2>Generi</h2>
+      <Section title="Generi">
         <div className={styles.genresGrid}>
           {genres.map((genre) => (
             <Link
@@ -111,6 +108,7 @@ function Provider() {
             </Link>
           ))}
         </div>
+      </Section>
       </div>
     </div>
   );

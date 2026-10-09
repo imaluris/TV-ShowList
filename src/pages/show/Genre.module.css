@@ -1,70 +1,58 @@
-.genrePage {
+.container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 0;
-}
-
-@media (max-width: 600px) {
-  .genrePage {
-    padding: 1.5rem 0.75rem 0;
-  }
-}
-
-.topBar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.backButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 1.4rem;
-  flex-shrink: 0;
-}
-
-.backButton:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.title {
-  font-size: clamp(1.5rem, 6vw, 2rem);
-  text-align: center;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 1.25rem 1rem 0;
 }
 
 .filterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 42px;
+  padding: 0 1rem;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 500;
   white-space: nowrap;
+  transition: transform 0.2s var(--ease), border-color 0.15s ease, color 0.15s ease;
 }
 
-.filterButton:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.filterButton:active {
+  transform: scale(0.95);
+}
+
+@media (hover: hover) {
+  .filterButton:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+@media (max-width: 400px) {
+  .filterButton span {
+    display: none;
+  }
+
+  .filterButton {
+    width: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+.message {
+  color: var(--text-muted);
+  text-align: center;
+  margin: 3rem 0;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .gridItem > a {
@@ -77,19 +65,31 @@
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 0.7rem 1.8rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: transform 0.2s var(--ease), border-color 0.15s ease;
 }
 
-.loadMoreButton:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.loadMoreButton:active {
+  transform: scale(0.96);
 }
 
+@media (hover: hover) {
+  .loadMoreButton:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
 
-@media (max-width: 400px) {
+@media (min-width: 800px) {
+  .container {
+    padding: 1.5rem 1.5rem 0;
+  }
+
   .grid {
-    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
   }
 }

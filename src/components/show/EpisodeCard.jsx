@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, Star, Tv } from "lucide-react";
 import { IMG_URL } from "../../services/tmdb";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -76,9 +76,11 @@ function EpisodeCard({
       className={styles.card}
     >
       {thumbSrc ? (
-        <img src={thumbSrc} alt={episode.name} className={styles.thumb} />
+        <img src={thumbSrc} alt={episode.name} className={styles.thumb} loading="lazy" />
       ) : (
-        <div className={styles.thumbPlaceholder}>📺</div>
+        <div className={styles.thumbPlaceholder}>
+          <Tv size={22} />
+        </div>
       )}
 
       <div className={styles.info}>
@@ -87,9 +89,11 @@ function EpisodeCard({
         </p>
 
         <p className={styles.meta}>
-          {dateFormatted && <span>📅 {dateFormatted}</span>}
+          {dateFormatted && <span>{dateFormatted}</span>}
           {episode.vote_average > 0 && (
-            <span>⭐ {episode.vote_average.toFixed(1)}</span>
+            <span className={styles.rating}>
+              <Star size={12} fill="currentColor" /> {episode.vote_average.toFixed(1)}
+            </span>
           )}
         </p>
 

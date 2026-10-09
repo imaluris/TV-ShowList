@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { IMG_URL } from "../../services/tmdb";
 import styles from "./KnownForCard.module.css";
 
@@ -11,9 +12,9 @@ function KnownForCard({ item }) {
   const year = date ? date.slice(0, 4) : "";
 
   return (
-    <div className={styles.card}>
+    <Link to={`/show/${item.media_type === "movie" ? "movie" : "tv"}/${item.id}`} className={styles.card}>
       <div className={styles.posterWrapper}>
-        <img src={posterSrc} alt={title} />
+        <img src={posterSrc} alt={title} loading="lazy" />
         {item.vote_average > 0 && (
           <span className={styles.rating}>
             ★ {item.vote_average.toFixed(1)}
@@ -28,7 +29,7 @@ function KnownForCard({ item }) {
           {item.character ? ` ${item.character}` : ""}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 

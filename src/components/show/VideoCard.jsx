@@ -1,3 +1,4 @@
+import { Play } from "lucide-react";
 import styles from "./VideoCard.module.css";
 
 function VideoCard({ video }) {
@@ -6,8 +7,10 @@ function VideoCard({ video }) {
 
   return (
     <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className={styles.card}>
-      <img src={thumbnail} alt={video.name} />
-      <span className={styles.playIcon}>▶</span>
+      <img src={thumbnail} alt={video.name} loading="lazy" />
+      <span className={styles.playIcon}>
+        <Play size={22} fill="currentColor" />
+      </span>
     </a>
   );
 }

@@ -65,7 +65,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
 
   return (
     <Link to={`/show/${showId}/season/${season.season_number}`} className={styles.card}>
-      <img src={posterSrc} alt={season.name} className={styles.poster} />
+      <img src={posterSrc} alt={season.name} className={styles.poster} loading="lazy" />
 
       <div className={styles.info}>
         <p className={styles.title}>Stagione {season.season_number}</p>

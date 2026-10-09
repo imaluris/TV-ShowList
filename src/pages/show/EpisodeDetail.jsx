@@ -1,21 +1,22 @@
-import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   getEpisodeDetails,
   getAggregateCreditsShow,
-  IMG_URL_LARGE,
 } from "../../services/tmdb";
 import CastCard from "../../components/show/CastCard";
-import { ArrowLeft } from "lucide-react";
+import { Star } from "lucide-react";
 import styles from "./EpisodeDetail.module.css";
 import DetailSkeleton from "../../components/ui/DetailSkeleton";
+import DetailHero from "../../components/ui/DetailHero";
+import Section from "../../components/ui/Section";
+import Chips from "../../components/ui/Chips";
+import Rail from "../../components/ui/Rail";
 
 function EpisodeDetail() {
   const { showId, seasonNumber, episodeNumber } = useParams();
   const [episode, setEpisode] = useState(null);
   const [showCredits, setShowCredits] = useState(null);
-  const mainCastRowRef = useRef(null);
-  const guestCastRowRef = useRef(null);
 
   useEffect(() => {
     getEpisodeDetails(showId, seasonNumber, episodeNumber).then((data) => {
@@ -33,17 +34,13 @@ function EpisodeDetail() {
     return <DetailSkeleton />;
   }
 
-  const imageSrc = episode.still_path
-    ? `${IMG_URL_LARGE}${episode.still_path}`
-    : "https://placehold.co/800x450?text=No+Image";
-
   const dateFormatted = episode.air_date
     ? new Date(episode.air_date).toLocaleDateString("it-IT", {
         day: "numeric",
         month: "long",
         year: "numeric",
       })
-    : "Data non disponibile";
+    : "";
 
   const guestStars = episode.credits?.guest_stars || [];
   // Il cast aggregato dello show ha già member.roles[0].character pronto,
@@ -68,95 +65,56 @@ function EpisodeDetail() {
     roles: [{ character: member.character }],
   }));
 
-  function scrollRow(ref, direction) {
-    ref.current.scrollBy({ left: direction * 400, behavior: "smooth" });
-  }
-
   return (
-    <div className={styles.episodePage}>
-      <div className={styles.imageWrapper}>
-        <img src={imageSrc} alt={episode.name} className={styles.image} />
-        <Link
-          to={`/show/${showId}/season/${seasonNumber}`}
-          className={styles.backButton}
-        >
-          <ArrowLeft size={20} />
-        </Link>
-      </div>
+    <div className={styles.page}>
+      <DetailHero
+        backdrop={episode.still_path}
+        subtitle={`Stagione ${seasonNumber} · Episodio ${episode.episode_number}`}
+        title={episode.name}
+        backTo={`/show/${showId}/season/${seasonNumber}`}
+        meta={
+          <Chips
+            items={[
+              episode.vote_average > 0 && {
+                label: episode.vote_average.toFixed(1),
+                accent: true,
+                icon: <Star size={13} fill="currentColor" />,
+              },
+              dateFormatted,
+              episode.runtime ? `${episode.runtime} min` : "",
+            ]}
+          />
+        }
+      />
 
-      <div className={styles.info}>
-        <h1>
-          {episode.episode_number}. {episode.name}
-        </h1>
-        <p className={styles.meta}>
-          {dateFormatted}
-          {episode.vote_average > 0
-            ? ` • ⭐ ${episode.vote_average.toFixed(1)}`
-            : ""}
+      <div className={styles.container}>
+        <p className={styles.overview}>
+          {episode.overview || "Nessuna descrizione disponibile."}
         </p>
-        <p>{episode.overview || "Nessuna descrizione disponibile."}</p>
-      </div>
 
-      <div className={styles.castSection}>
-        <h2>Cast</h2>
-        {fullCast.length > 0 ? (
-          <div className={styles.castWrapper}>
-            <button
-              className={styles.arrowLeft}
-              onClick={() => scrollRow(mainCastRowRef, -1)}
-            >
-              ‹
-            </button>
-
-            <div className={styles.castRow} ref={mainCastRowRef}>
+        <Section title="Cast">
+          {fullCast.length > 0 ? (
+            <Rail>
               {fullCast.slice(0, 50).map((member) => (
                 <CastCard key={member.id} member={member} />
               ))}
-            </div>
+            </Rail>
+          ) : (
+            <p className={styles.empty}>Nessun attore disponibile.</p>
+          )}
+        </Section>
 
-            <div className={styles.fade} />
-
-            <button
-              className={styles.arrowRight}
-              onClick={() => scrollRow(mainCastRowRef, 1)}
-            >
-              ›
-            </button>
-          </div>
-        ) : (
-          <p>Nessun attore disponibile.</p>
-        )}
-      </div>
-
-      <div className={styles.castSection}>
-        <h2>Guest Appearance</h2>
-        {guestCast.length > 0 ? (
-          <div className={styles.castWrapper}>
-            <button
-              className={styles.arrowLeft}
-              onClick={() => scrollRow(guestCastRowRef, -1)}
-            >
-              ‹
-            </button>
-
-            <div className={styles.castRow} ref={guestCastRowRef}>
+        <Section title="Guest star">
+          {guestCast.length > 0 ? (
+            <Rail>
               {guestCast.map((member) => (
                 <CastCard key={member.id} member={member} />
               ))}
-            </div>
-
-            <div className={styles.fade} />
-
-            <button
-              className={styles.arrowRight}
-              onClick={() => scrollRow(guestCastRowRef, 1)}
-            >
-              ›
-            </button>
-          </div>
-        ) : (
-          <p>Nessun ospite disponibile per questo episodio.</p>
-        )}
+            </Rail>
+          ) : (
+            <p className={styles.empty}>Nessun ospite per questo episodio.</p>
+          )}
+        </Section>
       </div>
     </div>
   );

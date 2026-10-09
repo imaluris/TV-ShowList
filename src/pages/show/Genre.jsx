@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
+import { SlidersHorizontal } from "lucide-react";
+import PageHeader from "../../components/ui/PageHeader";
 import { discoverShowsByGenre, getGenres } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import ShowCard from "../../components/show/ShowCard";
@@ -68,32 +70,32 @@ function Genre() {
   }
 
   return (
-    <div className={styles.genrePage}>
-      <div className={styles.topBar}>
-        <Link to="/" className={styles.backButton}>
-          ‹
-        </Link>
+    <div>
+      <PageHeader
+        title={genreName || "Genere"}
+        backTo="/"
+        action={
+          <button
+            type="button"
+            className={styles.filterButton}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <SlidersHorizontal size={16} />
+            <span>Filtri</span>
+          </button>
+        }
+      />
 
-        <h1 className={styles.title}>{genreName || "Genere"}</h1>
-
-        <button
-          type="button"
-          className={styles.filterButton}
-          onClick={() => setIsModalOpen(true)}
-        >
-          Filtri
-        </button>
-      </div>
-
+      <div className={styles.container}>
       {!genreExists ? (
-        <p>
+        <p className={styles.message}>
           Questo genere non esiste per {isMovie ? "i film" : "le serie TV"}.{" "}
           <Link to="/">Torna alla Home</Link>.
         </p>
       ) : loading ? (
         <SkeletonGrid />
       ) : shows.length === 0 ? (
-        <p>
+        <p className={styles.message}>
           {isMovie
             ? "Nessun film trovato con questi filtri."
             : "Nessuna serie TV trovata con questi filtri."}
@@ -112,6 +114,7 @@ function Genre() {
           Carica altri
         </button>
       )}
+      </div>
       <GenreFilterModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
