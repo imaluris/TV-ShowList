@@ -233,6 +233,15 @@ export async function searchCompany(query) {
   return data.results; // [{ id, name, logo_path }, ...]
 }
 
+// Quanti voti servono perché un voto medio sia attendibile. Per i titoli
+// appena usciti (ultimi due anni) i voti sono pochi: soglia più bassa.
+function getMinVoteCount(filters) {
+  const recentFrom = new Date().getFullYear() - 1;
+  const from = Number(filters.year || filters.yearFrom);
+
+  return from >= recentFrom ? 5 : 20;
+}
+
 export async function discoverShowsByGenre(mediaType, genreId, filters = {}, page = 1) {
   const params = new URLSearchParams({
     api_key: API_KEY,
@@ -249,9 +258,7 @@ export async function discoverShowsByGenre(mediaType, genreId, filters = {}, pag
 
   if (filters.minVote) {
     params.set("vote_average.gte", filters.minVote);
-    // TODO: soglia vote_count.gte fissa a 20, da rivedere — magari renderla
-    // dinamica in base all'anno filtrato (soglia più bassa per le novità)
-    params.set("vote_count.gte", "20");
+    params.set("vote_count.gte", String(getMinVoteCount(filters)));
   }
 
   if (filters.year) {
@@ -419,24 +426,6 @@ export async function getEpisodeDetails(showId, seasonNumber, episodeNumber) {
   }
 
   return dataIt;
-}
-
-export async function getSeasonCredits(showId, seasonNumber) {
-  const params = new URLSearchParams({
-    api_key: API_KEY,
-    language: "it-IT",
-  });
-
-  const response = await fetch(
-    `${BASE_URL}/tv/${showId}/season/${seasonNumber}/credits?${params}`,
-  );
-
-  if (!response.ok) {
-    throw new Error(`Errore nella fetch: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data; // { cast: [...], crew: [...] }
 }
 
 export async function getPersonImages(personId) {
