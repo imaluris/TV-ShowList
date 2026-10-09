@@ -1,9 +1,25 @@
+/* Gli env(safe-area-inset-*) tengono il contenuto fuori dal notch
+   degli iPhone quando l'app è installata a schermo intero. */
 .content {
-  padding-top: 56px;
-  padding-bottom: 50px;
+  padding-top: calc(56px + env(safe-area-inset-top));
+  padding-bottom: 72px;
 }
 
 .contentNoTopBar {
-  padding-top: 0;
+  padding-top: env(safe-area-inset-top);
   padding-bottom: 72px;
+}
+
+/* Breve dissolvenza a ogni cambio di pagina. */
+.page {
+  animation: pageIn 0.28s ease both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

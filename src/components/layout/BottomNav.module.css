@@ -7,9 +7,12 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: var(--surface);
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
   border-top: 1px solid var(--border);
-  padding: 0.6rem 0 calc(0.6rem + env(safe-area-inset-bottom));
+  padding: 0.5rem env(safe-area-inset-right) calc(0.5rem + env(safe-area-inset-bottom))
+    env(safe-area-inset-left);
   transform: translateY(0);
   transition: transform 0.25s ease;
 }
@@ -32,6 +35,30 @@
 
 .navItemActive {
   color: var(--accent);
+  font-weight: 600;
+}
+
+/* Pillola dietro l'icona: compare sulla voce attiva. */
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition:
+    background 0.3s var(--ease),
+    transform 0.2s var(--ease);
+}
+
+.navItemActive .iconWrap {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.navItem:active .iconWrap,
+.navItemActive:active .iconWrap {
+  transform: scale(0.92);
 }
 
 /* Schermi larghi: le tre voci restano vicine al centro invece di

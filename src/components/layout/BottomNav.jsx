@@ -27,7 +27,9 @@ function BottomNav() {
             isActive ? styles.navItemActive : styles.navItem
           }
         >
-          <Icon size={22} />
+          <span className={styles.iconWrap}>
+            <Icon size={22} />
+          </span>
           <span>{label}</span>
         </NavLink>
       ))}

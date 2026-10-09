@@ -11,7 +11,9 @@ function AppLayout() {
     <>
       {isHome && <TopBar />}
       <div className={isHome ? styles.content : styles.contentNoTopBar}>
-        <Outlet />
+        <div key={location.pathname} className={styles.page}>
+          <Outlet />
+        </div>
       </div>
       <BottomNav />
     </>
