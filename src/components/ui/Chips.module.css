@@ -1,0 +1,22 @@
+.chip,
+.chipAccent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+  color: var(--text);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.chipAccent {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+}

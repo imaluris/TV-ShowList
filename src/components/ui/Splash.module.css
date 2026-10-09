@@ -1,0 +1,38 @@
+.splash {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+.play {
+  margin-left: 4px;
+  border-style: solid;
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent #1b1c20;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 18px transparent;
+  }
+}

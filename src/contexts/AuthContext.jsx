@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, reload } from "firebase/auth";
 import { auth } from "../firebase/config";
+import Splash from "../components/ui/Splash";
 
 // Il "contenitore" del contesto: da qui i componenti leggeranno
 // chi è l'utente loggato (o null se nessuno è loggato).
@@ -52,7 +53,7 @@ useEffect(() => {
   // nulla (o uno spinner) — evita "flash" di contenuto sbagliato
   // (es. mostrare la pagina di login per un istante a chi è già loggato).
   if (loading) {
-    return <p>Caricamento...</p>;
+    return <Splash />;
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
