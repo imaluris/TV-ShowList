@@ -13,6 +13,13 @@
   overflow: hidden;
 }
 
+/* Pagine senza immagine di sfondo (es. persona): bagliore color accento. */
+.mediaGlow {
+  background:
+    radial-gradient(ellipse 70% 90% at 15% 0%, var(--accent-glow), transparent 70%),
+    var(--surface);
+}
+
 .backdrop,
 .backdropBlur {
   width: 100%;

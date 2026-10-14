@@ -10,13 +10,17 @@ const POSTER_URL = "https://image.tmdb.org/t/p/w500";
 // titolo, riga di dati e (children) i pulsanti d'azione.
 //   backdrop/poster: percorsi TMDB (opzionali)
 //   onBack: al posto di backTo, per tornare alla pagina precedente
-//   round: la foto è un volto (pagina persona), quindi tonda
+//   round: la foto è un volto (pagina persona), quindi tonda e senza
+//          immagine di sfondo (si usa un bagliore color accento)
 function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, round, children }) {
-  const backgroundPath = backdrop || poster;
+  const backgroundPath = round ? null : backdrop || poster;
 
   return (
     <header className={styles.hero}>
-      <div className={styles.media} aria-hidden="true">
+      <div
+        className={`${styles.media} ${!backgroundPath ? styles.mediaGlow : ""}`}
+        aria-hidden="true"
+      >
         {backgroundPath && (
           <img
             className={backdrop ? styles.backdrop : styles.backdropBlur}
