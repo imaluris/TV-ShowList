@@ -542,3 +542,20 @@ export async function searchShows(mediaType, query) {
   const data = await response.json();
   return data.results;
 }
+// Dove guardare un film/serie in streaming (dati JustWatch via TMDB).
+// TMDB li fornisce per intera serie, non per singola stagione.
+// Ritorna { link, flatrate, rent, buy } per il paese richiesto, o null.
+export async function getTitleWatchProviders(mediaType, id, region = "IT") {
+  const params = new URLSearchParams({ api_key: API_KEY });
+
+  const response = await fetch(
+    `${BASE_URL}/${mediaType}/${id}/watch/providers?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.results?.[region] || null;
+}

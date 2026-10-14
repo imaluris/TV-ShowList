@@ -5,6 +5,7 @@ import {
   getVideoShow,
   getShowsByGenres,
   getAggregateCreditsShow,
+  getTitleWatchProviders,
 } from "../../services/tmdb";
 import { useAuth } from "../../contexts/AuthContext";
 import { refreshLibrarySeasons } from "../../services/firestore";
@@ -13,6 +14,7 @@ import styles from "./ShowDetail.module.css";
 import ShowRow from "../../components/show/ShowRow";
 import SeasonCard from "../../components/show/SeasonCard";
 import CastCard from "../../components/show/CastCard";
+import WatchProviders from "../../components/show/WatchProviders";
 import VideoCard from "../../components/show/VideoCard";
 import LibraryStatusButtons from "../../components/library/LibraryStatusButtons";
 import { Star } from "lucide-react";
@@ -40,6 +42,7 @@ function ShowDetail() {
   const [show, setShow] = useState(null);
   const [credits, setCredits] = useState(null);
   const [videos, setVideos] = useState(null);
+  const [providers, setProviders] = useState(null);
   const [suggeriti, setSuggeriti] = useState([]);
   const [showAllSeasons, setShowAllSeasons] = useState(false);
 
@@ -53,6 +56,12 @@ function ShowDetail() {
     getAggregateCreditsShow(mediaType, id).then((data) => {
       setCredits(data);
     });
+  }, [mediaType, id]);
+
+  useEffect(() => {
+    getTitleWatchProviders(mediaType, id)
+      .then(setProviders)
+      .catch(() => setProviders(null));
   }, [mediaType, id]);
 
   useEffect(() => {
@@ -164,6 +173,8 @@ function ShowDetail() {
         <Section title="Information">
           <FactGrid facts={facts} />
         </Section>
+
+        <WatchProviders providers={providers} />
 
         <Section title="Cast">
           {credits && credits.cast.length > 0 ? (
