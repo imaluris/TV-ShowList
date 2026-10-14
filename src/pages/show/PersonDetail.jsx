@@ -142,7 +142,7 @@ function PersonDetail() {
     <div className={styles.page}>
       <DetailHero
         poster={person.profile_path}
-        round
+        person
         title={person.name}
         subtitle={person.known_for_department}
         onBack={() => navigate(-1)}

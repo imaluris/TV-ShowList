@@ -10,10 +10,12 @@ const POSTER_URL = "https://image.tmdb.org/t/p/w500";
 // titolo, riga di dati e (children) i pulsanti d'azione.
 //   backdrop/poster: percorsi TMDB (opzionali)
 //   onBack: al posto di backTo, per tornare alla pagina precedente
-//   round: la foto è un volto (pagina persona), quindi tonda e senza
-//          immagine di sfondo (si usa un bagliore color accento)
-function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, round, children }) {
-  const backgroundPath = round ? null : backdrop || poster;
+//   person: pagina di una persona. La foto è solo un ritratto (TMDB non ha
+//           immagini orizzontali per le persone), quindi la mostriamo come
+//           la locandina e lo sfondo è un bagliore color accento, invece di
+//           una foto ingrandita e sfocata.
+function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, person, children }) {
+  const backgroundPath = person ? null : backdrop || poster;
 
   return (
     <header className={styles.hero}>
@@ -45,14 +47,14 @@ function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, r
       <div className={styles.inner}>
         {poster && (
           <img
-            className={round ? styles.avatar : styles.poster}
+            className={styles.poster}
             src={`${POSTER_URL}${poster}`}
             alt={title}
           />
         )}
 
-        {round && !poster && (
-          <div className={styles.avatarEmpty}>
+        {person && !poster && (
+          <div className={styles.posterEmpty}>
             <User size={48} />
           </div>
         )}
