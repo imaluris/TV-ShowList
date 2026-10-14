@@ -1,31 +1,9 @@
-.groups {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
 /* Solo testo informativo: niente sfondi, bordi, ombre o hover, così non
    sembra un pulsante. */
-.group {
+.list {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 1rem;
-}
-
-.label {
-  min-width: 3.5rem;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.logos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem 1.1rem;
+  gap: 0.5rem 1.2rem;
 }
 
 .item {
@@ -47,10 +25,4 @@
 .empty {
   color: var(--text-muted);
   font-size: 0.95rem;
-}
-
-.credit {
-  margin-top: 0.8rem;
-  color: var(--text-muted);
-  font-size: 0.75rem;
 }
