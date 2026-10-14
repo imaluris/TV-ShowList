@@ -138,6 +138,14 @@ function Home() {
             </div>
           </Section>
 
+          <Section title="Streaming platforms">
+            <Rail className={styles.streamingRail}>
+              {icons.list.map((provider) => (
+                <StreamingIcon key={provider.provider_name} provider={provider} />
+              ))}
+            </Rail>
+          </Section>
+
           <ShowRow title="Recommended for you" shows={forYou} />
 
           {becauseRows.map((row) => (
@@ -169,14 +177,6 @@ function Home() {
                 shows={byProvider.shows[provider.id] || []}
               />
             ))}
-
-          <Section title="Streaming platforms">
-            <Rail className={styles.streamingRail}>
-              {icons.list.map((provider) => (
-                <StreamingIcon key={provider.provider_name} provider={provider} />
-              ))}
-            </Rail>
-          </Section>
         </div>
       )}
     </div>
