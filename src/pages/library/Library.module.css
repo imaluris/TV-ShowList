@@ -4,12 +4,6 @@
   padding: 1.25rem 1rem 0;
 }
 
-.mediaRow {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.9rem;
-}
-
 .tabRow {
   display: flex;
   justify-content: center;

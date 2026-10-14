@@ -9,11 +9,6 @@ import LibraryCard from "../../components/library/LibraryCard";
 import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Library.module.css";
 
-const MEDIA_OPTIONS = [
-  { value: "tv", label: "TV Shows" },
-  { value: "movie", label: "Movies" },
-];
-
 // Le tre schede di stato. "In corso" esiste solo per le serie TV: per i
 // film lo stato "Watching" non c'è (si guarda in una volta sola).
 const TABS = [
@@ -41,7 +36,7 @@ const TABS = [
 
 function Library() {
   const { currentUser } = useAuth();
-  const { mediaType, setMediaType, isMovie } = useMediaType();
+  const { mediaType, isMovie } = useMediaType();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(LIBRARY_STATUS.TO_WATCH);
@@ -75,17 +70,10 @@ function Library() {
 
   return (
     <div>
-      <PageHeader title="Library" />
+      {/* Lo switch Serie TV/Film sta solo nella Home e vale per tutta l'app:
+          qui si indica solo cosa si sta guardando. */}
+      <PageHeader title={isMovie ? "Movies library" : "TV Shows library"} />
       <div className={styles.libraryPage}>
-
-      <div className={styles.mediaRow}>
-        <SegmentedControl
-          label="Type"
-          options={MEDIA_OPTIONS}
-          value={mediaType}
-          onChange={setMediaType}
-        />
-      </div>
 
       <div className={styles.tabRow}>
         <SegmentedControl
