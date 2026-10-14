@@ -13,6 +13,13 @@
   overflow: hidden;
 }
 
+/* Pagine senza immagine di sfondo (es. persona): bagliore color accento. */
+.mediaGlow {
+  background:
+    radial-gradient(ellipse 70% 90% at 15% 0%, var(--accent-glow), transparent 70%),
+    var(--surface);
+}
+
 .backdrop,
 .backdropBlur {
   width: 100%;
@@ -79,8 +86,7 @@
   gap: 1rem;
 }
 
-.poster,
-.avatar {
+.poster {
   width: 112px;
   flex-shrink: 0;
   aspect-ratio: 2 / 3;
@@ -91,15 +97,12 @@
   background: var(--skeleton-base);
 }
 
-.avatar,
-.avatarEmpty {
-  aspect-ratio: 1;
-  border-radius: 50%;
-}
-
-.avatarEmpty {
-  width: 110px;
+/* Segnaposto quando la persona non ha una foto. */
+.posterEmpty {
+  width: 112px;
   flex-shrink: 0;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,12 +158,9 @@
     align-items: flex-start;
   }
 
-  .poster {
+  .poster,
+  .posterEmpty {
     width: 120px;
-  }
-
-  .avatar {
-    width: 110px;
   }
 }
 
@@ -174,12 +174,9 @@
     gap: 2rem;
   }
 
-  .poster {
+  .poster,
+  .posterEmpty {
     width: 220px;
-  }
-
-  .avatar {
-    width: 190px;
   }
 
   .back {
