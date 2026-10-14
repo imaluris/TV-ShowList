@@ -12,6 +12,7 @@ import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
 import Hero from "../../components/home/Hero";
 import HomeSkeleton from "../../components/home/HomeSkeleton";
+import Rail from "../../components/ui/Rail";
 import Section from "../../components/ui/Section";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import styles from "./Home.module.css";
@@ -75,13 +76,13 @@ function Home() {
 
   useEffect(() => {
     getWatchProviders(mediaType).then((allProviders) => {
-      const matched = STREAMING_KEYWORDS.map(({ label, keyword }) => {
+      // Teniamo solo le piattaforme che TMDB conosce davvero nella nostra
+      // regione: un'icona senza link non servirebbe a niente.
+      const matched = STREAMING_KEYWORDS.flatMap(({ label, keyword }) => {
         const found = allProviders.find((p) =>
           p.provider_name.toLowerCase().includes(keyword),
         );
-        return found
-          ? { ...found, provider_name: label }
-          : { provider_name: label, provider_id: null, logo_path: null };
+        return found ? [{ ...found, provider_name: label }] : [];
       });
       setIcons({ type: mediaType, list: matched });
     });
@@ -170,11 +171,11 @@ function Home() {
             ))}
 
           <Section title="Streaming platforms">
-            <div className={styles.streamingGrid}>
-              {icons.list.map((provider, index) => (
-                <StreamingIcon key={index} provider={provider} />
+            <Rail className={styles.streamingRail}>
+              {icons.list.map((provider) => (
+                <StreamingIcon key={provider.provider_name} provider={provider} />
               ))}
-            </div>
+            </Rail>
           </Section>
         </div>
       )}
