@@ -4,7 +4,7 @@ import styles from "./Splash.module.css";
 // solo il marchio che pulsa, niente testo.
 function Splash() {
   return (
-    <div className={styles.splash} aria-busy="true" aria-label="Caricamento">
+    <div className={styles.splash} aria-busy="true" aria-label="Loading">
       <div className={styles.mark}>
         <span className={styles.play} />
       </div>

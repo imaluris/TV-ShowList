@@ -33,8 +33,8 @@ function Login() {
       </div>
 
       <div className={styles.authCard}>
-        <h1 className={styles.title}>Accedi</h1>
-        <p className={styles.subtitle}>Bentornato, accedi al tuo account</p>
+        <h1 className={styles.title}>Log in</h1>
+        <p className={styles.subtitle}>Welcome back, log in to your account</p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
@@ -56,18 +56,18 @@ function Login() {
             required
           />
           <button type="submit" className={styles.submitButton}>
-            Accedi
+            Log in
           </button>
         </form>
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <GoogleButton label="Accedi con Google" />
+        <GoogleButton label="Log in with Google" />
 
         <p className={styles.footerText}>
-          Non hai un account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className={styles.footerLink}>
-            Registrati
+            Sign up
           </Link>
         </p>
       </div>

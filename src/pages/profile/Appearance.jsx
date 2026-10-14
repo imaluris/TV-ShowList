@@ -4,9 +4,9 @@ import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Appearance.module.css";
 
 const OPTIONS = [
-  { value: "system", label: "Sistema" },
-  { value: "light", label: "Chiaro" },
-  { value: "dark", label: "Scuro" },
+  { value: "system", label: "System" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
 ];
 
 function Appearance() {
@@ -14,7 +14,7 @@ function Appearance() {
 
   return (
     <div>
-      <PageHeader title="Aspetto" backTo="/profile" />
+      <PageHeader title="Appearance" backTo="/profile" />
       <div className={styles.page}>
 
       <div className={styles.optionsList}>
@@ -32,7 +32,7 @@ function Appearance() {
       </div>
 
       <p className={styles.note}>
-        Con "Sistema" l'app segue il tema chiaro o scuro del tuo dispositivo.
+        With "System", the app follows your device's light or dark theme.
       </p>
       </div>
     </div>

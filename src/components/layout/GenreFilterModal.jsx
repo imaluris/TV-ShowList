@@ -6,38 +6,38 @@ import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
 import styles from "./GenreFilterModal.module.css";
 
 const SORT_OPTIONS_TV = [
-  { value: "popularity.desc", label: "Popolarità" },
-  { value: "vote_average.desc", label: "Voto medio" },
-  { value: "first_air_date.desc", label: "Data di uscita (più recenti)" },
-  { value: "name.asc", label: "Nome (A-Z)" },
+  { value: "popularity.desc", label: "Popularity" },
+  { value: "vote_average.desc", label: "Average rating" },
+  { value: "first_air_date.desc", label: "Release date (newest)" },
+  { value: "name.asc", label: "Name (A-Z)" },
 ];
 
 const SORT_OPTIONS_MOVIE = [
-  { value: "popularity.desc", label: "Popolarità" },
-  { value: "vote_average.desc", label: "Voto medio" },
-  { value: "primary_release_date.desc", label: "Data di uscita (più recenti)" },
-  { value: "title.asc", label: "Nome (A-Z)" },
+  { value: "popularity.desc", label: "Popularity" },
+  { value: "vote_average.desc", label: "Average rating" },
+  { value: "primary_release_date.desc", label: "Release date (newest)" },
+  { value: "title.asc", label: "Name (A-Z)" },
 ];
 
 // Paesi di produzione selezionabili (codice ISO usato da TMDB).
 const COUNTRIES = [
-  { value: "IT", label: "Italia" },
-  { value: "US", label: "Stati Uniti" },
-  { value: "GB", label: "Regno Unito" },
-  { value: "FR", label: "Francia" },
-  { value: "DE", label: "Germania" },
-  { value: "ES", label: "Spagna" },
-  { value: "JP", label: "Giappone" },
-  { value: "KR", label: "Corea del Sud" },
+  { value: "IT", label: "Italy" },
+  { value: "US", label: "United States" },
+  { value: "GB", label: "United Kingdom" },
+  { value: "FR", label: "France" },
+  { value: "DE", label: "Germany" },
+  { value: "ES", label: "Spain" },
+  { value: "JP", label: "Japan" },
+  { value: "KR", label: "South Korea" },
   { value: "IN", label: "India" },
-  { value: "CN", label: "Cina" },
+  { value: "CN", label: "China" },
   { value: "CA", label: "Canada" },
   { value: "AU", label: "Australia" },
-  { value: "SE", label: "Svezia" },
-  { value: "DK", label: "Danimarca" },
-  { value: "TR", label: "Turchia" },
-  { value: "MX", label: "Messico" },
-  { value: "BR", label: "Brasile" },
+  { value: "SE", label: "Sweden" },
+  { value: "DK", label: "Denmark" },
+  { value: "TR", label: "Turkey" },
+  { value: "MX", label: "Mexico" },
+  { value: "BR", label: "Brazil" },
 ];
 
 function GenreFilterModal({ isOpen, onClose, onApply }) {
@@ -92,7 +92,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
       setIsSearching(false);
 
       if (results.length === 0) {
-        setCompanyError("Nessuna compagnia trovata con questo nome.");
+        setCompanyError("No company found with that name.");
         return;
       }
 
@@ -126,16 +126,16 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
         className={styles.modal}
         role="dialog"
         aria-modal="true"
-        aria-label={isMovie ? "Filtra film" : "Filtra serie TV"}
+        aria-label={isMovie ? "Filter movies" : "Filter TV shows"}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={styles.header}>
-          <h2>{isMovie ? "Filtra film" : "Filtra serie TV"}</h2>
+          <h2>{isMovie ? "Filter movies" : "Filter TV shows"}</h2>
           <button
             type="button"
             className={styles.closeButton}
             onClick={onClose}
-            aria-label="Chiudi"
+            aria-label="Close"
           >
             <X size={18} />
           </button>
@@ -144,7 +144,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.body}>
           <label className={styles.field}>
-            Ordina per
+            Sort by
             <select value={activeSortBy} onChange={(e) => setSortBy(e.target.value)}>
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -155,12 +155,12 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </label>
 
           <label className={styles.field}>
-            Voto minimo
+            Minimum rating
             <select
               value={minVote}
               onChange={(e) => setMinVote(e.target.value)}
             >
-              <option value="">Qualsiasi</option>
+              <option value="">Any</option>
               <option value="5">5+</option>
               <option value="6">6+</option>
               <option value="7">7+</option>
@@ -170,7 +170,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </label>
 
           <div className={styles.field}>
-            <span>Anno di uscita</span>
+            <span>Release year</span>
 
             <div className={styles.yearModeToggle}>
               <label>
@@ -180,7 +180,7 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
                   checked={yearMode === "exact"}
                   onChange={() => setYearMode("exact")}
                 />
-                Anno preciso
+                Exact year
               </label>
               <label>
                 <input
@@ -189,14 +189,14 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
                   checked={yearMode === "range"}
                   onChange={() => setYearMode("range")}
                 />
-                Intervallo
+                Range
               </label>
             </div>
 
             {yearMode === "exact" ? (
               <input
                 type="number"
-                placeholder="es. 2023"
+                placeholder="e.g. 2023"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
               />
@@ -204,14 +204,14 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
               <div className={styles.yearRange}>
                 <input
                   type="number"
-                  placeholder="Dal (es. 2018)"
+                  placeholder="From (e.g. 2018)"
                   value={yearFrom}
                   onChange={(e) => setYearFrom(e.target.value)}
                 />
                 <span>—</span>
                 <input
                   type="number"
-                  placeholder="Al (vuoto = ad oggi)"
+                  placeholder="To (empty = today)"
                   value={yearTo}
                   onChange={(e) => setYearTo(e.target.value)}
                 />
@@ -220,12 +220,12 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </div>
 
           <label className={styles.field}>
-            Piattaforma streaming
+            Streaming platform
             <select
               value={providerId}
               onChange={(e) => setProviderId(e.target.value)}
             >
-              <option value="">Tutte</option>
+              <option value="">All</option>
               {providers.map((provider) => (
                 <option key={provider.id} value={provider.id}>
                   {provider.name}
@@ -235,9 +235,9 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </label>
 
           <label className={styles.field}>
-            Paese di produzione
+            Production country
             <select value={country} onChange={(e) => setCountry(e.target.value)}>
-              <option value="">Tutti</option>
+              <option value="">All</option>
               {COUNTRIES.map((c) => (
                 <option key={c.value} value={c.value}>
                   {c.label}
@@ -247,10 +247,10 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
           </label>
 
           <label className={styles.field}>
-            Compagnia di produzione
+            Production company
             <input
               type="text"
-              placeholder="es. Netflix, HBO..."
+              placeholder="e.g. Netflix, HBO..."
               value={companyQuery}
               onChange={(e) => setCompanyQuery(e.target.value)}
             />
@@ -265,14 +265,14 @@ function GenreFilterModal({ isOpen, onClose, onApply }) {
               onClick={handleReset}
               className={styles.resetButton}
             >
-              Azzera filtri
+              Reset filters
             </button>
             <button
               type="submit"
               disabled={isSearching}
               className={styles.applyButton}
             >
-              {isSearching ? "Ricerca..." : "Applica"}
+              {isSearching ? "Searching..." : "Apply"}
             </button>
           </div>
         </form>

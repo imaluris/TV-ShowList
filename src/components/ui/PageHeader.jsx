@@ -9,7 +9,7 @@ function PageHeader({ title, backTo, logo, action }) {
     <header className={styles.header}>
       <div className={styles.inner}>
         {backTo ? (
-          <Link to={backTo} className={styles.back} aria-label="Indietro">
+          <Link to={backTo} className={styles.back} aria-label="Back">
             <ArrowLeft size={20} />
           </Link>
         ) : (

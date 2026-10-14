@@ -9,6 +9,7 @@ import {
   isEpisodeWatched,
 } from "../../services/firestore";
 import styles from "./EpisodeCard.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function EpisodeCard({
   showId,
@@ -27,7 +28,7 @@ function EpisodeCard({
     : null;
 
   const dateFormatted = episode.air_date
-    ? new Date(episode.air_date).toLocaleDateString("it-IT", {
+    ? new Date(episode.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "short",
       })
@@ -98,7 +99,7 @@ function EpisodeCard({
         </p>
 
         <p className={styles.overview}>
-          {episode.overview || "Nessuna descrizione disponibile."}
+          {episode.overview || "No description available."}
         </p>
       </div>
 
@@ -106,7 +107,7 @@ function EpisodeCard({
         type="button"
         className={watched ? styles.checkmarkActive : styles.checkmark}
         onClick={handleToggle}
-        aria-label={watched ? "Segna episodio da vedere" : "Segna episodio visto"}
+        aria-label={watched ? "Mark episode as unwatched" : "Mark episode as watched"}
       >
         <Check size={18} />
       </button>

@@ -6,7 +6,7 @@ import styles from "./DetailSkeleton.module.css";
 // locandina, titolo, etichette) e poi testo e una riga di card.
 function DetailSkeleton() {
   return (
-    <div className={styles.page} aria-busy="true" aria-label="Caricamento">
+    <div className={styles.page} aria-busy="true" aria-label="Loading">
       <div className={styles.hero}>
         <div className={styles.heroInner}>
           <Skeleton className={styles.poster} />

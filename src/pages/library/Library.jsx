@@ -11,21 +11,21 @@ import styles from "./Library.module.css";
 const TABS = [
   {
     value: LIBRARY_STATUS.TO_WATCH,
-    label: "Da vedere",
+    label: "To watch",
     icon: Bookmark,
-    emptyText: "Non hai ancora titoli da vedere. Salvane uno dalla pagina di dettaglio.",
+    emptyText: "You have nothing to watch yet. Save a title from its detail page.",
   },
   {
     value: LIBRARY_STATUS.WATCHING,
-    label: "In corso",
+    label: "Watching",
     icon: Clock,
-    emptyText: "Nessuna serie in corso al momento.",
+    emptyText: "No shows in progress right now.",
   },
   {
     value: LIBRARY_STATUS.WATCHED,
-    label: "Viste",
+    label: "Watched",
     icon: Check,
-    emptyText: "Non hai ancora segnato nulla come visto.",
+    emptyText: "You haven't marked anything as watched yet.",
   },
 ];
 
@@ -56,12 +56,12 @@ function Library() {
 
   return (
     <div>
-      <PageHeader title="Libreria" />
+      <PageHeader title="Library" />
       <div className={styles.libraryPage}>
 
       <div className={styles.tabRow}>
         <SegmentedControl
-          label="Stato"
+          label="Status"
           options={TABS}
           value={activeTab}
           onChange={setActiveTab}
@@ -75,7 +75,7 @@ function Library() {
           <div className={styles.emptyIcon}>
             <EmptyIcon size={28} />
           </div>
-          <p className={styles.emptyTitle}>Sezione vuota</p>
+          <p className={styles.emptyTitle}>Nothing here yet</p>
           <p className={styles.emptyText}>{currentTab.emptyText}</p>
         </div>
       ) : (

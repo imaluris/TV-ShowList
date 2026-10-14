@@ -18,9 +18,9 @@ import styles from "./LibraryStatusButtons.module.css";
 
 // Icona del pulsante in base allo stato attuale (Plus se non c'è stato).
 const STATUS_LABELS = {
-  [LIBRARY_STATUS.TO_WATCH]: "Da vedere",
-  [LIBRARY_STATUS.WATCHING]: "In corso",
-  [LIBRARY_STATUS.WATCHED]: "Vista",
+  [LIBRARY_STATUS.TO_WATCH]: "To watch",
+  [LIBRARY_STATUS.WATCHING]: "Watching",
+  [LIBRARY_STATUS.WATCHED]: "Watched",
 };
 
 const STATUS_ICONS = {
@@ -70,7 +70,7 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
 
     if (value === RESET_VALUE) {
       const confirmed = window.confirm(
-        `Azzerare tutti gli episodi visti di "${title}"?`,
+        `Reset all watched episodes of "${title}"?`,
       );
       if (!confirmed) return;
 
@@ -89,7 +89,7 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
       // Rimuovere una serie già iniziata cancella anche le spunte: chiediamo conferma.
       if (isStartedSeries(status, mediaType)) {
         const confirmed = window.confirm(
-          `Rimuovere "${title}" dalla libreria? Perderai anche gli episodi visti.`,
+          `Remove "${title}" from your library? You will also lose your watched episodes.`,
         );
         if (!confirmed) return;
       }
@@ -119,10 +119,10 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
         type="button"
         className={status ? styles.triggerActive : styles.trigger}
         onClick={() => setIsOpen((open) => !open)}
-        aria-label="Aggiungi alla libreria"
+        aria-label="Add to library"
       >
         <TriggerIcon size={18} />
-        <span>{STATUS_LABELS[status] || "Aggiungi"}</span>
+        <span>{STATUS_LABELS[status] || "Add"}</span>
         <ChevronDown size={16} className={isOpen ? styles.chevronOpen : styles.chevron} />
       </button>
 

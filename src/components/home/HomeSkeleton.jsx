@@ -6,7 +6,7 @@ import styles from "./HomeSkeleton.module.css";
 // e la fila di generi.
 function HomeSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Caricamento">
+    <div aria-busy="true" aria-label="Loading">
       <Skeleton className={styles.hero} />
       <SkeletonRow />
       <SkeletonRow />

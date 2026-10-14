@@ -67,7 +67,7 @@ function Provider() {
   return (
     <div>
       <PageHeader
-        title={providerInfo ? providerInfo.provider_name : "Piattaforma"}
+        title={providerInfo ? providerInfo.provider_name : "Platform"}
         backTo="/"
         logo={
           providerInfo?.logo_path ? (
@@ -84,19 +84,19 @@ function Provider() {
       {popular === null ? (
         <SkeletonRow />
       ) : (
-        <ShowRow title="Popolari del momento" shows={popular} />
+        <ShowRow title="Popular right now" shows={popular} />
       )}
       {newShows === null ? (
         <SkeletonRow />
       ) : (
-        <ShowRow title="Nuove della settimana" shows={newShows} />
+        <ShowRow title="New this week" shows={newShows} />
       )}
 
       {!isMovie && networkId && exclusives.length > 0 && (
-        <ShowRow title="Esclusive" shows={exclusives} />
+        <ShowRow title="Exclusives" shows={exclusives} />
       )}
 
-      <Section title="Generi">
+      <Section title="Genres">
         <div className={styles.genresGrid}>
           {genres.map((genre) => (
             <Link

@@ -45,13 +45,13 @@ function Register() {
       </div>
 
       <div className={styles.authCard}>
-        <h1 className={styles.title}>Registrati</h1>
-        <p className={styles.subtitle}>Crea un account per iniziare</p>
+        <h1 className={styles.title}>Sign up</h1>
+        <p className={styles.subtitle}>Create an account to get started</p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="text"
-            placeholder="Nome utente"
+            placeholder="Username"
             value={nomeUtente}
             onChange={(e) => setNomeUtente(e.target.value)}
             className={styles.input}
@@ -69,25 +69,25 @@ function Register() {
           <input
             type="password"
             autoComplete="new-password"
-            placeholder="Password (min 6 caratteri)"
+            placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
             required
           />
           <button type="submit" className={styles.submitButton}>
-            Registrati
+            Sign up
           </button>
         </form>
 
         {messaggioErrore}
 
-        <GoogleButton label="Registrati con Google" />
+        <GoogleButton label="Sign up with Google" />
 
         <p className={styles.footerText}>
-          Hai già un account?{" "}
+          Already have an account?{" "}
           <Link to="/login" className={styles.footerLink}>
-            Accedi
+            Log in
           </Link>
         </p>
       </div>

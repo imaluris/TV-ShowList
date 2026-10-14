@@ -33,11 +33,11 @@ function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, r
       </div>
 
       {onBack ? (
-        <button type="button" className={styles.back} onClick={onBack} aria-label="Indietro">
+        <button type="button" className={styles.back} onClick={onBack} aria-label="Back">
           <ArrowLeft size={20} />
         </button>
       ) : (
-        <Link to={backTo} className={styles.back} aria-label="Indietro">
+        <Link to={backTo} className={styles.back} aria-label="Back">
           <ArrowLeft size={20} />
         </Link>
       )}

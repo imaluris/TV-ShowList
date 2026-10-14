@@ -9,6 +9,7 @@ import {
   isSeasonWatched,
 } from "../../services/firestore";
 import styles from "./SeasonCard.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
   const { currentUser } = useAuth();
@@ -19,12 +20,12 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
     : "https://placehold.co/100x150?text=No+Image";
 
   const dateFormatted = season.air_date
-    ? new Date(season.air_date).toLocaleDateString("it-IT", {
+    ? new Date(season.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "long",
         year: "numeric",
       })
-    : "Data non disponibile";
+    : "Date not available";
 
   useEffect(() => {
     if (!currentUser) return;
@@ -68,8 +69,8 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
       <img src={posterSrc} alt={season.name} className={styles.poster} loading="lazy" />
 
       <div className={styles.info}>
-        <p className={styles.title}>Stagione {season.season_number}</p>
-        <p className={styles.episodes}>{season.episode_count} episodi</p>
+        <p className={styles.title}>Season {season.season_number}</p>
+        <p className={styles.episodes}>{season.episode_count} {season.episode_count === 1 ? "episode" : "episodes"}</p>
         <p className={styles.date}>{dateFormatted}</p>
       </div>
 
@@ -77,7 +78,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
         type="button"
         className={watched ? styles.checkmarkActive : styles.checkmark}
         onClick={handleToggle}
-        aria-label={watched ? "Segna stagione da vedere" : "Segna stagione vista"}
+        aria-label={watched ? "Mark season as unwatched" : "Mark season as watched"}
       >
         <Check size={16} />
       </button>

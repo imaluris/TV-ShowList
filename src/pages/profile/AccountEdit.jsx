@@ -39,7 +39,7 @@ function AccountEdit() {
       await changeDisplayName(displayName.trim());
       // Ricarica l'utente così il nuovo nome appare subito nel profilo.
       await refreshCurrentUser();
-      setNameStatus({ error: "", success: "Nome aggiornato." });
+      setNameStatus({ error: "", success: "Name updated." });
     } catch (err) {
       setNameStatus({ error: getAuthErrorMessage(err), success: "" });
     } finally {
@@ -56,7 +56,7 @@ function AccountEdit() {
       await requestEmailChange(emailForm.password, emailForm.newEmail.trim());
       setEmailStatus({
         error: "",
-        success: `Ti abbiamo inviato un link di conferma a ${emailForm.newEmail.trim()}. L'email cambierà quando lo aprirai.`,
+        success: `We sent a confirmation link to ${emailForm.newEmail.trim()}. Your email will change once you open it.`,
       });
       setEmailForm({ password: "", newEmail: "" });
     } catch (err) {
@@ -71,7 +71,7 @@ function AccountEdit() {
     setPasswordStatus({ error: "", success: "" });
 
     if (passwordForm.newPassword !== passwordForm.confirm) {
-      setPasswordStatus({ error: "Le due nuove password non coincidono.", success: "" });
+      setPasswordStatus({ error: "The two new passwords don't match.", success: "" });
       return;
     }
 
@@ -79,7 +79,7 @@ function AccountEdit() {
 
     try {
       await changePassword(passwordForm.password, passwordForm.newPassword);
-      setPasswordStatus({ error: "", success: "Password aggiornata." });
+      setPasswordStatus({ error: "", success: "Password updated." });
       setPasswordForm({ password: "", newPassword: "", confirm: "" });
     } catch (err) {
       setPasswordStatus({ error: getAuthErrorMessage(err), success: "" });
@@ -90,24 +90,24 @@ function AccountEdit() {
 
   return (
     <div>
-      <PageHeader title="Modifica account" backTo="/profile/account" />
+      <PageHeader title="Edit account" backTo="/profile/account" />
       <div className={styles.page}>
 
       <section className={styles.section}>
-        <h2>Nome</h2>
-        <p className={styles.hint}>Il nome che vedi nel tuo profilo.</p>
+        <h2>Name</h2>
+        <p className={styles.hint}>The name shown on your profile.</p>
 
         <form onSubmit={handleNameSubmit} className={styles.form}>
           <input
             type="text"
-            placeholder="Nome utente"
+            placeholder="Username"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             className={styles.input}
             required
           />
           <button type="submit" className={styles.submitButton} disabled={nameBusy}>
-            {nameBusy ? "Salvataggio..." : "Salva nome"}
+            {nameBusy ? "Saving..." : "Save name"}
           </button>
         </form>
 
@@ -120,13 +120,13 @@ function AccountEdit() {
         <section className={styles.section}>
           <h2>Email</h2>
           <p className={styles.hint}>
-            Email attuale: {currentUser.email}. Per sicurezza serve la password attuale.
+            Current email: {currentUser.email}. For security, your current password is required.
           </p>
 
           <form onSubmit={handleEmailSubmit} className={styles.form}>
             <input
               type="email"
-              placeholder="Nuova email"
+              placeholder="New email"
               value={emailForm.newEmail}
               onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
               className={styles.input}
@@ -134,14 +134,14 @@ function AccountEdit() {
             />
             <input
               type="password"
-              placeholder="Password attuale"
+              placeholder="Current password"
               value={emailForm.password}
               onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })}
               className={styles.input}
               required
             />
             <button type="submit" className={styles.submitButton} disabled={emailBusy}>
-              {emailBusy ? "Invio..." : "Cambia email"}
+              {emailBusy ? "Sending..." : "Change email"}
             </button>
           </form>
 
@@ -151,12 +151,12 @@ function AccountEdit() {
 
         <section className={styles.section}>
           <h2>Password</h2>
-          <p className={styles.hint}>Scegli una nuova password di almeno 6 caratteri.</p>
+          <p className={styles.hint}>Choose a new password of at least 6 characters.</p>
 
           <form onSubmit={handlePasswordSubmit} className={styles.form}>
             <input
               type="password"
-              placeholder="Password attuale"
+              placeholder="Current password"
               value={passwordForm.password}
               onChange={(e) =>
                 setPasswordForm({ ...passwordForm, password: e.target.value })
@@ -166,7 +166,7 @@ function AccountEdit() {
             />
             <input
               type="password"
-              placeholder="Nuova password"
+              placeholder="New password"
               value={passwordForm.newPassword}
               onChange={(e) =>
                 setPasswordForm({ ...passwordForm, newPassword: e.target.value })
@@ -176,7 +176,7 @@ function AccountEdit() {
             />
             <input
               type="password"
-              placeholder="Ripeti la nuova password"
+              placeholder="Repeat the new password"
               value={passwordForm.confirm}
               onChange={(e) =>
                 setPasswordForm({ ...passwordForm, confirm: e.target.value })
@@ -185,7 +185,7 @@ function AccountEdit() {
               required
             />
             <button type="submit" className={styles.submitButton} disabled={passwordBusy}>
-              {passwordBusy ? "Salvataggio..." : "Cambia password"}
+              {passwordBusy ? "Saving..." : "Change password"}
             </button>
           </form>
 
@@ -197,10 +197,10 @@ function AccountEdit() {
         </>
       ) : (
         <section className={styles.section}>
-          <h2>Accesso con Google</h2>
+          <h2>Google sign-in</h2>
           <p className={styles.hint}>
-            Hai effettuato l'accesso con Google ({currentUser.email}): email e
-            password si gestiscono dal tuo account Google.
+            You signed in with Google ({currentUser.email}): your email and
+            password are managed from your Google account.
           </p>
         </section>
       )}

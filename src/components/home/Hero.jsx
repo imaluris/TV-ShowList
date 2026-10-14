@@ -31,7 +31,7 @@ function Hero({ shows, mediaType }) {
   return (
     <section
       className={styles.hero}
-      aria-label="In evidenza"
+      aria-label="Featured"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
@@ -64,7 +64,7 @@ function Hero({ shows, mediaType }) {
               className={styles.button}
               tabIndex={index === active ? 0 : -1}
             >
-              Scopri di più
+              Learn more
             </Link>
           </div>
         </article>
@@ -78,7 +78,7 @@ function Hero({ shows, mediaType }) {
               type="button"
               className={index === active ? styles.dotActive : styles.dot}
               onClick={() => setActive(index)}
-              aria-label={`Mostra ${getTitle(show)}`}
+              aria-label={`Show ${getTitle(show)}`}
             />
           ))}
         </div>

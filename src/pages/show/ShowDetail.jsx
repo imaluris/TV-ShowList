@@ -22,10 +22,11 @@ import Section from "../../components/ui/Section";
 import FactGrid from "../../components/ui/FactGrid";
 import Chips from "../../components/ui/Chips";
 import Rail from "../../components/ui/Rail";
+import { getContentLanguage } from "../../services/language";
 
 function formatDate(date) {
   if (!date) return "";
-  return new Date(date).toLocaleDateString("it-IT", {
+  return new Date(date).toLocaleDateString(getContentLanguage(), {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -107,20 +108,20 @@ function ShowDetail() {
     : show.episode_run_time?.[0]
       ? `${show.episode_run_time[0]} min`
       : "";
-  const trailers = (videos || []).filter((v) => v.type === "Trailer");
+  const trailers = (videos || []).filter((v) => v.type === "Trailers");
 
   const facts = [
-    { label: "Lingua originale", value: show.original_language?.toUpperCase() },
+    { label: "Original language", value: show.original_language?.toUpperCase() },
     isMovie
-      ? { label: "Data di uscita", value: formatDate(show.release_date) }
-      : { label: "Prima trasmissione", value: formatDate(show.first_air_date) },
+      ? { label: "Release date", value: formatDate(show.release_date) }
+      : { label: "First aired", value: formatDate(show.first_air_date) },
     isMovie
-      ? { label: "Durata", value: runtime }
-      : { label: "Stagioni", value: show.number_of_seasons },
-    !isMovie && { label: "Episodi", value: show.number_of_episodes },
-    { label: "Produzione", value: show.production_companies.map((c) => c.name).join(", ") },
-    { label: "Paesi", value: show.production_countries.map((c) => c.name).join(", ") },
-    !isMovie && { label: "Reti", value: show.networks.map((n) => n.name).join(", ") },
+      ? { label: "Runtime", value: runtime }
+      : { label: "Seasons", value: show.number_of_seasons },
+    !isMovie && { label: "Episodes", value: show.number_of_episodes },
+    { label: "Production", value: show.production_companies.map((c) => c.name).join(", ") },
+    { label: "Countries", value: show.production_countries.map((c) => c.name).join(", ") },
+    !isMovie && { label: "Networks", value: show.networks.map((n) => n.name).join(", ") },
   ].filter(Boolean);
 
   const seasonsSorted = seasons ? seasons.slice().reverse() : [];
@@ -160,7 +161,7 @@ function ShowDetail() {
       <div className={styles.container}>
         {show.overview && <p className={styles.overview}>{show.overview}</p>}
 
-        <Section title="Informazioni">
+        <Section title="Information">
           <FactGrid facts={facts} />
         </Section>
 
@@ -172,12 +173,12 @@ function ShowDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun attore disponibile.</p>
+            <p className={styles.empty}>No cast available.</p>
           )}
         </Section>
 
         {trailers.length > 0 && (
-          <Section title="Trailer">
+          <Section title="Trailers">
             <Rail>
               {trailers.map((video) => (
                 <VideoCard key={video.id} video={video} />
@@ -187,7 +188,7 @@ function ShowDetail() {
         )}
 
         {!isMovie && (
-          <Section title="Stagioni" aside={`${seasonsSorted.length} in totale`}>
+          <Section title="Seasons" aside={`${seasonsSorted.length} total`}>
             <div className={styles.seasonsColumn}>
               {seasonsToShow.map((season) => (
                 <SeasonCard
@@ -207,7 +208,7 @@ function ShowDetail() {
                   className={styles.showMoreButton}
                   onClick={() => setShowAllSeasons(true)}
                 >
-                  Mostra tutte le stagioni
+                  Show all seasons
                 </button>
               )}
             </div>
@@ -215,7 +216,7 @@ function ShowDetail() {
         )}
 
         <ShowRow
-          title={isMovie ? "Film simili" : "Serie TV simili"}
+          title={isMovie ? "Similar movies" : "Similar TV shows"}
           shows={suggeriti}
         />
       </div>

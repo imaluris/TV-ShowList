@@ -16,23 +16,23 @@ function Account() {
 
   return (
     <div>
-      <PageHeader title="Impostazioni account" backTo="/profile" />
+      <PageHeader title="Account settings" backTo="/profile" />
       <div className={styles.page}>
 
       <div className={styles.buttonsList}>
         <Link to="/profile/account/edit" className={styles.actionButton}>
           <UserCog size={20} />
-          <span>Modifica account</span>
+          <span>Edit account</span>
         </Link>
 
         <Link to="/profile/account/delete" className={styles.dangerButton}>
           <Trash2 size={20} />
-          <span>Elimina account</span>
+          <span>Delete account</span>
         </Link>
 
         <button type="button" className={styles.logoutButton} onClick={handleLogout}>
           <LogOut size={20} />
-          <span>Logout</span>
+          <span>Log out</span>
         </button>
       </div>
       </div>

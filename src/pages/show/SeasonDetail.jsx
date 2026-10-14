@@ -75,13 +75,13 @@ function SeasonDetail() {
         subtitle={showTitle}
         title={season.name}
         backTo={`/show/tv/${showId}`}
-        meta={<Chips items={[`${season.episodes.length} episodi`, airYear]} />}
+        meta={<Chips items={[`${season.episodes.length} ${season.episodes.length === 1 ? "episode" : "episodes"}`, airYear]} />}
       />
 
       <div className={styles.container}>
         {season.overview && <p className={styles.overview}>{season.overview}</p>}
 
-        <Section title="Episodi">
+        <Section title="Episodes">
           <div className={styles.episodesList}>
             {season.episodes.map((episode) => (
               <EpisodeCard
@@ -106,7 +106,7 @@ function SeasonDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun attore disponibile.</p>
+            <p className={styles.empty}>No cast available.</p>
           )}
         </Section>
       </div>

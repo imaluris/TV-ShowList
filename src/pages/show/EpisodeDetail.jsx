@@ -12,6 +12,7 @@ import DetailHero from "../../components/ui/DetailHero";
 import Section from "../../components/ui/Section";
 import Chips from "../../components/ui/Chips";
 import Rail from "../../components/ui/Rail";
+import { getContentLanguage } from "../../services/language";
 
 function EpisodeDetail() {
   const { showId, seasonNumber, episodeNumber } = useParams();
@@ -35,7 +36,7 @@ function EpisodeDetail() {
   }
 
   const dateFormatted = episode.air_date
-    ? new Date(episode.air_date).toLocaleDateString("it-IT", {
+    ? new Date(episode.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -69,7 +70,7 @@ function EpisodeDetail() {
     <div className={styles.page}>
       <DetailHero
         backdrop={episode.still_path}
-        subtitle={`Stagione ${seasonNumber} · Episodio ${episode.episode_number}`}
+        subtitle={`Season ${seasonNumber} · Episode ${episode.episode_number}`}
         title={episode.name}
         backTo={`/show/${showId}/season/${seasonNumber}`}
         meta={
@@ -89,7 +90,7 @@ function EpisodeDetail() {
 
       <div className={styles.container}>
         <p className={styles.overview}>
-          {episode.overview || "Nessuna descrizione disponibile."}
+          {episode.overview || "No description available."}
         </p>
 
         <Section title="Cast">
@@ -100,7 +101,7 @@ function EpisodeDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun attore disponibile.</p>
+            <p className={styles.empty}>No cast available.</p>
           )}
         </Section>
 
@@ -112,7 +113,7 @@ function EpisodeDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun ospite per questo episodio.</p>
+            <p className={styles.empty}>No guest stars for this episode.</p>
           )}
         </Section>
       </div>

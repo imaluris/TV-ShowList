@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { MediaTypeProvider } from "./contexts/MediaTypeContext.jsx";
+import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
@@ -12,9 +13,11 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter basename="/TVShowList">
       <ThemeProvider>
         <AuthProvider>
-          <MediaTypeProvider>
-            <App />
-          </MediaTypeProvider>
+          <LanguageProvider>
+            <MediaTypeProvider>
+              <App />
+            </MediaTypeProvider>
+          </LanguageProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

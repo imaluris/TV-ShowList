@@ -27,3 +27,19 @@ export async function setPreferredGenres(uid, mediaType, genreIds) {
     { merge: true },
   );
 }
+
+// Lingua dei contenuti (titoli, trame...), salvata nello stesso documento
+// delle preferenze: { contentLanguage: "en-US" }
+export async function getPreferredLanguage(uid) {
+  const snapshot = await getDoc(getPreferencesRef(uid));
+  if (!snapshot.exists()) return null;
+  return snapshot.data().contentLanguage || null;
+}
+
+export async function setPreferredLanguage(uid, language) {
+  await setDoc(
+    getPreferencesRef(uid),
+    { contentLanguage: language, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}

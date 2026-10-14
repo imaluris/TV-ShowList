@@ -33,7 +33,7 @@ function LibraryCard({ uid, item, onRemoved }) {
           type="button"
           className={styles.removeButton}
           onClick={handleRemove}
-          aria-label="Rimuovi dalla libreria"
+          aria-label="Remove from library"
         >
           <X size={14} />
         </button>
@@ -48,7 +48,7 @@ function LibraryCard({ uid, item, onRemoved }) {
               <div className={styles.progressFill} style={{ width: `${percent}%` }} />
             </div>
             <p className={styles.progressText}>
-              {watchedCount}/{totalEpisodes} episodi
+              {watchedCount}/{totalEpisodes} episodes
             </p>
           </>
         )}

@@ -23,7 +23,7 @@ function TopBar() {
           onClick={() => setIsSearchOpen(true)}
         >
           <Search size={18} />
-          <span>{isMovie ? "Cerca un film..." : "Cerca una serie TV..."}</span>
+          <span>{isMovie ? "Search for a movie..." : "Search for a TV show..."}</span>
         </button>
       </div>
 
