@@ -14,4 +14,10 @@ export const STREAMING_KEYWORDS = [
   { label: "Crunchyroll", keyword: "crunchyroll", network: 1112 },
   { label: "MUBI", keyword: "mubi", network: 8303 },
   { label: "Chili", keyword: "chili", network: 5546 },
+  { label: "Pluto TV", keyword: "pluto", network: 3245 },
+  { label: "Rakuten TV", keyword: "rakuten", network: 3747 },
+  { label: "AMC+", keyword: "amc", network: 4661 },
+  { label: "YouTube Premium", keyword: "youtube premium", network: 1436 },
+  { label: "Lionsgate+", keyword: "lionsgate", network: 3464 },
+  { label: "Starzplay", keyword: "starz", network: 6222 },
 ];
