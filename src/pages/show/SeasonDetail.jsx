@@ -49,21 +49,15 @@ function SeasonDetail() {
   // salvare nel documento Firestore quanti episodi ha la serie in totale.
   const seasons = show.seasons.filter((s) => s.season_number !== 0);
 
-  // Cast aggregato dello show (già con roles[0].character pronto) unito
-  // agli eventuali attori specifici di questa stagione non già presenti,
-  // così i protagonisti compaiono per primi e la lista è completa.
-  const showCast = showCredits?.cast || [];
-  const seasonGuests = season.credits?.cast || [];
+  // Cast della sola stagione (season.credits), così non compaiono attori
+  // presenti solo in altre stagioni. Solo se TMDB non ha il cast della
+  // stagione ripieghiamo su quello aggregato dell'intera serie.
+  const seasonCast = (season.credits?.cast || []).map((member) => ({
+    ...member,
+    roles: [{ character: member.character }],
+  }));
 
-  const showCastIds = new Set(showCast.map((member) => member.id));
-  const extraGuests = seasonGuests
-    .filter((member) => !showCastIds.has(member.id))
-    .map((member) => ({
-      ...member,
-      roles: [{ character: member.character }],
-    }));
-
-  const cast = [...showCast, ...extraGuests];
+  const cast = seasonCast.length > 0 ? seasonCast : showCredits?.cast || [];
 
   const airYear = season.air_date ? season.air_date.slice(0, 4) : "";
 
