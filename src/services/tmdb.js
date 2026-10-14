@@ -53,6 +53,21 @@ export async function getShowDetails(mediaType, id) {
     throw new Error(`Errore nella fetch: ${response.status}`);
   }
   const data = await response.json();
+
+  // I generi del dettaglio arrivano nella lingua dei contenuti: li
+  // rimpiazziamo con i nomi inglesi, uguali a quelli del resto dell'app.
+  if (data.genres?.length) {
+    try {
+      const english = await getGenres(mediaType);
+      data.genres = data.genres.map((genre) => ({
+        ...genre,
+        name: english.find((g) => g.id === genre.id)?.name || genre.name,
+      }));
+    } catch {
+      // se la lista non si carica restano i nomi originali
+    }
+  }
+
   return data;
 }
 
@@ -172,10 +187,26 @@ export async function getWatchProviders(mediaType, region = "IT") {
   return data.results;
 }
 
-export async function getGenres(mediaType) {
+// I nomi dei generi sono sempre in inglese, come il resto dell'interfaccia:
+// la lista italiana di TMDB è incompleta (Crime, Kids, News... restano in
+// inglese) e ne verrebbe fuori un mix. I titoli e le trame invece seguono
+// la lingua scelta. La lista non cambia mai, quindi la ricordiamo.
+const genresCache = {};
+
+export function getGenres(mediaType) {
+  if (!genresCache[mediaType]) {
+    genresCache[mediaType] = fetchGenres(mediaType).catch((error) => {
+      delete genresCache[mediaType]; // al prossimo tentativo riprova
+      throw error;
+    });
+  }
+  return genresCache[mediaType];
+}
+
+async function fetchGenres(mediaType) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: getContentLanguage(),
+    language: "en-US",
   });
 
   const response = await fetch(`${BASE_URL}/genre/${mediaType}/list?${params}`);
