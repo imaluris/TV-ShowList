@@ -24,31 +24,16 @@ function WatchProviders({ providers }) {
             <div key={group.key} className={styles.group}>
               <span className={styles.label}>{group.label}</span>
               <div className={styles.logos}>
-                {providers[group.key].map((provider) => {
-                  const logo = (
+                {providers[group.key].map((provider) => (
+                  <span key={provider.provider_id} className={styles.logo}>
                     <img
                       src={`${LOGO_URL}${provider.logo_path}`}
                       alt={provider.provider_name}
                       title={provider.provider_name}
                       loading="lazy"
                     />
-                  );
-                  return providers.link ? (
-                    <a
-                      key={provider.provider_id}
-                      className={styles.logo}
-                      href={providers.link}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {logo}
-                    </a>
-                  ) : (
-                    <span key={provider.provider_id} className={styles.logo}>
-                      {logo}
-                    </span>
-                  );
-                })}
+                  </span>
+                ))}
               </div>
             </div>
           ))}
