@@ -44,21 +44,16 @@ function EpisodeDetail() {
     : "";
 
   const guestStars = episode.credits?.guest_stars || [];
-  // Il cast aggregato dello show ha già member.roles[0].character pronto,
-  // non serve trasformarlo (a differenza dei guest stars).
-  const showCast = showCredits?.cast || [];
 
-  // Riga 1: cast principale dello show + eventuali guest non già presenti
-  // tra gli attori fissi, così i protagonisti compaiono per primi.
-  const showCastIds = new Set(showCast.map((member) => member.id));
-  const extraGuests = guestStars
-    .filter((member) => !showCastIds.has(member.id))
-    .map((member) => ({
-      ...member,
-      roles: [{ character: member.character }],
-    }));
-
-  const fullCast = [...showCast, ...extraGuests];
+  // Riga 1: solo gli attori fissi che compaiono in QUESTO episodio
+  // (episode.credits.cast). Se TMDB non li ha, ripieghiamo sul cast
+  // aggregato dell'intera serie (già con roles[0].character pronto).
+  const episodeCast = (episode.credits?.cast || []).map((member) => ({
+    ...member,
+    roles: [{ character: member.character }],
+  }));
+  const fullCast =
+    episodeCast.length > 0 ? episodeCast : showCredits?.cast || [];
 
   // Riga 2: solo gli ospiti specifici di questo episodio.
   const guestCast = guestStars.map((member) => ({
