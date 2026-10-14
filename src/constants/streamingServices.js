@@ -7,12 +7,11 @@ export const STREAMING_KEYWORDS = [
   { label: "Sky Go", keyword: "sky go", network: 1114 },
   { label: "NOW TV", keyword: "now tv", network: 1114 },
   { label: "Infinity+", keyword: "infinity", network: 3980 },
-  // Le piattaforme senza "network" mostrano comunque i titoli disponibili,
-  // ma non la sezione delle esclusive (serve l'ID network di TMDB).
-  { label: "Discovery+", keyword: "discovery", network: null },
-  { label: "RaiPlay", keyword: "raiplay", network: null },
-  { label: "TIMVision", keyword: "timvision", network: null },
-  { label: "Crunchyroll", keyword: "crunchyroll", network: null },
-  { label: "MUBI", keyword: "mubi", network: null },
-  { label: "Chili", keyword: "chili", network: null },
+  // ID network di TMDB: servono per la sezione "esclusive" (la pagina
+  // https://www.themoviedb.org/network/<ID> mostra a quale rete corrisponde).
+  { label: "Discovery+", keyword: "discovery", network: 4883 },
+  { label: "RaiPlay", keyword: "raiplay", network: 3463 },
+  { label: "Crunchyroll", keyword: "crunchyroll", network: 1112 },
+  { label: "MUBI", keyword: "mubi", network: 8303 },
+  { label: "Chili", keyword: "chili", network: 5546 },
 ];
