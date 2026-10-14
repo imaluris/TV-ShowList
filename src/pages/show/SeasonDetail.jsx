@@ -49,14 +49,36 @@ function SeasonDetail() {
   // salvare nel documento Firestore quanti episodi ha la serie in totale.
   const seasons = show.seasons.filter((s) => s.season_number !== 0);
 
-  // Cast della sola stagione (season.credits), così non compaiono attori
-  // presenti solo in altre stagioni. Solo se TMDB non ha il cast della
-  // stagione ripieghiamo su quello aggregato dell'intera serie.
-  const seasonCast = (season.credits?.cast || []).map((member) => ({
+  // Cast della sola stagione: prima gli attori principali (season.credits),
+  // poi gli ospiti che compaiono negli episodi di questa stagione
+  // (guest_stars), ordinati per numero di episodi. Così non ci sono attori
+  // di altre stagioni, ma si vedono anche i ruoli secondari. Se TMDB non ha
+  // nulla per la stagione, ripieghiamo sul cast dell'intera serie.
+  const mainCast = (season.credits?.cast || []).map((member) => ({
     ...member,
     roles: [{ character: member.character }],
   }));
 
+  const mainIds = new Set(mainCast.map((member) => member.id));
+  const guestsById = new Map();
+  season.episodes.forEach((episode) => {
+    (episode.guest_stars || []).forEach((guest) => {
+      if (mainIds.has(guest.id)) return;
+      const entry = guestsById.get(guest.id);
+      if (entry) {
+        entry.count += 1;
+      } else {
+        guestsById.set(guest.id, {
+          ...guest,
+          roles: [{ character: guest.character }],
+          count: 1,
+        });
+      }
+    });
+  });
+  const guests = [...guestsById.values()].sort((a, b) => b.count - a.count);
+
+  const seasonCast = [...mainCast, ...guests];
   const cast = seasonCast.length > 0 ? seasonCast : showCredits?.cast || [];
 
   const airYear = season.air_date ? season.air_date.slice(0, 4) : "";
