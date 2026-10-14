@@ -151,6 +151,17 @@
   margin-top: 0.35rem;
 }
 
+/* Sul telefono la testata è alta e stretta: con l'immagine a tutta altezza se
+   ne vedeva solo la striscia centrale (spesso senza il soggetto). Qui
+   l'immagine occupa un quadrato in alto, così ne mostra molta di più, e
+   sfuma nello sfondo prima della locandina. */
+@media (max-width: 799px) {
+  .media {
+    bottom: auto;
+    height: calc(100vw + env(safe-area-inset-top));
+  }
+}
+
 @media (max-width: 420px) {
   /* Sui telefoni stretti locandina sopra e titolo sotto: più spazio al titolo. */
   .inner {
