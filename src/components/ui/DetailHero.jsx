@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, User } from "lucide-react";
+import BackdropSlideshow from "./BackdropSlideshow";
 import styles from "./DetailHero.module.css";
 
 const BACKDROP_URL = "https://image.tmdb.org/t/p/w1280";
@@ -14,15 +15,30 @@ const POSTER_URL = "https://image.tmdb.org/t/p/w500";
 //           immagini orizzontali per le persone), quindi la mostriamo come
 //           la locandina e lo sfondo è un bagliore color accento, invece di
 //           una foto ingrandita e sfocata.
-function DetailHero({ backdrop, poster, title, subtitle, meta, backTo, onBack, person, children }) {
+//   backdrops: (solo persone) percorsi di immagini di film e serie famosi,
+//              che scorrono da soli come sfondo
+function DetailHero({
+  backdrop,
+  poster,
+  title,
+  subtitle,
+  meta,
+  backTo,
+  onBack,
+  person,
+  backdrops = [],
+  children,
+}) {
   const backgroundPath = person ? null : backdrop || poster;
+  const hasSlideshow = person && backdrops.length > 0;
 
   return (
     <header className={styles.hero}>
       <div
-        className={`${styles.media} ${!backgroundPath ? styles.mediaGlow : ""}`}
+        className={`${styles.media} ${!backgroundPath && !hasSlideshow ? styles.mediaGlow : ""}`}
         aria-hidden="true"
       >
+        {hasSlideshow && <BackdropSlideshow paths={backdrops} />}
         {backgroundPath && (
           <img
             className={backdrop ? styles.backdrop : styles.backdropBlur}

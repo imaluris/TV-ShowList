@@ -113,6 +113,12 @@ function PersonDetail() {
     })
     .slice(0, 15);
 
+  // Immagini di sfondo: i titoli più noti che ne hanno una.
+  const heroBackdrops = knownFor
+    .filter((item) => item.backdrop_path)
+    .slice(0, 5)
+    .map((item) => item.backdrop_path);
+
   const movieList = dedupeAndSort(
     credits.filter((item) => item.media_type === "movie"),
   );
@@ -143,6 +149,7 @@ function PersonDetail() {
       <DetailHero
         poster={person.profile_path}
         person
+        backdrops={heroBackdrops}
         title={person.name}
         subtitle={person.known_for_department}
         onBack={() => navigate(-1)}
