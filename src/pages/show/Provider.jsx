@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   getWatchProviders,
   getTopByProvider,
@@ -11,6 +11,7 @@ import {
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { STREAMING_KEYWORDS } from "../../constants/streamingServices";
 import ShowRow from "../../components/show/ShowRow";
+import GenreRail from "../../components/show/GenreRail";
 import SkeletonRow from "../../components/ui/SkeletonRow";
 import Section from "../../components/ui/Section";
 import PageHeader from "../../components/ui/PageHeader";
@@ -97,17 +98,7 @@ function Provider() {
       )}
 
       <Section title="Genres">
-        <div className={styles.genresGrid}>
-          {genres.map((genre) => (
-            <Link
-              key={genre.id}
-              to={`/genre/${genre.id}?provider=${id}`}
-              className={styles.genreButton}
-            >
-              {genre.name}
-            </Link>
-          ))}
-        </div>
+        <GenreRail genres={genres} linkSuffix={`?provider=${id}`} />
       </Section>
       </div>
     </div>

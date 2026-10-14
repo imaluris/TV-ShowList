@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import {
   getPopularShows,
@@ -12,6 +11,7 @@ import ShowRow from "../../components/show/ShowRow";
 import StreamingIcon from "../../components/show/StreamingIcon";
 import Hero from "../../components/home/Hero";
 import HomeSkeleton from "../../components/home/HomeSkeleton";
+import GenreRail from "../../components/show/GenreRail";
 import Rail from "../../components/ui/Rail";
 import Section from "../../components/ui/Section";
 import SegmentedControl from "../../components/ui/SegmentedControl";
@@ -122,20 +122,7 @@ function Home() {
           <Hero key={mediaType} shows={popular.shows} mediaType={mediaType} />
 
           <Section title="Genres">
-            <div className={styles.genresWrapper}>
-              <div className={styles.genresGrid}>
-                {genres.map((genre) => (
-                  <Link
-                    key={genre.id}
-                    to={`/genre/${genre.id}`}
-                    className={styles.genreButton}
-                  >
-                    {genre.name}
-                  </Link>
-                ))}
-              </div>
-              <div className={styles.fade} />
-            </div>
+            <GenreRail genres={genres} />
           </Section>
 
           <Section title="Streaming platforms">

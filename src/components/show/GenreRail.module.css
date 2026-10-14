@@ -1,0 +1,66 @@
+.row > * {
+  flex: 0 0 auto;
+}
+
+.tile {
+  position: relative;
+  width: 148px;
+  height: 84px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--hue) 55% 42%),
+    hsl(calc(var(--hue) + 28) 60% 26%)
+  );
+  box-shadow: var(--shadow-card);
+  -webkit-tap-highlight-color: transparent;
+  scroll-snap-align: start;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+/* Icona grande, sfumata, in alto a destra: dà carattere senza leggere male il testo. */
+.icon {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  opacity: 0.28;
+  transform: rotate(-12deg);
+  transition: transform 0.35s var(--ease), opacity 0.25s ease;
+}
+
+.name {
+  position: relative;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  overflow-wrap: anywhere;
+}
+
+.tile:active {
+  transform: scale(0.96);
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-pop);
+  }
+
+  .tile:hover .icon {
+    opacity: 0.42;
+    transform: rotate(-4deg) scale(1.08);
+  }
+}
+
+@media (max-width: 400px) {
+  .tile {
+    width: 128px;
+    height: 74px;
+  }
+}
