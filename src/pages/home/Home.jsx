@@ -40,6 +40,13 @@ function Home() {
   const recommendations = useRecommendations(mediaType);
   const { forYou, genreRows, becauseRows } = recommendations;
 
+  // Chi ha già dei consigliati (generi preferiti o titoli visti) non ha
+  // bisogno delle top 10 delle piattaforme: la Home resta più leggera.
+  // Le top 10 servono a chi è nuovo e non ha ancora nulla di personale.
+  const hasPersonalized =
+    forYou.length > 0 || genreRows.length > 0 || becauseRows.length > 0;
+  const showTopRows = !recommendations.loading && !hasPersonalized;
+
   useEffect(() => {
     getPopularShows(mediaType).then((shows) => {
       setPopular({ type: mediaType, shows });
@@ -47,6 +54,9 @@ function Home() {
   }, [mediaType]);
 
   useEffect(() => {
+    // Scarichiamo le top 10 solo se verranno mostrate.
+    if (!showTopRows) return;
+
     async function loadProviderShows() {
       const results = await Promise.all(
         PROVIDERS.map((provider) => getTopByProvider(mediaType, provider.id)),
@@ -61,7 +71,7 @@ function Home() {
     }
 
     loadProviderShows();
-  }, [mediaType]);
+  }, [mediaType, showTopRows]);
 
   useEffect(() => {
     getWatchProviders(mediaType).then((allProviders) => {
@@ -86,7 +96,7 @@ function Home() {
   // La pagina si mostra solo quando tutto è arrivato: prima, gli skeleton.
   const ready =
     popular.type === mediaType &&
-    byProvider.type === mediaType &&
+    (!showTopRows || byProvider.type === mediaType) &&
     icons.type === mediaType &&
     genresData.type === mediaType &&
     !recommendations.loading;
@@ -109,6 +119,23 @@ function Home() {
       ) : (
         <div className={styles.reveal}>
           <Hero key={mediaType} shows={popular.shows} mediaType={mediaType} />
+
+          <Section title="Genres">
+            <div className={styles.genresWrapper}>
+              <div className={styles.genresGrid}>
+                {genres.map((genre) => (
+                  <Link
+                    key={genre.id}
+                    to={`/genre/${genre.id}`}
+                    className={styles.genreButton}
+                  >
+                    {genre.name}
+                  </Link>
+                ))}
+              </div>
+              <div className={styles.fade} />
+            </div>
+          </Section>
 
           <ShowRow title="Recommended for you" shows={forYou} />
 
@@ -133,22 +160,14 @@ function Home() {
 
           <ShowRow title="Popular right now" shows={popular.shows} />
 
-          <Section title="Genres">
-            <div className={styles.genresWrapper}>
-              <div className={styles.genresGrid}>
-                {genres.map((genre) => (
-                  <Link
-                    key={genre.id}
-                    to={`/genre/${genre.id}`}
-                    className={styles.genreButton}
-                  >
-                    {genre.name}
-                  </Link>
-                ))}
-              </div>
-              <div className={styles.fade} />
-            </div>
-          </Section>
+          {showTopRows &&
+            PROVIDERS.map((provider) => (
+              <ShowRow
+                key={provider.id}
+                title={"Top 10 on " + provider.name}
+                shows={byProvider.shows[provider.id] || []}
+              />
+            ))}
 
           <Section title="Streaming platforms">
             <div className={styles.streamingGrid}>
@@ -157,14 +176,6 @@ function Home() {
               ))}
             </div>
           </Section>
-
-          {PROVIDERS.map((provider) => (
-            <ShowRow
-              key={provider.id}
-              title={"Top 10 on " + provider.name}
-              shows={byProvider.shows[provider.id] || []}
-            />
-          ))}
         </div>
       )}
     </div>
