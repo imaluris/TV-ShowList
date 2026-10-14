@@ -17,6 +17,7 @@ import Section from "../../components/ui/Section";
 import FactGrid from "../../components/ui/FactGrid";
 import Rail from "../../components/ui/Rail";
 import SegmentedControl from "../../components/ui/SegmentedControl";
+import { getContentLanguage } from "../../services/language";
 
 function calculateAge(birthday, deathday) {
   if (!birthday) return null;
@@ -91,7 +92,7 @@ function PersonDetail() {
 
   const age = calculateAge(person.birthday, person.deathday);
   const birthdayFormatted = person.birthday
-    ? new Date(person.birthday).toLocaleDateString("it-IT", {
+    ? new Date(person.birthday).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "long",
         year: "numeric",

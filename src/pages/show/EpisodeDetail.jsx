@@ -12,6 +12,7 @@ import DetailHero from "../../components/ui/DetailHero";
 import Section from "../../components/ui/Section";
 import Chips from "../../components/ui/Chips";
 import Rail from "../../components/ui/Rail";
+import { getContentLanguage } from "../../services/language";
 
 function EpisodeDetail() {
   const { showId, seasonNumber, episodeNumber } = useParams();
@@ -35,7 +36,7 @@ function EpisodeDetail() {
   }
 
   const dateFormatted = episode.air_date
-    ? new Date(episode.air_date).toLocaleDateString("it-IT", {
+    ? new Date(episode.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "long",
         year: "numeric",

@@ -6,6 +6,7 @@ import { getTitle, getDate } from "../../utils/media";
 import { ArrowLeft, Search, X } from "lucide-react";
 import Skeleton from "../ui/Skeleton";
 import styles from "./SearchOverlay.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function SearchOverlay({ onClose }) {
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ function SearchOverlay({ onClose }) {
             const title = getTitle(item);
             const date = getDate(item);
             const dateFormatted = date
-              ? new Date(date).toLocaleDateString("it-IT", {
+              ? new Date(date).toLocaleDateString(getContentLanguage(), {
                   day: "numeric",
                   month: "long",
                   year: "numeric",

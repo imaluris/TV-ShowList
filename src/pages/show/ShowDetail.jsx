@@ -22,10 +22,11 @@ import Section from "../../components/ui/Section";
 import FactGrid from "../../components/ui/FactGrid";
 import Chips from "../../components/ui/Chips";
 import Rail from "../../components/ui/Rail";
+import { getContentLanguage } from "../../services/language";
 
 function formatDate(date) {
   if (!date) return "";
-  return new Date(date).toLocaleDateString("it-IT", {
+  return new Date(date).toLocaleDateString(getContentLanguage(), {
     day: "numeric",
     month: "long",
     year: "numeric",

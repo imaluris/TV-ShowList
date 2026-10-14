@@ -9,6 +9,7 @@ import {
   isEpisodeWatched,
 } from "../../services/firestore";
 import styles from "./EpisodeCard.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function EpisodeCard({
   showId,
@@ -27,7 +28,7 @@ function EpisodeCard({
     : null;
 
   const dateFormatted = episode.air_date
-    ? new Date(episode.air_date).toLocaleDateString("it-IT", {
+    ? new Date(episode.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "short",
       })

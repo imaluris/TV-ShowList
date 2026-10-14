@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { IMG_URL } from "../../services/tmdb";
 import styles from "./CreditListItem.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function CreditListItem({ item }) {
   const posterSrc = item.poster_path
@@ -11,7 +12,7 @@ function CreditListItem({ item }) {
   const title = item.title || item.name;
   const date = item.release_date || item.first_air_date;
   const dateFormatted = date
-    ? new Date(date).toLocaleDateString("it-IT", {
+    ? new Date(date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "short",
         year: "numeric",

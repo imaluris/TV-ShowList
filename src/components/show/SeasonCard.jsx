@@ -9,6 +9,7 @@ import {
   isSeasonWatched,
 } from "../../services/firestore";
 import styles from "./SeasonCard.module.css";
+import { getContentLanguage } from "../../services/language";
 
 function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
   const { currentUser } = useAuth();
@@ -19,7 +20,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
     : "https://placehold.co/100x150?text=No+Image";
 
   const dateFormatted = season.air_date
-    ? new Date(season.air_date).toLocaleDateString("it-IT", {
+    ? new Date(season.air_date).toLocaleDateString(getContentLanguage(), {
         day: "numeric",
         month: "long",
         year: "numeric",

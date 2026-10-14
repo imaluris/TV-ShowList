@@ -1,38 +1,49 @@
+import { useState } from "react";
 import { Check } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { LANGUAGES } from "../../services/language";
 import styles from "./Language.module.css";
 
-const LANGUAGES = [
-  { value: "it", label: "Italiano", available: true },
-  { value: "en", label: "English", available: false },
-];
-
 function Language() {
+  const { language, changeLanguage } = useLanguage();
+  const [error, setError] = useState("");
+
+  async function handleSelect(value) {
+    if (value === language) return;
+    setError("");
+    try {
+      await changeLanguage(value);
+    } catch (err) {
+      console.error(err);
+      setError("Could not save your choice. It will be used on this device only.");
+    }
+  }
+
   return (
     <div>
-      <PageHeader title="Regione e lingua" backTo="/profile" />
+      <PageHeader title="Language" backTo="/profile" />
       <div className={styles.page}>
+        <div className={styles.optionsList}>
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.value}
+              type="button"
+              className={styles.option}
+              onClick={() => handleSelect(lang.value)}
+            >
+              <span>{lang.label}</span>
+              {lang.value === language && <Check size={18} className={styles.check} />}
+            </button>
+          ))}
+        </div>
 
-      <div className={styles.optionsList}>
-        {LANGUAGES.map((lang) => (
-          <button
-            key={lang.value}
-            type="button"
-            className={lang.available ? styles.option : styles.optionDisabled}
-            disabled={!lang.available}
-          >
-            <span>
-              {lang.label}
-              {!lang.available && <span className={styles.badge}>Presto disponibile</span>}
-            </span>
-            {lang.value === "it" && <Check size={18} className={styles.check} />}
-          </button>
-        ))}
-      </div>
-
-      <p className={styles.note}>
-        Al momento l'app è disponibile solo in italiano. Altre lingue arriveranno in futuro.
-      </p>
+        <p className={styles.note}>
+          This changes the language of titles, descriptions and biographies
+          that come from TMDB. The app interface is always in English.
+          Where a translation is missing, the original text is shown.
+        </p>
+        {error && <p className={styles.note}>{error}</p>}
       </div>
     </div>
   );

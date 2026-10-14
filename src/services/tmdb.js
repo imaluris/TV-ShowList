@@ -1,3 +1,5 @@
+import { getContentLanguage } from "./language";
+
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMG_URL = "https://image.tmdb.org/t/p/w200";
@@ -6,7 +8,7 @@ export const IMG_URL_LARGE = "https://image.tmdb.org/t/p/w500";
 export async function getPopularShows(mediaType) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/trending/${mediaType}/day?${params}`);
@@ -25,7 +27,7 @@ export async function getTopByProvider(mediaType, providerId, region = "IT") {
     with_watch_providers: providerId,
     watch_region: region,
     sort_by: "popularity.desc",
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
@@ -42,7 +44,7 @@ export async function getTopByProvider(mediaType, providerId, region = "IT") {
 export async function getShowDetails(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/${mediaType}/${id}?${params}`);
@@ -57,7 +59,7 @@ export async function getShowDetails(mediaType, id) {
 export async function getCreditsShow(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/${mediaType}/${id}/credits?${params}`);
@@ -86,7 +88,7 @@ export async function getVideoShow(mediaType, id) {
 export async function getSimilarShows(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/${mediaType}/${id}/similar?${params}`);
@@ -101,7 +103,7 @@ export async function getSimilarShows(mediaType, id) {
 export async function getRecommendedShows(mediaType, id) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(
@@ -120,7 +122,7 @@ export async function getShowsByGenres(mediaType, genreIds) {
     api_key: API_KEY,
     with_genres: genreIds.join(","),
     sort_by: "popularity.desc",
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
@@ -140,7 +142,7 @@ export async function getShowsByAnyGenre(mediaType, genreIds) {
     api_key: API_KEY,
     with_genres: genreIds.join("|"),
     sort_by: "popularity.desc",
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
@@ -157,7 +159,7 @@ export async function getWatchProviders(mediaType, region = "IT") {
   const params = new URLSearchParams({
     api_key: API_KEY,
     watch_region: region,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/watch/providers/${mediaType}?${params}`);
@@ -173,7 +175,7 @@ export async function getWatchProviders(mediaType, region = "IT") {
 export async function getGenres(mediaType) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/genre/${mediaType}/list?${params}`);
@@ -202,7 +204,7 @@ export async function getAggregateCreditsShow(mediaType, id) {
 
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(
@@ -246,7 +248,7 @@ export async function discoverShowsByGenre(mediaType, genreId, filters = {}, pag
   const params = new URLSearchParams({
     api_key: API_KEY,
     with_genres: genreId,
-    language: "it-IT",
+    language: getContentLanguage(),
     sort_by: filters.sortBy || "popularity.desc",
     page: String(page),
   });
@@ -310,7 +312,7 @@ export async function getNewShowsByProvider(mediaType, providerId, region = "IT"
     [`${dateField}.gte`]: weekAgo.toISOString().slice(0, 10),
     [`${dateField}.lte`]: today.toISOString().slice(0, 10),
     sort_by: `${dateField}.desc`,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/discover/${mediaType}?${params}`);
@@ -333,7 +335,7 @@ export async function getExclusivesByNetwork(networkId) {
     api_key: API_KEY,
     with_networks: networkId,
     sort_by: "popularity.desc",
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(`${BASE_URL}/discover/tv?${params}`);
@@ -349,7 +351,7 @@ export async function getExclusivesByNetwork(networkId) {
 export async function getSeasonDetails(showId, seasonNumber) {
   const paramsIt = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
     append_to_response: "credits",
   });
 
@@ -396,7 +398,7 @@ export async function getSeasonDetails(showId, seasonNumber) {
 export async function getEpisodeDetails(showId, seasonNumber, episodeNumber) {
   const paramsIt = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
     append_to_response: "credits",
   });
 
@@ -448,7 +450,7 @@ export async function getPersonImages(personId) {
 export async function getPersonDetails(personId) {
   const paramsIt = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const paramsEn = new URLSearchParams({
@@ -478,7 +480,7 @@ export async function getPersonDetails(personId) {
 export async function getPersonCombinedCredits(personId) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
   });
 
   const response = await fetch(
@@ -496,7 +498,7 @@ export async function getPersonCombinedCredits(personId) {
 export async function searchShows(mediaType, query) {
   const params = new URLSearchParams({
     api_key: API_KEY,
-    language: "it-IT",
+    language: getContentLanguage(),
     query,
   });
 
