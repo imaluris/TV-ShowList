@@ -25,13 +25,13 @@ function WatchProviders({ providers }) {
               <span className={styles.label}>{group.label}</span>
               <div className={styles.logos}>
                 {providers[group.key].map((provider) => (
-                  <span key={provider.provider_id} className={styles.logo}>
+                  <span key={provider.provider_id} className={styles.item}>
                     <img
                       src={`${LOGO_URL}${provider.logo_path}`}
-                      alt={provider.provider_name}
-                      title={provider.provider_name}
+                      alt=""
                       loading="lazy"
                     />
+                    {provider.provider_name}
                   </span>
                 ))}
               </div>
