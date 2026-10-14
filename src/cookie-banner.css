@@ -1,0 +1,65 @@
+.cookie-banner {
+  position: fixed;
+  left: calc(12px + env(safe-area-inset-left));
+  right: calc(12px + env(safe-area-inset-right));
+  /* sopra la barra di navigazione in basso (63px) + zona sicura iPhone */
+  bottom: calc(63px + env(safe-area-inset-bottom) + 12px);
+  z-index: 60; /* il menu in basso ha z-index 50 */
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 1rem 1.1rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-pop);
+  color: var(--text);
+}
+
+.cookie-banner--visible {
+  display: flex;
+  animation: cookie-in 0.3s ease backwards;
+}
+
+@keyframes cookie-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.cookie-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.cookie-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.cookie-btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cookie-btn--decline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.cookie-btn--accept {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #1b1c20;
+}

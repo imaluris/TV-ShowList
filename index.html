@@ -21,6 +21,21 @@
         } catch (e) {}
       })();
     </script>
+
+    <!-- Google Analytics: parte con il consenso NEGATO, lo script del banner
+         lo attiva solo se l'utente accetta. Sostituisci G-XXXXXXXXXX. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("consent", "default", { analytics_storage: "denied" });
+      gtag("js", new Date());
+      gtag("config", "G-M5ERJZ5BKC");
+    </script>
+
+    <link rel="stylesheet" href="/src/cookie-banner.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -30,6 +45,60 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <div
+      id="cookie-banner"
+      class="cookie-banner"
+      role="dialog"
+      aria-label="Cookie consent"
+    >
+      <p class="cookie-text">
+        We use cookies to measure how the app is used and improve it. You can
+        accept or decline.
+      </p>
+      <div class="cookie-actions">
+        <button id="cookie-decline" class="cookie-btn cookie-btn--decline">
+          Decline
+        </button>
+        <button id="cookie-accept" class="cookie-btn cookie-btn--accept">
+          Accept
+        </button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var b = document.getElementById("cookie-banner");
+        var c = null;
+        try {
+          c = localStorage.getItem("ga_consent");
+        } catch (e) {}
+        if (c === "granted") {
+          gtag("consent", "update", { analytics_storage: "granted" });
+        } else if (!c) {
+          b.classList.add("cookie-banner--visible");
+        }
+        function save(value) {
+          try {
+            localStorage.setItem("ga_consent", value);
+          } catch (e) {}
+        }
+        document
+          .getElementById("cookie-accept")
+          .addEventListener("click", function () {
+            save("granted");
+            gtag("consent", "update", { analytics_storage: "granted" });
+            b.classList.remove("cookie-banner--visible");
+          });
+        document
+          .getElementById("cookie-decline")
+          .addEventListener("click", function () {
+            save("denied");
+            b.classList.remove("cookie-banner--visible");
+          });
+      })();
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
