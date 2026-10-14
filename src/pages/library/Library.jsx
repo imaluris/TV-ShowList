@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Bookmark, Clock, Check } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useMediaType } from "../../contexts/MediaTypeContext";
 import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import SkeletonGrid from "../../components/ui/SkeletonGrid";
@@ -8,12 +9,20 @@ import LibraryCard from "../../components/library/LibraryCard";
 import PageHeader from "../../components/ui/PageHeader";
 import styles from "./Library.module.css";
 
+const MEDIA_OPTIONS = [
+  { value: "tv", label: "TV Shows" },
+  { value: "movie", label: "Movies" },
+];
+
+// Le tre schede di stato. "In corso" esiste solo per le serie TV: per i
+// film lo stato "Watching" non c'è (si guarda in una volta sola).
 const TABS = [
   {
     value: LIBRARY_STATUS.TO_WATCH,
     label: "To watch",
     icon: Bookmark,
-    emptyText: "You have nothing to watch yet. Save a title from its detail page.",
+    emptyText: "You have no TV shows to watch yet. Save one from its detail page.",
+    emptyTextMovie: "You have no movies to watch yet. Save one from its detail page.",
   },
   {
     value: LIBRARY_STATUS.WATCHING,
@@ -25,12 +34,14 @@ const TABS = [
     value: LIBRARY_STATUS.WATCHED,
     label: "Watched",
     icon: Check,
-    emptyText: "You haven't marked anything as watched yet.",
+    emptyText: "You haven't marked any TV shows as watched yet.",
+    emptyTextMovie: "You haven't marked any movies as watched yet.",
   },
 ];
 
 function Library() {
   const { currentUser } = useAuth();
+  const { mediaType, setMediaType, isMovie } = useMediaType();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(LIBRARY_STATUS.TO_WATCH);
@@ -50,8 +61,16 @@ function Library() {
     setItems((prev) => prev.filter((item) => item.id !== docId));
   }
 
-  const currentTab = TABS.find((tab) => tab.value === activeTab);
-  const filteredItems = items.filter((item) => item.status === activeTab);
+  const tabs = isMovie
+    ? TABS.filter((tab) => tab.value !== LIBRARY_STATUS.WATCHING)
+    : TABS;
+
+  // Passando ai film mentre "In corso" è selezionata, si ripiega su "Da vedere".
+  const currentTab = tabs.find((tab) => tab.value === activeTab) || tabs[0];
+
+  const filteredItems = items.filter(
+    (item) => item.mediaType === mediaType && item.status === currentTab.value,
+  );
   const EmptyIcon = currentTab.icon;
 
   return (
@@ -59,11 +78,20 @@ function Library() {
       <PageHeader title="Library" />
       <div className={styles.libraryPage}>
 
+      <div className={styles.mediaRow}>
+        <SegmentedControl
+          label="Type"
+          options={MEDIA_OPTIONS}
+          value={mediaType}
+          onChange={setMediaType}
+        />
+      </div>
+
       <div className={styles.tabRow}>
         <SegmentedControl
           label="Status"
-          options={TABS}
-          value={activeTab}
+          options={tabs}
+          value={currentTab.value}
           onChange={setActiveTab}
         />
       </div>
@@ -76,7 +104,9 @@ function Library() {
             <EmptyIcon size={28} />
           </div>
           <p className={styles.emptyTitle}>Nothing here yet</p>
-          <p className={styles.emptyText}>{currentTab.emptyText}</p>
+          <p className={styles.emptyText}>
+            {isMovie ? currentTab.emptyTextMovie || currentTab.emptyText : currentTab.emptyText}
+          </p>
         </div>
       ) : (
         <div className={styles.grid}>
