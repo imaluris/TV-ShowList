@@ -71,8 +71,7 @@
   z-index: 5;
 }
 
-.menuButton,
-.menuButtonActive {
+.menuButton {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -89,9 +88,23 @@
   background: rgba(12, 13, 16, 0.9);
 }
 
-.menuButtonActive {
+/* Colore per stato: da vedere = ambra, in corso = blu, visto = verde. */
+.menuToWatch,
+.menuToWatch:hover {
   background: var(--accent);
-  color: var(--bg);
+  color: #1b1c20;
+}
+
+.menuWatching,
+.menuWatching:hover {
+  background: #4c8dff;
+  color: #fff;
+}
+
+.menuWatched,
+.menuWatched:hover {
+  background: #2fb26a;
+  color: #fff;
 }
 
 .dropdown {

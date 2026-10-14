@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Bookmark, Check, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { IMG_URL, getShowDetails } from "../../services/tmdb";
 import { useMediaType } from "../../contexts/MediaTypeContext";
@@ -17,6 +18,13 @@ import {
   getVisibleOptions,
 } from "../library/libraryMenu";
 import styles from "./ShowCard.module.css";
+
+// Icona e colore del pulsante in base allo stato (⋮ se non è in libreria).
+const STATUS_BUTTON = {
+  [LIBRARY_STATUS.TO_WATCH]: { icon: Bookmark, className: styles.menuToWatch },
+  [LIBRARY_STATUS.WATCHING]: { icon: Clock, className: styles.menuWatching },
+  [LIBRARY_STATUS.WATCHED]: { icon: Check, className: styles.menuWatched },
+};
 
 function ShowCard({ show }) {
   const { mediaType } = useMediaType();
@@ -122,6 +130,8 @@ function ShowCard({ show }) {
   }
 
   const visibleOptions = getVisibleOptions(status, mediaType);
+  const statusButton = STATUS_BUTTON[status];
+  const StatusIcon = statusButton?.icon;
 
   return (
     <Link to={`/show/${mediaType}/${show.id}`} className={styles.card}>
@@ -135,10 +145,14 @@ function ShowCard({ show }) {
         <div className={styles.menuWrapper} ref={wrapperRef}>
           <button
             type="button"
-            className={status ? styles.menuButtonActive : styles.menuButton}
+            className={
+              statusButton
+                ? `${styles.menuButton} ${statusButton.className}`
+                : styles.menuButton
+            }
             onClick={handleToggleMenu}
           >
-            ⋮
+            {StatusIcon ? <StatusIcon size={15} strokeWidth={2.5} /> : "⋮"}
           </button>
 
           {isOpen && (
