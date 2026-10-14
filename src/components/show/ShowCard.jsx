@@ -17,6 +17,7 @@ import {
   isStartedSeries,
   getVisibleOptions,
 } from "../library/libraryMenu";
+import { useConfirm } from "../../hooks/useConfirm";
 import styles from "./ShowCard.module.css";
 
 // Icona e colore del pulsante in base allo stato (⋮ se non è in libreria).
@@ -29,6 +30,7 @@ const STATUS_BUTTON = {
 function ShowCard({ show }) {
   const { mediaType } = useMediaType();
   const { currentUser } = useAuth();
+  const confirm = useConfirm();
   const title = getTitle(show);
   const year = getYear(show);
 
@@ -79,9 +81,12 @@ function ShowCard({ show }) {
     if (!currentUser) return;
 
     if (value === RESET_VALUE) {
-      const confirmed = window.confirm(
-        `Reset all watched episodes of "${title}"?`,
-      );
+      const confirmed = await confirm({
+        title: "Reset progress?",
+        message: `All watched episodes of "${title}" will be cleared and it goes back to "To watch".`,
+        confirmLabel: "Reset",
+        danger: true,
+      });
       if (!confirmed) return;
 
       await setLibraryStatus(currentUser.uid, {
@@ -97,9 +102,12 @@ function ShowCard({ show }) {
     if (value === REMOVE_VALUE) {
       // Rimuovere una serie già iniziata cancella anche le spunte: chiediamo conferma.
       if (isStartedSeries(status, mediaType)) {
-        const confirmed = window.confirm(
-          `Remove "${title}" from your library? You will also lose your watched episodes.`,
-        );
+        const confirmed = await confirm({
+          title: "Remove from library?",
+          message: `"${title}" will be removed and you will lose your watched episodes.`,
+          confirmLabel: "Remove",
+          danger: true,
+        });
         if (!confirmed) return;
       }
 

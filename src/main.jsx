@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { MediaTypeProvider } from "./contexts/MediaTypeContext.jsx";
 import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext.jsx";
+import ConfirmProvider from "./contexts/ConfirmProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -15,7 +16,9 @@ createRoot(document.getElementById("root")).render(
         <AuthProvider>
           <LanguageProvider>
             <MediaTypeProvider>
-              <App />
+              <ConfirmProvider>
+                <App />
+              </ConfirmProvider>
             </MediaTypeProvider>
           </LanguageProvider>
         </AuthProvider>
