@@ -82,10 +82,21 @@ function Provider() {
       />
 
       <div className={styles.container}>
+      <Section title="Genres">
+        <GenreRail genres={genres} linkSuffix={`?provider=${id}`} />
+      </Section>
+
       {popular === null ? (
         <SkeletonRow />
       ) : (
-        <ShowRow title="Popular right now" shows={popular} />
+        <ShowRow
+          title={
+            providerInfo
+              ? `Top 10 on ${providerInfo.provider_name}`
+              : "Top 10"
+          }
+          shows={popular}
+        />
       )}
       {newShows === null ? (
         <SkeletonRow />
@@ -96,10 +107,6 @@ function Provider() {
       {!isMovie && networkId && exclusives.length > 0 && (
         <ShowRow title="Exclusives" shows={exclusives} />
       )}
-
-      <Section title="Genres">
-        <GenreRail genres={genres} linkSuffix={`?provider=${id}`} />
-      </Section>
       </div>
     </div>
   );
