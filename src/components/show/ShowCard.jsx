@@ -72,7 +72,7 @@ function ShowCard({ show }) {
 
     if (value === RESET_VALUE) {
       const confirmed = window.confirm(
-        `Azzerare tutti gli episodi visti di "${title}"?`,
+        `Reset all watched episodes of "${title}"?`,
       );
       if (!confirmed) return;
 
@@ -90,7 +90,7 @@ function ShowCard({ show }) {
       // Rimuovere una serie già iniziata cancella anche le spunte: chiediamo conferma.
       if (isStartedSeries(status, mediaType)) {
         const confirmed = window.confirm(
-          `Rimuovere "${title}" dalla libreria? Perderai anche gli episodi visti.`,
+          `Remove "${title}" from your library? You will also lose your watched episodes.`,
         );
         if (!confirmed) return;
       }

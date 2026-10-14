@@ -40,7 +40,7 @@ function Genres() {
       setError("");
     } catch (err) {
       console.error("Impossibile salvare i generi preferiti:", err);
-      setError("Salvataggio non riuscito, riprova.");
+      setError("Couldn't save. Please try again.");
     }
   }
 
@@ -69,7 +69,7 @@ function Genres() {
       })
       .catch((err) => {
         console.error("Impossibile caricare i generi preferiti:", err);
-        if (!cancelled) setError("Non riesco a caricare i generi salvati.");
+        if (!cancelled) setError("Couldn't load your saved genres.");
       });
 
     return () => {
@@ -97,12 +97,12 @@ function Genres() {
 
   return (
     <div>
-      <PageHeader title="Generi preferiti" backTo="/profile" />
+      <PageHeader title="Favorite genres" backTo="/profile" />
       <div className={styles.page}>
 
       <p className={styles.note}>
-        Seleziona i generi che preferisci ({mediaType === "movie" ? "film" : "serie tv"}):
-        li usiamo per mostrarti titoli consigliati nella Home.
+        Select your favorite genres ({mediaType === "movie" ? "movies" : "TV shows"}):
+        we use them to show you recommended titles on Home.
       </p>
 
       {error && <p className={styles.error}>{error}</p>}

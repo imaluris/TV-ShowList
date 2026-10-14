@@ -39,22 +39,22 @@ export function getAuthErrorMessage(err) {
   switch (err.code) {
     case "auth/wrong-password":
     case "auth/invalid-credential":
-      return "La password attuale non è corretta.";
+      return "Your current password is incorrect.";
     case "auth/weak-password":
-      return "La nuova password è troppo debole (almeno 6 caratteri).";
+      return "The new password is too weak (at least 6 characters).";
     case "auth/email-already-in-use":
-      return "Questa email è già usata da un altro account.";
+      return "This email is already used by another account.";
     case "auth/invalid-email":
-      return "L'indirizzo email non è valido.";
+      return "The email address isn't valid.";
     case "auth/popup-closed-by-user":
     case "auth/cancelled-popup-request":
-      return "Operazione annullata.";
+      return "Operation cancelled.";
     case "auth/too-many-requests":
-      return "Troppi tentativi. Riprova tra qualche minuto.";
+      return "Too many attempts. Please try again in a few minutes.";
     case "auth/requires-recent-login":
-      return "Per sicurezza devi riaccedere: esci, entra di nuovo e riprova.";
+      return "For security, please log in again: log out, log back in, and try again.";
     default:
-      return "Qualcosa è andato storto. Riprova.";
+      return "Something went wrong. Please try again.";
   }
 }
 

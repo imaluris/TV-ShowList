@@ -99,7 +99,7 @@ function EpisodeCard({
         </p>
 
         <p className={styles.overview}>
-          {episode.overview || "Nessuna descrizione disponibile."}
+          {episode.overview || "No description available."}
         </p>
       </div>
 
@@ -107,7 +107,7 @@ function EpisodeCard({
         type="button"
         className={watched ? styles.checkmarkActive : styles.checkmark}
         onClick={handleToggle}
-        aria-label={watched ? "Segna episodio da vedere" : "Segna episodio visto"}
+        aria-label={watched ? "Mark episode as unwatched" : "Mark episode as watched"}
       >
         <Check size={18} />
       </button>

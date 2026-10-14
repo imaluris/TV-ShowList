@@ -5,8 +5,8 @@ import styles from "./BottomNav.module.css";
 
 const NAV_ITEMS = [
   { to: "/", label: "Home", icon: HomeIcon, end: true },
-  { to: "/library", label: "Libreria", icon: Library },
-  { to: "/profile", label: "Profilo", icon: User },
+  { to: "/library", label: "Library", icon: Library },
+  { to: "/profile", label: "Profile", icon: User },
 ];
 
 function BottomNav() {

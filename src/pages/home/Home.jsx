@@ -25,8 +25,8 @@ const PROVIDERS = [
 ];
 
 const MEDIA_OPTIONS = [
-  { value: "tv", label: "Serie TV" },
-  { value: "movie", label: "Film" },
+  { value: "tv", label: "TV Shows" },
+  { value: "movie", label: "Movies" },
 ];
 
 // Ogni dato caricato ricorda per quale mediaType è stato scaricato: se non
@@ -97,7 +97,7 @@ function Home() {
     <div className={styles.homePage}>
       <div className={styles.mediaTypeToggleRow}>
         <SegmentedControl
-          label="Cosa vuoi guardare"
+          label="What do you want to watch"
           options={MEDIA_OPTIONS}
           value={mediaType}
           onChange={setMediaType}
@@ -110,12 +110,12 @@ function Home() {
         <div className={styles.reveal}>
           <Hero key={mediaType} shows={popular.shows} mediaType={mediaType} />
 
-          <ShowRow title="Consigliati per te" shows={forYou} />
+          <ShowRow title="Recommended for you" shows={forYou} />
 
           {becauseRows.map((row) => (
             <ShowRow
               key={row.id}
-              title={`Perché hai visto ${row.title}`}
+              title={`Because you watched ${row.title}`}
               shows={row.shows}
             />
           ))}
@@ -125,15 +125,15 @@ function Home() {
             return (
               <ShowRow
                 key={row.id}
-                title={genre ? `Perché ti piace ${genre.name}` : "Dai tuoi generi preferiti"}
+                title={genre ? `Because you like ${genre.name}` : "From your favorite genres"}
                 shows={row.shows}
               />
             );
           })}
 
-          <ShowRow title="Popolari del momento" shows={popular.shows} />
+          <ShowRow title="Popular right now" shows={popular.shows} />
 
-          <Section title="Generi">
+          <Section title="Genres">
             <div className={styles.genresWrapper}>
               <div className={styles.genresGrid}>
                 {genres.map((genre) => (
@@ -150,7 +150,7 @@ function Home() {
             </div>
           </Section>
 
-          <Section title="Piattaforme streaming">
+          <Section title="Streaming platforms">
             <div className={styles.streamingGrid}>
               {icons.list.map((provider, index) => (
                 <StreamingIcon key={index} provider={provider} />
@@ -161,7 +161,7 @@ function Home() {
           {PROVIDERS.map((provider) => (
             <ShowRow
               key={provider.id}
-              title={"Top 10 su " + provider.name}
+              title={"Top 10 on " + provider.name}
               shows={byProvider.shows[provider.id] || []}
             />
           ))}

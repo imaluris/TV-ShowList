@@ -72,7 +72,7 @@ function Genre() {
   return (
     <div>
       <PageHeader
-        title={genreName || "Genere"}
+        title={genreName || "Genre"}
         backTo="/"
         action={
           <button
@@ -81,7 +81,7 @@ function Genre() {
             onClick={() => setIsModalOpen(true)}
           >
             <SlidersHorizontal size={16} />
-            <span>Filtri</span>
+            <span>Filters</span>
           </button>
         }
       />
@@ -89,16 +89,16 @@ function Genre() {
       <div className={styles.container}>
       {!genreExists ? (
         <p className={styles.message}>
-          Questo genere non esiste per {isMovie ? "i film" : "le serie TV"}.{" "}
-          <Link to="/">Torna alla Home</Link>.
+          This genre does not exist for {isMovie ? "movies" : "TV shows"}.{" "}
+          <Link to="/">Back to Home</Link>.
         </p>
       ) : loading ? (
         <SkeletonGrid />
       ) : shows.length === 0 ? (
         <p className={styles.message}>
           {isMovie
-            ? "Nessun film trovato con questi filtri."
-            : "Nessuna serie TV trovata con questi filtri."}
+            ? "No movies found with these filters."
+            : "No TV shows found with these filters."}
         </p>
       ) : (
         <div className={styles.grid}>
@@ -111,7 +111,7 @@ function Genre() {
       )}
       {!loading && page < totalPages && (
         <button className={styles.loadMoreButton} onClick={loadMore}>
-          Carica altri
+          Load more
         </button>
       )}
       </div>

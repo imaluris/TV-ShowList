@@ -17,9 +17,9 @@ function CreditListItem({ item }) {
         month: "short",
         year: "numeric",
       })
-    : "Data non disponibile";
+    : "Date not available";
 
-  const mediaLabel = item.media_type === "movie" ? "Film" : "Serie TV";
+  const mediaLabel = item.media_type === "movie" ? "Movie" : "TV show";
 
   return (
     <Link to={`/show/${item.media_type === "movie" ? "movie" : "tv"}/${item.id}`} className={styles.card}>
@@ -28,7 +28,7 @@ function CreditListItem({ item }) {
       <div className={styles.info}>
         <p className={styles.title}>{title}</p>
         {item.character && (
-          <p className={styles.character}>come {item.character}</p>
+          <p className={styles.character}>as {item.character}</p>
         )}
         <p className={styles.meta}>
           {item.vote_average > 0 && (

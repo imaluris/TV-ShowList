@@ -37,7 +37,7 @@ function calculateAge(birthday, deathday) {
 
 function getYear(item) {
   const date = item.release_date || item.first_air_date;
-  return date ? date.slice(0, 4) : "Anno sconosciuto";
+  return date ? date.slice(0, 4) : "Unknown year";
 }
 
 function dedupeAndSort(items) {
@@ -123,19 +123,19 @@ function PersonDetail() {
   const activeList = activeTab === "movie" ? movieList : tvList;
 
   const tabs = [
-    { value: "tv", label: `Serie TV (${tvList.length})` },
-    { value: "movie", label: `Film (${movieList.length})` },
+    { value: "tv", label: `TV Shows (${tvList.length})` },
+    { value: "movie", label: `Movies (${movieList.length})` },
   ];
 
   const facts = [
     {
-      label: "Nato/a",
+      label: "Born",
       value: person.birthday
-        ? `${birthdayFormatted}${age !== null ? ` · ${age} anni` : ""}`
+        ? `${birthdayFormatted}${age !== null ? ` · ${age} years old` : ""}`
         : "",
     },
-    { label: "Luogo di nascita", value: person.place_of_birth },
-    { label: "Ruolo", value: person.known_for_department },
+    { label: "Place of birth", value: person.place_of_birth },
+    { label: "Role", value: person.known_for_department },
   ];
 
   return (
@@ -151,9 +151,9 @@ function PersonDetail() {
       <div className={styles.container}>
         <FactGrid facts={facts} />
 
-        <Section title="Biografia">
+        <Section title="Biography">
           <p className={bioExpanded ? styles.bioTextExpanded : styles.bioText}>
-            {person.biography || "Nessuna biografia disponibile."}
+            {person.biography || "No biography available."}
           </p>
           {person.biography && person.biography.length > 300 && (
             <button
@@ -161,13 +161,13 @@ function PersonDetail() {
               className={styles.bioToggle}
               onClick={() => setBioExpanded((prev) => !prev)}
             >
-              {bioExpanded ? "Mostra meno" : "Mostra tutto"}
+              {bioExpanded ? "Show less" : "Show all"}
             </button>
           )}
         </Section>
 
         {knownFor.length > 0 && (
-          <Section title="Più conosciuto/a per">
+          <Section title="Best known for">
             <Rail>
               {knownFor.map((item) => (
                 <KnownForCard key={`${item.media_type}-${item.id}`} item={item} />
@@ -177,7 +177,7 @@ function PersonDetail() {
         )}
 
         {images.length > 0 && (
-          <Section title="Foto">
+          <Section title="Photos">
             <Rail>
               {images.map((image, index) => (
                 <button
@@ -185,7 +185,7 @@ function PersonDetail() {
                   type="button"
                   className={styles.shotButton}
                   onClick={() => setSelectedShot(`${IMG_URL_LARGE}${image.file_path}`)}
-                  aria-label={`Ingrandisci foto ${index + 1}`}
+                  aria-label={`Enlarge photo ${index + 1}`}
                 >
                   <img
                     src={`${IMG_URL}${image.file_path}`}
@@ -199,10 +199,10 @@ function PersonDetail() {
           </Section>
         )}
 
-        <Section title="Filmografia">
+        <Section title="Filmography">
           <div className={styles.tabRow}>
             <SegmentedControl
-              label="Tipo di titolo"
+              label="Title type"
               options={tabs}
               value={activeTab}
               onChange={setActiveTab}
@@ -224,7 +224,7 @@ function PersonDetail() {
               })}
             </div>
           ) : (
-            <p className={styles.empty}>Nessun contenuto disponibile.</p>
+            <p className={styles.empty}>No titles available.</p>
           )}
         </Section>
       </div>
@@ -237,7 +237,7 @@ function PersonDetail() {
               type="button"
               className={styles.modalClose}
               onClick={() => setSelectedShot(null)}
-              aria-label="Chiudi"
+              aria-label="Close"
             >
               <X size={20} />
             </button>

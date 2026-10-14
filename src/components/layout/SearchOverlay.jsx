@@ -56,7 +56,7 @@ function SearchOverlay({ onClose }) {
         <input
           ref={inputRef}
           type="text"
-          placeholder={isMovie ? "Cerca un film..." : "Cerca una serie TV..."}
+          placeholder={isMovie ? "Search for a movie..." : "Search for a TV show..."}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className={styles.input}
@@ -87,12 +87,12 @@ function SearchOverlay({ onClose }) {
         ) : !query.trim() ? (
           <div className={styles.empty}>
             <Search size={28} />
-            <p>{isMovie ? "Scrivi il titolo di un film" : "Scrivi il titolo di una serie TV"}</p>
+            <p>{isMovie ? "Type a movie title" : "Type a TV show title"}</p>
           </div>
         ) : results.length === 0 ? (
           <div className={styles.empty}>
             <Search size={28} />
-            <p>Nessun risultato per "{query}".</p>
+            <p>No results for "{query}".</p>
           </div>
         ) : (
           results.map((item) => {
@@ -123,7 +123,7 @@ function SearchOverlay({ onClose }) {
                     <p className={styles.resultDate}>{dateFormatted}</p>
                   )}
                   <p className={styles.resultOverview}>
-                    {item.overview || "Nessuna descrizione disponibile."}
+                    {item.overview || "No description available."}
                   </p>
                 </div>
               </button>

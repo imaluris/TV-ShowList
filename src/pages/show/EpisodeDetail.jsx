@@ -70,7 +70,7 @@ function EpisodeDetail() {
     <div className={styles.page}>
       <DetailHero
         backdrop={episode.still_path}
-        subtitle={`Stagione ${seasonNumber} · Episodio ${episode.episode_number}`}
+        subtitle={`Season ${seasonNumber} · Episode ${episode.episode_number}`}
         title={episode.name}
         backTo={`/show/${showId}/season/${seasonNumber}`}
         meta={
@@ -90,7 +90,7 @@ function EpisodeDetail() {
 
       <div className={styles.container}>
         <p className={styles.overview}>
-          {episode.overview || "Nessuna descrizione disponibile."}
+          {episode.overview || "No description available."}
         </p>
 
         <Section title="Cast">
@@ -101,7 +101,7 @@ function EpisodeDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun attore disponibile.</p>
+            <p className={styles.empty}>No cast available.</p>
           )}
         </Section>
 
@@ -113,7 +113,7 @@ function EpisodeDetail() {
               ))}
             </Rail>
           ) : (
-            <p className={styles.empty}>Nessun ospite per questo episodio.</p>
+            <p className={styles.empty}>No guest stars for this episode.</p>
           )}
         </Section>
       </div>

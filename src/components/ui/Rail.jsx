@@ -17,7 +17,7 @@ function Rail({ children, className = "" }) {
         type="button"
         className={styles.arrowLeft}
         onClick={() => scrollBy(-400)}
-        aria-label="Scorri indietro"
+        aria-label="Scroll back"
       >
         <ChevronLeft size={20} />
       </button>
@@ -30,7 +30,7 @@ function Rail({ children, className = "" }) {
         type="button"
         className={styles.arrowRight}
         onClick={() => scrollBy(400)}
-        aria-label="Scorri avanti"
+        aria-label="Scroll forward"
       >
         <ChevronRight size={20} />
       </button>

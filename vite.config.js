@@ -13,7 +13,7 @@ export default defineConfig({
       manifest: {
         name: 'TV ShowList',
         short_name: 'TV ShowList',
-        description: 'Traccia le serie TV e i film che guardi, stai guardando o vuoi guardare',
+        description: 'Keep track of the TV shows and movies you have watched, are watching, or want to watch',
         start_url: '/TVShowList/',
         scope: '/TVShowList/',
         display: 'standalone',

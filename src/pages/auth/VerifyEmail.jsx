@@ -37,14 +37,14 @@ function VerifyEmail() {
       </div>
 
       <div className={styles.authCard}>
-        <h1 className={styles.title}>Controlla la tua email</h1>
-        <p className={styles.subtitle}>Un ultimo passaggio</p>
+        <h1 className={styles.title}>Check your email</h1>
+        <p className={styles.subtitle}>One last step</p>
         <p className={styles.message}>
-          Ti abbiamo mandato un link di conferma. Appena lo apri, entri
-          automaticamente nell'app.
+          We sent you a confirmation link. As soon as you open it, you'll be
+          signed in to the app automatically.
         </p>
         <button type="button" className={styles.secondaryButton} onClick={handleLogout}>
-          Esci
+          Log out
         </button>
       </div>
     </div>

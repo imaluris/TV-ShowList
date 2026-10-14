@@ -30,17 +30,17 @@ function AccountDelete() {
 
   return (
     <div>
-      <PageHeader title="Elimina account" backTo="/profile/account" />
+      <PageHeader title="Delete account" backTo="/profile/account" />
       <div className={styles.page}>
 
       <section className={styles.section}>
-        <h2>Questa azione è definitiva</h2>
+        <h2>This action is permanent</h2>
         <p className={styles.hint}>
-          Verranno eliminati il tuo account e tutti i tuoi dati: la libreria con le
-          serie e i film, gli episodi visti e i generi preferiti. Non si può annullare.{" "}
+          Your account and all your data will be deleted: your library of
+          TV shows and movies, watched episodes, and favorite genres. This can't be undone.{" "}
           {usesPassword
-            ? "Per confermare inserisci la tua password."
-            : "Per confermare ti chiederemo di accedere di nuovo con Google."}
+            ? "To confirm, enter your password."
+            : "To confirm, we'll ask you to sign in with Google again."}
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -55,7 +55,7 @@ function AccountDelete() {
             />
           )}
           <button type="submit" className={styles.dangerSubmitButton} disabled={busy}>
-            {busy ? "Eliminazione..." : "Elimina definitivamente il mio account"}
+            {busy ? "Deleting..." : "Permanently delete my account"}
           </button>
         </form>
 
