@@ -9,6 +9,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Codice aggiuntivo del service worker: mostra le notifiche push
+      // (public/push-sw.js).
+      workbox: {
+        importScripts: ['push-sw.js'],
+      },
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'TV ShowList',

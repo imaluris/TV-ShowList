@@ -1,0 +1,82 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 0;
+}
+
+@media (min-width: 800px) {
+  .page {
+    padding: 1.75rem 1.5rem 0;
+  }
+}
+
+.rowsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.description {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.warning,
+.error {
+  margin: 1rem 0 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-card);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.warning {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.error {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.card {
+  margin-top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem;
+}
+
+.cardTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.list li + li {
+  margin-top: 0.6rem;
+}
+
+.list strong {
+  color: var(--text);
+}
+
+.note {
+  margin: 0.9rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}

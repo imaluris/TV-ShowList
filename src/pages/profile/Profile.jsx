@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ProfileRow from "../../components/profile/ProfileRow";
 import { User, Palette, Globe, Tags, Bell, Info, Settings, BarChart3 } from "lucide-react";
@@ -6,7 +5,6 @@ import styles from "./Profile.module.css";
 
 function Profile() {
   const { currentUser } = useAuth();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   return (
     <div className={styles.profilePage}>
@@ -34,12 +32,7 @@ function Profile() {
         <ProfileRow icon={Palette} label="Appearance" to="/profile/appearance" />
         <ProfileRow icon={Globe} label="Language" to="/profile/language" />
         <ProfileRow icon={Tags} label="Favorite genres" to="/profile/genres" />
-        <ProfileRow
-          icon={Bell}
-          label="New episode notifications"
-          toggle={{ checked: notificationsEnabled }}
-          onToggleChange={setNotificationsEnabled}
-        />
+        <ProfileRow icon={Bell} label="Notifications" to="/profile/notifications" />
         <ProfileRow icon={Info} label="About the app" to="/profile/about" />
         <ProfileRow icon={Settings} label="Account settings" to="/profile/account" />
       </div>

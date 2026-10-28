@@ -19,7 +19,7 @@ const firebaseConfig = {
   appId: "1:166275455433:web:59a54506d14bc184823018"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 // Questi due export sono ciò che il resto dell'app userà per parlare
 // con Firebase: "auth" per login/registrazione, "db" per Firestore.
