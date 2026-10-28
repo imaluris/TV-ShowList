@@ -8,6 +8,7 @@ import {
   DEFAULT_SORT,
   sortLibraryItems,
 } from "../../utils/librarySort";
+import { useNewEpisodes } from "../../hooks/useNewEpisodes";
 import SortMenu from "../../components/library/SortMenu";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import SkeletonGrid from "../../components/ui/SkeletonGrid";
@@ -69,6 +70,7 @@ function Library() {
   const [activeTab, setActiveTab] = useState(LIBRARY_STATUS.TO_WATCH);
   const [searchText, setSearchText] = useState("");
   const [sortBy, setSortBy] = useState(loadSavedSort);
+  const newEpisodes = useNewEpisodes(items);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -193,6 +195,7 @@ function Library() {
               key={item.id}
               uid={currentUser.uid}
               item={item}
+              news={newEpisodes[item.id]}
               onRemoved={handleRemoved}
             />
           ))}

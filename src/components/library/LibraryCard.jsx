@@ -4,7 +4,7 @@ import { IMG_URL } from "../../services/tmdb";
 import { removeFromLibrary } from "../../services/firestore";
 import styles from "./LibraryCard.module.css";
 
-function LibraryCard({ uid, item, onRemoved }) {
+function LibraryCard({ uid, item, onRemoved, news }) {
   const posterSrc = item.posterPath
     ? `${IMG_URL}${item.posterPath}`
     : "https://placehold.co/200x300?text=No+Image";
@@ -28,6 +28,14 @@ function LibraryCard({ uid, item, onRemoved }) {
     <Link to={`/show/${item.mediaType}/${item.tmdbId}`} className={styles.card}>
       <div className={styles.posterWrapper}>
         <img src={posterSrc} alt={item.title} />
+
+        {news && (
+          <span className={styles.newBadge}>
+            {news.newSeason
+              ? "New season"
+              : `${news.count} new ${news.count === 1 ? "episode" : "episodes"}`}
+          </span>
+        )}
 
         <button
           type="button"
