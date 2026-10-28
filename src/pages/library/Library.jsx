@@ -3,6 +3,11 @@ import { Bookmark, Clock, Check, Search, X } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
+import {
+  SORT_OPTIONS,
+  DEFAULT_SORT,
+  sortLibraryItems,
+} from "../../utils/librarySort";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import SkeletonGrid from "../../components/ui/SkeletonGrid";
 import LibraryCard from "../../components/library/LibraryCard";
@@ -34,6 +39,19 @@ const TABS = [
   },
 ];
 
+const SORT_STORAGE_KEY = "library-sort";
+
+// Legge l'ordinamento salvato; se manca o non è valido torna al default.
+function loadSavedSort() {
+  try {
+    const saved = localStorage.getItem(SORT_STORAGE_KEY);
+    if (SORT_OPTIONS.some((option) => option.value === saved)) return saved;
+  } catch {
+    // localStorage non disponibile: si usa il default
+  }
+  return DEFAULT_SORT;
+}
+
 // Minuscole e senza accenti, così "amelie" trova "Amélie".
 function normalize(text) {
   return (text || "")
@@ -49,6 +67,7 @@ function Library() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(LIBRARY_STATUS.TO_WATCH);
   const [searchText, setSearchText] = useState("");
+  const [sortBy, setSortBy] = useState(loadSavedSort);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -65,6 +84,16 @@ function Library() {
     setItems((prev) => prev.filter((item) => item.id !== docId));
   }
 
+  function handleSortChange(e) {
+    const value = e.target.value;
+    setSortBy(value);
+    try {
+      localStorage.setItem(SORT_STORAGE_KEY, value);
+    } catch {
+      // se non si può salvare, l'ordine vale solo per questa visita
+    }
+  }
+
   const tabs = isMovie
     ? TABS.filter((tab) => tab.value !== LIBRARY_STATUS.WATCHING)
     : TABS;
@@ -78,11 +107,14 @@ function Library() {
   const searchTerm = normalize(searchText.trim());
   const isSearching = searchTerm.length > 0;
 
-  const filteredItems = items.filter((item) => {
-    if (item.mediaType !== mediaType) return false;
-    if (isSearching) return normalize(item.title).includes(searchTerm);
-    return item.status === currentTab.value;
-  });
+  const filteredItems = sortLibraryItems(
+    items.filter((item) => {
+      if (item.mediaType !== mediaType) return false;
+      if (isSearching) return normalize(item.title).includes(searchTerm);
+      return item.status === currentTab.value;
+    }),
+    sortBy,
+  );
   const EmptyIcon = currentTab.icon;
 
   return (
@@ -112,6 +144,24 @@ function Library() {
             <X size={16} />
           </button>
         )}
+      </div>
+
+      <div className={styles.sortRow}>
+        <label htmlFor="library-sort" className={styles.sortLabel}>
+          Sort by
+        </label>
+        <select
+          id="library-sort"
+          className={styles.sortSelect}
+          value={sortBy}
+          onChange={handleSortChange}
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {!isSearching && (

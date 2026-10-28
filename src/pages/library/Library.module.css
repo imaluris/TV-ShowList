@@ -118,3 +118,31 @@
     gap: 0.9rem;
   }
 }
+
+.sortRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.sortLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.sortSelect {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  padding: 0.45rem 0.9rem;
+  /* 16px: sotto questa soglia Safari su iPhone ingrandisce la pagina al tocco */
+  font-size: 1rem;
+  outline: none;
+}
+
+.sortSelect:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}

@@ -70,6 +70,16 @@ function getStatusFromWatched(watchedEpisodes, slimmedSeasons) {
   return LIBRARY_STATUS.TO_WATCH;
 }
 
+// Data di fine visione: la scriviamo solo nel momento in cui un titolo
+// diventa "Visto" (non se lo era già), così "finito da poco / da parecchio"
+// non cambia quando si tocca un titolo già visto.
+function getWatchedAtField(previousStatus, nextStatus) {
+  const justFinished =
+    nextStatus === LIBRARY_STATUS.WATCHED &&
+    previousStatus !== LIBRARY_STATUS.WATCHED;
+  return justFinished ? { watchedAt: serverTimestamp() } : {};
+}
+
 export function isEpisodeWatched(watchedEpisodes, seasonNumber, episodeNumber) {
   if (!watchedEpisodes) return false;
   return watchedEpisodes.includes(getEpisodeKey(seasonNumber, episodeNumber));
@@ -130,6 +140,7 @@ export async function setLibraryStatus(
         ? { watchedEpisodes: getAllEpisodeKeys(slimmed) }
         : {}),
       ...(shouldClearWatched ? { watchedEpisodes: [] } : {}),
+      ...getWatchedAtField(existing.data()?.status, status),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -215,6 +226,8 @@ export async function toggleEpisodeWatched(
     ? currentWatched.filter((k) => k !== key)
     : [...currentWatched, key];
 
+  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons);
+
   await setDoc(
     ref,
     {
@@ -223,8 +236,9 @@ export async function toggleEpisodeWatched(
       title,
       posterPath,
       watchedEpisodes: nextWatched,
-      status: getStatusFromWatched(nextWatched, knownSeasons),
+      status: nextStatus,
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
+      ...getWatchedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -259,6 +273,8 @@ export async function toggleSeasonWatched(
     ? currentWatched.filter((key) => !seasonKeys.includes(key))
     : [...new Set([...currentWatched, ...seasonKeys])];
 
+  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons);
+
   await setDoc(
     ref,
     {
@@ -267,8 +283,9 @@ export async function toggleSeasonWatched(
       title,
       posterPath,
       watchedEpisodes: nextWatched,
-      status: getStatusFromWatched(nextWatched, knownSeasons),
+      status: nextStatus,
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
+      ...getWatchedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
