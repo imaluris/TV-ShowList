@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bookmark, Clock, Check } from "lucide-react";
+import { Bookmark, Clock, Check, Search, X } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useMediaType } from "../../contexts/MediaTypeContext";
 import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
@@ -34,12 +34,21 @@ const TABS = [
   },
 ];
 
+// Minuscole e senza accenti, così "amelie" trova "Amélie".
+function normalize(text) {
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function Library() {
   const { currentUser } = useAuth();
   const { mediaType, isMovie } = useMediaType();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(LIBRARY_STATUS.TO_WATCH);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     if (!currentUser) return;
@@ -63,9 +72,17 @@ function Library() {
   // Passando ai film mentre "In corso" è selezionata, si ripiega su "Da vedere".
   const currentTab = tabs.find((tab) => tab.value === activeTab) || tabs[0];
 
-  const filteredItems = items.filter(
-    (item) => item.mediaType === mediaType && item.status === currentTab.value,
-  );
+  // Con una ricerca attiva si cerca in tutta la libreria del tipo scelto
+  // (film o serie), qualunque sia la scheda di stato: serve a ritrovare un
+  // titolo senza ricordare dove l'hai messo.
+  const searchTerm = normalize(searchText.trim());
+  const isSearching = searchTerm.length > 0;
+
+  const filteredItems = items.filter((item) => {
+    if (item.mediaType !== mediaType) return false;
+    if (isSearching) return normalize(item.title).includes(searchTerm);
+    return item.status === currentTab.value;
+  });
   const EmptyIcon = currentTab.icon;
 
   return (
@@ -75,17 +92,51 @@ function Library() {
       <PageHeader title={isMovie ? "Movies library" : "TV Shows library"} />
       <div className={styles.libraryPage}>
 
-      <div className={styles.tabRow}>
-        <SegmentedControl
-          label="Status"
-          options={tabs}
-          value={currentTab.value}
-          onChange={setActiveTab}
+      <div className={styles.searchBox}>
+        <Search size={18} className={styles.searchIcon} aria-hidden="true" />
+        <input
+          type="search"
+          className={styles.searchInput}
+          placeholder={isMovie ? "Search your movies" : "Search your TV shows"}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          aria-label="Search your library"
         />
+        {searchText && (
+          <button
+            type="button"
+            className={styles.searchClear}
+            onClick={() => setSearchText("")}
+            aria-label="Clear search"
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
+
+      {!isSearching && (
+        <div className={styles.tabRow}>
+          <SegmentedControl
+            label="Status"
+            options={tabs}
+            value={currentTab.value}
+            onChange={setActiveTab}
+          />
+        </div>
+      )}
 
       {loading ? (
         <SkeletonGrid cards={6} />
+      ) : filteredItems.length === 0 && isSearching ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>
+            <Search size={28} />
+          </div>
+          <p className={styles.emptyTitle}>No results</p>
+          <p className={styles.emptyText}>
+            Nothing in your library matches "{searchText.trim()}".
+          </p>
+        </div>
       ) : filteredItems.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
