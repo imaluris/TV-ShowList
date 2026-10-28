@@ -21,13 +21,15 @@ export function getStartedMillis(item) {
 }
 
 // Dagli episodi di una stagione ({episode_number, air_date}) ricava
-// { key, time } con key "S{stagione}E{episodio}" e time = data di uscita.
+// { key, time, name } con key "S{stagione}E{episodio}", time = data di uscita
+// e name = titolo dell'episodio (se noto).
 export function toDatedKeys(seasonNumber, episodes) {
   return episodes
     .filter((episode) => episode.air_date)
     .map((episode) => ({
       key: `S${seasonNumber}E${episode.episode_number}`,
       time: new Date(episode.air_date).getTime(),
+      name: episode.name || "",
     }));
 }
 

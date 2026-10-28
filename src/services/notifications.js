@@ -33,6 +33,15 @@ function storeToken(token) {
   }
 }
 
+// L'app è installata sul dispositivo (aperta come app, non in una scheda)?
+export function isInstalledApp() {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
+}
+
 // Il browser supporta le notifiche push?
 export async function isPushSupported() {
   if (typeof window === "undefined" || !("Notification" in window)) return false;
@@ -54,6 +63,9 @@ export function isEnabledOnThisDevice() {
 // Lancia Error con un `code` leggibile: not-configured, permission-denied,
 // no-service-worker.
 export async function enableNotifications(uid) {
+  if (!isInstalledApp()) {
+    throw Object.assign(new Error("App not installed"), { code: "not-installed" });
+  }
   if (!VAPID_KEY) {
     throw Object.assign(new Error("VAPID key missing"), { code: "not-configured" });
   }
@@ -77,7 +89,11 @@ export async function enableNotifications(uid) {
 
   await setDoc(
     getNotificationsRef(uid),
-    { tokens: arrayUnion(token), updatedAt: serverTimestamp() },
+    {
+      tokens: arrayUnion(token),
+      seen: { [token]: serverTimestamp() },
+      updatedAt: serverTimestamp(),
+    },
     { merge: true },
   );
   storeToken(token);
@@ -102,4 +118,29 @@ export async function disableNotifications(uid) {
     }
   }
   storeToken(null);
+}
+
+// Segna che l'app è stata aperta su questo dispositivo (al massimo una volta
+// al giorno). Il controllo giornaliero toglie i dispositivi che non si fanno
+// vivi da 45 giorni, cioè dove l'app è stata disinstallata.
+const SEEN_STORAGE_KEY = "push-seen-at";
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+export async function touchNotificationDevice(uid) {
+  const token = readStoredToken();
+  if (!token || !isInstalledApp() || getPermission() !== "granted") return;
+
+  try {
+    const last = Number(localStorage.getItem(SEEN_STORAGE_KEY)) || 0;
+    if (Date.now() - last < ONE_DAY_MS) return;
+
+    await setDoc(
+      getNotificationsRef(uid),
+      { seen: { [token]: serverTimestamp() } },
+      { merge: true },
+    );
+    localStorage.setItem(SEEN_STORAGE_KEY, String(Date.now()));
+  } catch (err) {
+    console.error("Impossibile aggiornare il dispositivo:", err);
+  }
 }

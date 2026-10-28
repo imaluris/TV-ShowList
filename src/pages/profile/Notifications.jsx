@@ -5,6 +5,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import ProfileRow from "../../components/profile/ProfileRow";
 import {
   isPushSupported,
+  isInstalledApp,
   getPermission,
   isEnabledOnThisDevice,
   enableNotifications,
@@ -13,6 +14,8 @@ import {
 import styles from "./Notifications.module.css";
 
 const ERROR_MESSAGES = {
+  "not-installed":
+    "Install the app on this device first, then turn notifications on from the installed app.",
   "not-configured": "Notifications are not set up yet.",
   "permission-denied":
     "Notifications are blocked. Allow them for this site in your browser settings, then try again.",
@@ -26,6 +29,7 @@ function Notifications() {
   const [enabled, setEnabled] = useState(isEnabledOnThisDevice());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const installed = isInstalledApp();
 
   useEffect(() => {
     isPushSupported()
@@ -35,6 +39,10 @@ function Notifications() {
 
   async function handleToggle(next) {
     if (!currentUser || busy) return;
+    if (next && !installed) {
+      setError(ERROR_MESSAGES["not-installed"]);
+      return;
+    }
     setBusy(true);
     setError("");
     // Aggiornamento immediato: l'interruttore risponde subito al tocco e
@@ -78,6 +86,15 @@ function Notifications() {
           </p>
         )}
 
+        {!installed && (
+          <p className={styles.warning}>
+            Notifications only work in the installed app. Install it first:
+            on Android and computers use the browser menu, "Install app"; on
+            iPhone and iPad tap Share, then "Add to Home Screen". Then open
+            the app and turn them on here.
+          </p>
+        )}
+
         {supported === false && (
           <p className={styles.warning}>
             This browser doesn't support push notifications. On iPhone and iPad
@@ -93,23 +110,24 @@ function Notifications() {
           <p className={styles.cardTitle}>Where do notifications work?</p>
           <ul className={styles.list}>
             <li>
-              <strong>Android:</strong> in Chrome, even without installing the
-              app. They arrive with the browser closed too. Installing the app
-              makes them more reliable.
+              <strong>Android:</strong> install the app from Chrome (menu,
+              "Install app"). Notifications arrive even when it's closed.
             </li>
             <li>
-              <strong>iPhone and iPad:</strong> only if you install the app
-              (Share, then "Add to Home Screen"), with iOS 16.4 or newer. From
-              the normal browser they don't arrive.
+              <strong>iPhone and iPad:</strong> install the app (Share, then
+              "Add to Home Screen"), with iOS 16.4 or newer. From the normal
+              browser they don't arrive.
             </li>
             <li>
-              <strong>Windows and Mac:</strong> in Chrome, Edge or Firefox, as
-              long as the browser is running, even in the background.
+              <strong>Windows and Mac:</strong> install the app from Chrome or
+              Edge (the install icon in the address bar). They arrive as long
+              as the browser is running, even in the background.
             </li>
           </ul>
           <p className={styles.note}>
-            You need to allow notifications on each device separately. You can
-            turn them off at any time here.
+            You need to turn them on on each device separately. If you remove the
+            app from a device, you stop receiving them there. You can also turn
+            them off at any time here.
           </p>
         </div>
       </div>

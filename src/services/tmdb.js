@@ -595,5 +595,6 @@ export async function getSeasonAirDates(showId, seasonNumber) {
   return (data.episodes || []).map((episode) => ({
     episode_number: episode.episode_number,
     air_date: episode.air_date,
+    name: episode.name,
   }));
 }

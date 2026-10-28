@@ -67,6 +67,18 @@ async function loadEpisodes(tmdbId, startedMs) {
   return episodes;
 }
 
+// Un dispositivo che non apre l'app da più di 45 giorni si considera
+// disinstallato: il suo token viene tolto. L'app aggiorna `seen` a ogni
+// apertura (al massimo una volta al giorno). Senza `seen` (token vecchi) non
+// si scarta nulla.
+const STALE_DAYS = 45;
+
+function isStale(seen, token) {
+  const stamp = seen?.[token];
+  if (!stamp) return false;
+  return Date.now() - stamp.toMillis() > STALE_DAYS * 24 * 60 * 60 * 1000;
+}
+
 // Utenti con almeno un token: { uid, tokens, notificationsRef }.
 async function getSubscribers() {
   const snapshot = await db.collectionGroup("profile").get();
@@ -74,11 +86,15 @@ async function getSubscribers() {
 
   snapshot.forEach((docSnap) => {
     if (docSnap.id !== "notifications") return;
-    const tokens = docSnap.data().tokens || [];
-    if (tokens.length === 0) return;
+    const data = docSnap.data();
+    const allTokens = data.tokens || [];
+    const tokens = allTokens.filter((token) => !isStale(data.seen, token));
+    const staleTokens = allTokens.filter((token) => isStale(data.seen, token));
+    if (tokens.length === 0 && staleTokens.length === 0) return;
     subscribers.push({
       uid: docSnap.ref.parent.parent.id,
       tokens,
+      staleTokens,
       notificationsRef: docSnap.ref,
     });
   });
@@ -103,12 +119,13 @@ async function findNews(uid) {
       const watched = new Set(item.watchedEpisodes || []);
       const startedMs = getStartedMillis(item);
       const now = Date.now();
-      const newKeys = episodes
+      const newEpisodes = episodes
         .filter((e) => e.time > startedMs && e.time <= now && !watched.has(e.key))
-        .map((e) => e.key);
+        .sort((a, b) => a.time - b.time);
 
       const alreadyNotified = new Set(item.notifiedEpisodes || []);
-      const toNotify = newKeys.filter((key) => !alreadyNotified.has(key));
+      const toNotifyEpisodes = newEpisodes.filter((e) => !alreadyNotified.has(e.key));
+      const toNotify = toNotifyEpisodes.map((e) => e.key);
 
       // Una serie "Vista" con novità torna "In corso".
       if (item.status === "watched" && !DRY_RUN) {
@@ -120,6 +137,7 @@ async function findNews(uid) {
           docRef: docSnap.ref,
           title: item.title,
           news,
+          episodes: toNotifyEpisodes,
           newKeys: toNotify,
         });
       }
@@ -130,9 +148,25 @@ async function findNews(uid) {
   return results;
 }
 
-function describe({ news }) {
-  if (news.newSeason) return "A new season is available";
-  return news.count === 1 ? "1 new episode available" : `${news.count} new episodes available`;
+// "S2E5" -> "Season 2, episode 5"
+function formatKey(key) {
+  const [, season, episode] = key.match(/^S(\d+)E(\d+)$/) || [];
+  return season ? `S${season}E${episode}` : key;
+}
+
+// Testo della notifica: quali episodi sono usciti, con il titolo se c'è.
+// Un episodio:  "S2E5 · Titolo dell'episodio"
+// Più episodi:  "S2E5 · Titolo, S2E6 · Titolo" (al massimo 2, poi "e altri N")
+// Nuova stagione: "New season: S3E1 · Titolo e altri 7 episodi"
+function describe({ news, episodes }) {
+  const label = (episode) =>
+    episode.name ? `${formatKey(episode.key)} · ${episode.name}` : formatKey(episode.key);
+
+  const shown = episodes.slice(0, 2).map(label).join(", ");
+  const rest = episodes.length - 2;
+  const list = rest > 0 ? `${shown} and ${rest} more` : shown;
+
+  return news.newSeason ? `New season: ${list}` : list;
 }
 
 // Costruisce le notifiche: una per serie, oppure una sola riassuntiva.
@@ -182,11 +216,25 @@ async function sendMessages(subscriber, messages) {
   }
 }
 
+// Toglie da Firestore i dispositivi che non si fanno vivi da troppo tempo.
+async function removeStaleTokens(subscriber) {
+  if (subscriber.staleTokens.length === 0) return;
+  console.log(`${subscriber.uid}: tolti ${subscriber.staleTokens.length} dispositivi inattivi`);
+  if (DRY_RUN) return;
+  await subscriber.notificationsRef.set(
+    { tokens: FieldValue.arrayRemove(...subscriber.staleTokens) },
+    { merge: true },
+  );
+}
+
 async function main() {
   const subscribers = await getSubscribers();
   console.log(`Utenti con le notifiche attive: ${subscribers.length}`);
 
   for (const subscriber of subscribers) {
+    await removeStaleTokens(subscriber);
+    if (subscriber.tokens.length === 0) continue;
+
     const found = await findNews(subscriber.uid);
     if (found.length === 0) {
       console.log(`${subscriber.uid}: nessuna novità`);
@@ -196,7 +244,7 @@ async function main() {
     const messages = buildMessages(found);
     console.log(
       `${subscriber.uid}: ${found.length} serie con novità`,
-      found.map((f) => `${f.title} (${f.newKeys.join(", ")})`),
+      messages.map((m) => `${m.title}: ${m.body}`),
     );
     if (DRY_RUN) continue;
 
