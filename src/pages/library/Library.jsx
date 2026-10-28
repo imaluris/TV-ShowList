@@ -124,6 +124,7 @@ function Library() {
       <PageHeader title={isMovie ? "Movies library" : "TV Shows library"} />
       <div className={styles.libraryPage}>
 
+      <div className={styles.toolbar}>
       <div className={styles.searchBox}>
         <Search size={18} className={styles.searchIcon} aria-hidden="true" />
         <input
@@ -145,16 +146,11 @@ function Library() {
           </button>
         )}
       </div>
-
-      <div className={styles.sortRow}>
-        <label htmlFor="library-sort" className={styles.sortLabel}>
-          Sort by
-        </label>
         <select
-          id="library-sort"
           className={styles.sortSelect}
           value={sortBy}
           onChange={handleSortChange}
+          aria-label="Sort library"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

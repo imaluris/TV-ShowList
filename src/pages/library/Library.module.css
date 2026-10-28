@@ -4,10 +4,18 @@
   padding: 1.25rem 1rem 0;
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 680px;
+  margin: 0 auto 1rem;
+}
+
 .searchBox {
   position: relative;
-  max-width: 520px;
-  margin: 0 auto 1rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .searchIcon {
@@ -119,24 +127,15 @@
   }
 }
 
-.sortRow {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.9rem;
-}
-
-.sortLabel {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
 .sortSelect {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   color: var(--text);
-  padding: 0.45rem 0.9rem;
+  height: 44px;
+  flex-shrink: 0;
+  max-width: 42%;
+  padding: 0 0.9rem;
   /* 16px: sotto questa soglia Safari su iPhone ingrandisce la pagina al tocco */
   font-size: 1rem;
   outline: none;
