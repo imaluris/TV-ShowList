@@ -37,15 +37,13 @@ function Notifications() {
     if (!currentUser || busy) return;
     setBusy(true);
     setError("");
+    // Aggiornamento immediato: l'interruttore risponde subito al tocco e
+    // torna indietro solo se l'operazione fallisce.
+    setEnabled(next);
 
     try {
-      if (next) {
-        await enableNotifications(currentUser.uid);
-        setEnabled(true);
-      } else {
-        await disableNotifications(currentUser.uid);
-        setEnabled(false);
-      }
+      if (next) await enableNotifications(currentUser.uid);
+      else await disableNotifications(currentUser.uid);
     } catch (err) {
       console.error(err);
       setError(ERROR_MESSAGES[err.code] || "Something went wrong. Please try again.");
@@ -73,6 +71,12 @@ function Notifications() {
           watching, or when a new season arrives for one you have finished.
           This setting applies to this device only.
         </p>
+
+        {busy && (
+          <p className={styles.description}>
+            {enabled ? "Turning on..." : "Turning off..."}
+          </p>
+        )}
 
         {supported === false && (
           <p className={styles.warning}>
