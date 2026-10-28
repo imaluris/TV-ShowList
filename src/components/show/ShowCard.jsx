@@ -10,7 +10,7 @@ import {
   setLibraryStatus,
   removeFromLibrary,
 } from "../../services/firestore";
-import { getTitle, getYear } from "../../utils/media";
+import { getTitle, getYear, isShowOngoing } from "../../utils/media";
 import {
   RESET_VALUE,
   REMOVE_VALUE,
@@ -118,10 +118,12 @@ function ShowCard({ show }) {
     // La card non conosce le stagioni: se segni una serie come "Vista",
     // le scarichiamo adesso per poter marcare tutti gli episodi.
     let seasons;
+    let isOngoing;
     if (value === LIBRARY_STATUS.WATCHED && mediaType === "tv") {
       try {
         const details = await getShowDetails("tv", show.id);
         seasons = details.seasons;
+        isOngoing = isShowOngoing(details);
       } catch (err) {
         console.error("Impossibile caricare le stagioni:", err);
       }
@@ -134,6 +136,7 @@ function ShowCard({ show }) {
       title,
       posterPath: show.poster_path,
       seasons,
+      isOngoing,
     });
   }
 

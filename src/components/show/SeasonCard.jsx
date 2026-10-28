@@ -11,7 +11,15 @@ import {
 import styles from "./SeasonCard.module.css";
 import { getContentLanguage } from "../../services/language";
 
-function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
+function SeasonCard({
+  showId,
+  mediaType,
+  title,
+  posterPath,
+  seasons,
+  isOngoing,
+  season,
+}) {
   const { currentUser } = useAuth();
   const [watchedEpisodes, setWatchedEpisodes] = useState([]);
 
@@ -61,6 +69,7 @@ function SeasonCard({ showId, mediaType, title, posterPath, seasons, season }) {
       title,
       posterPath,
       seasons,
+      isOngoing,
     });
   }
 

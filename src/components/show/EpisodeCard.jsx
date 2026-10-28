@@ -17,6 +17,7 @@ function EpisodeCard({
   title,
   posterPath,
   seasons,
+  isOngoing,
   seasonNumber,
   episode,
 }) {
@@ -68,6 +69,7 @@ function EpisodeCard({
       title,
       posterPath,
       seasons,
+      isOngoing,
     });
   }
 

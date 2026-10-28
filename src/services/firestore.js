@@ -60,12 +60,16 @@ function getAllEpisodeKeys(slimmedSeasons) {
 
 // Lo stato della serie dipende da quanti episodi sono spuntati:
 // tutti -> Vista, almeno uno -> In corso, nessuno -> Da vedere.
-function getStatusFromWatched(watchedEpisodes, slimmedSeasons) {
+// Eccezione: se la serie è ancora in corso (ne usciranno altri episodi),
+// averli visti tutti la lascia "In corso", non "Vista".
+function getStatusFromWatched(watchedEpisodes, slimmedSeasons, isOngoing) {
   const allKeys = slimmedSeasons?.length ? getAllEpisodeKeys(slimmedSeasons) : [];
   const isComplete =
     allKeys.length > 0 && allKeys.every((key) => watchedEpisodes.includes(key));
 
-  if (isComplete) return LIBRARY_STATUS.WATCHED;
+  if (isComplete) {
+    return isOngoing ? LIBRARY_STATUS.WATCHING : LIBRARY_STATUS.WATCHED;
+  }
   if (watchedEpisodes.length > 0) return LIBRARY_STATUS.WATCHING;
   return LIBRARY_STATUS.TO_WATCH;
 }
@@ -109,10 +113,11 @@ export function subscribeToLibraryItem(uid, mediaType, tmdbId, onChange) {
 
 export async function setLibraryStatus(
   uid,
-  { mediaType, tmdbId, status, title, posterPath, seasons },
+  { mediaType, tmdbId, status, title, posterPath, seasons, isOngoing },
 ) {
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
+  const ongoing = isOngoing ?? existing.data()?.isOngoing ?? false;
 
   const slimmed = seasons?.length ? slimSeasons(seasons) : null;
 
@@ -127,20 +132,27 @@ export async function setLibraryStatus(
   // una serie da vedere non può avere episodi già visti.
   const shouldClearWatched = status === LIBRARY_STATUS.TO_WATCH;
 
+  // Una serie in corso segnata "Vista" ha tutti gli episodi usciti spuntati,
+  // ma resta "In corso" perché ne usciranno altri.
+  const finalStatus = shouldMarkAllWatched
+    ? getStatusFromWatched(getAllEpisodeKeys(slimmed), slimmed, ongoing)
+    : status;
+
   await setDoc(
     ref,
     {
       mediaType,
       tmdbId,
-      status,
+      status: finalStatus,
       title,
       posterPath,
+      ...(isOngoing !== undefined ? { isOngoing } : {}),
       ...(slimmed ? { seasons: slimmed } : {}),
       ...(shouldMarkAllWatched
         ? { watchedEpisodes: getAllEpisodeKeys(slimmed) }
         : {}),
       ...(shouldClearWatched ? { watchedEpisodes: [] } : {}),
-      ...getWatchedAtField(existing.data()?.status, status),
+      ...getWatchedAtField(existing.data()?.status, finalStatus),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -151,7 +163,13 @@ export async function setLibraryStatus(
 // Allinea le stagioni salvate a quelle attuali di TMDB (es. è uscita una
 // nuova stagione). Lavora solo su serie già in libreria e scrive solo se
 // qualcosa è davvero cambiato.
-export async function refreshLibrarySeasons(uid, mediaType, tmdbId, seasons) {
+export async function refreshLibrarySeasons(
+  uid,
+  mediaType,
+  tmdbId,
+  seasons,
+  isOngoing = false,
+) {
   if (mediaType !== "tv" || !seasons?.length) return;
 
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
@@ -161,18 +179,25 @@ export async function refreshLibrarySeasons(uid, mediaType, tmdbId, seasons) {
   const data = snapshot.data();
   const slimmed = slimSeasons(seasons);
 
-  if (JSON.stringify(slimmed) === JSON.stringify(data.seasons)) return;
+  const seasonsChanged = JSON.stringify(slimmed) !== JSON.stringify(data.seasons);
+  const ongoingChanged = Boolean(data.isOngoing) !== isOngoing;
+  if (!seasonsChanged && !ongoingChanged) return;
 
   // Serie segnate "Viste" prima di questa funzione non hanno la lista
   // degli episodi: per quelle aggiorniamo solo le stagioni, lo stato resta.
   const hasWatchedList = Array.isArray(data.watchedEpisodes);
 
+  const nextStatus = hasWatchedList
+    ? getStatusFromWatched(data.watchedEpisodes, slimmed, isOngoing)
+    : null;
+
   await setDoc(
     ref,
     {
       seasons: slimmed,
-      ...(hasWatchedList
-        ? { status: getStatusFromWatched(data.watchedEpisodes, slimmed) }
+      isOngoing,
+      ...(nextStatus
+        ? { status: nextStatus, ...getWatchedAtField(data.status, nextStatus) }
         : {}),
     },
     { merge: true },
@@ -210,7 +235,16 @@ export function subscribeToLibrary(uid, onChange) {
 
 export async function toggleEpisodeWatched(
   uid,
-  { mediaType, tmdbId, seasonNumber, episodeNumber, title, posterPath, seasons },
+  {
+    mediaType,
+    tmdbId,
+    seasonNumber,
+    episodeNumber,
+    title,
+    posterPath,
+    seasons,
+    isOngoing,
+  },
 ) {
   const ref = getLibraryDocRef(uid, mediaType, tmdbId);
   const existing = await getDoc(ref);
@@ -226,7 +260,8 @@ export async function toggleEpisodeWatched(
     ? currentWatched.filter((k) => k !== key)
     : [...currentWatched, key];
 
-  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons);
+  const ongoing = isOngoing ?? data?.isOngoing ?? false;
+  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons, ongoing);
 
   await setDoc(
     ref,
@@ -237,6 +272,7 @@ export async function toggleEpisodeWatched(
       posterPath,
       watchedEpisodes: nextWatched,
       status: nextStatus,
+      ...(isOngoing !== undefined ? { isOngoing } : {}),
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
       ...getWatchedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),
@@ -250,7 +286,16 @@ export async function toggleEpisodeWatched(
 
 export async function toggleSeasonWatched(
   uid,
-  { mediaType, tmdbId, seasonNumber, episodeCount, title, posterPath, seasons },
+  {
+    mediaType,
+    tmdbId,
+    seasonNumber,
+    episodeCount,
+    title,
+    posterPath,
+    seasons,
+    isOngoing,
+  },
 ) {
   // Una stagione senza episodi (es. non ancora uscita) non si può spuntare:
   // senza questo controllo risulterebbe "già vista" e svuoterebbe le spunte.
@@ -273,7 +318,8 @@ export async function toggleSeasonWatched(
     ? currentWatched.filter((key) => !seasonKeys.includes(key))
     : [...new Set([...currentWatched, ...seasonKeys])];
 
-  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons);
+  const ongoing = isOngoing ?? data?.isOngoing ?? false;
+  const nextStatus = getStatusFromWatched(nextWatched, knownSeasons, ongoing);
 
   await setDoc(
     ref,
@@ -284,6 +330,7 @@ export async function toggleSeasonWatched(
       posterPath,
       watchedEpisodes: nextWatched,
       status: nextStatus,
+      ...(isOngoing !== undefined ? { isOngoing } : {}),
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
       ...getWatchedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),

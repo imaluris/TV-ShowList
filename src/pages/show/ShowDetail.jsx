@@ -9,7 +9,7 @@ import {
 } from "../../services/tmdb";
 import { useAuth } from "../../contexts/AuthContext";
 import { refreshLibrarySeasons } from "../../services/firestore";
-import { getTitle } from "../../utils/media";
+import { getTitle, isShowOngoing } from "../../utils/media";
 import styles from "./ShowDetail.module.css";
 import ShowRow from "../../components/show/ShowRow";
 import SeasonCard from "../../components/show/SeasonCard";
@@ -75,7 +75,13 @@ function ShowDetail() {
   useEffect(() => {
     if (!show || !currentUser || mediaType !== "tv") return;
 
-    refreshLibrarySeasons(currentUser.uid, mediaType, show.id, show.seasons);
+    refreshLibrarySeasons(
+      currentUser.uid,
+      mediaType,
+      show.id,
+      show.seasons,
+      isShowOngoing(show),
+    );
   }, [show, currentUser, mediaType]);
 
   useEffect(() => {
@@ -103,6 +109,7 @@ function ShowDetail() {
   }
 
   const title = getTitle(show);
+  const isOngoing = isShowOngoing(show);
 
   // Stagioni "vere" (senza la 0, gli speciali). Vengono passate ai
   // componenti che salvano su Firestore, così il documento della serie
@@ -164,6 +171,7 @@ function ShowDetail() {
           title={title}
           posterPath={show.poster_path}
           seasons={seasons}
+          isOngoing={isOngoing}
         />
       </DetailHero>
 
@@ -209,6 +217,7 @@ function ShowDetail() {
                   title={title}
                   posterPath={show.poster_path}
                   seasons={seasons}
+                  isOngoing={isOngoing}
                   season={season}
                 />
               ))}

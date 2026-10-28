@@ -30,7 +30,14 @@ const STATUS_ICONS = {
   [LIBRARY_STATUS.WATCHED]: Check,
 };
 
-function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons }) {
+function LibraryStatusButtons({
+  mediaType,
+  tmdbId,
+  title,
+  posterPath,
+  seasons,
+  isOngoing,
+}) {
   const { currentUser } = useAuth();
   const confirm = useConfirm();
   const [status, setStatus] = useState(null);
@@ -86,6 +93,7 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
         title,
         posterPath,
         seasons,
+        isOngoing,
       });
       return;
     }
@@ -113,6 +121,7 @@ function LibraryStatusButtons({ mediaType, tmdbId, title, posterPath, seasons })
       title,
       posterPath,
       seasons,
+      isOngoing,
     });
   }
 

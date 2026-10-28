@@ -5,7 +5,7 @@ import {
   getSeasonDetails,
   getAggregateCreditsShow,
 } from "../../services/tmdb";
-import { getTitle } from "../../utils/media";
+import { getTitle, isShowOngoing } from "../../utils/media";
 import CastCard from "../../components/show/CastCard";
 import EpisodeCard from "../../components/show/EpisodeCard";
 import styles from "./SeasonDetail.module.css";
@@ -107,6 +107,7 @@ function SeasonDetail() {
                 title={showTitle}
                 posterPath={show.poster_path}
                 seasons={seasons}
+                isOngoing={isShowOngoing(show)}
                 seasonNumber={seasonNumber}
                 episode={episode}
               />
