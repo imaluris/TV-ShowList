@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bookmark, Clock, Check, Search, X } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useMediaType } from "../../contexts/MediaTypeContext";
-import { subscribeToLibrary, LIBRARY_STATUS } from "../../services/firestore";
+import {
+  subscribeToLibrary,
+  reopenWatchedSeries,
+  LIBRARY_STATUS,
+} from "../../services/firestore";
 import {
   SORT_OPTIONS,
   DEFAULT_SORT,
@@ -71,6 +75,7 @@ function Library() {
   const [searchText, setSearchText] = useState("");
   const [sortBy, setSortBy] = useState(loadSavedSort);
   const newEpisodes = useNewEpisodes(items);
+  const reopenedIds = useRef(new Set());
 
   useEffect(() => {
     if (!currentUser) return;
@@ -82,6 +87,23 @@ function Library() {
 
     return unsubscribe;
   }, [currentUser]);
+
+  // Una serie "Watched" con episodi nuovi torna "Watching" (una volta sola).
+  useEffect(() => {
+    if (!currentUser) return;
+
+    items.forEach((item) => {
+      const isWatched = item.status === LIBRARY_STATUS.WATCHED;
+      if (!isWatched || !newEpisodes[item.id]) return;
+      if (reopenedIds.current.has(item.id)) return;
+
+      reopenedIds.current.add(item.id);
+      reopenWatchedSeries(currentUser.uid, item.tmdbId).catch((err) => {
+        reopenedIds.current.delete(item.id);
+        console.error("Impossibile riaprire la serie:", err);
+      });
+    });
+  }, [items, newEpisodes, currentUser]);
 
   function handleRemoved(docId) {
     setItems((prev) => prev.filter((item) => item.id !== docId));

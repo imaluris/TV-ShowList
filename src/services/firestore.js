@@ -229,6 +229,22 @@ export async function refreshLibrarySeasons(
   );
 }
 
+// Una serie "Vista" con episodi nuovi da guardare torna "In corso".
+// Non tocca le spunte né le date: cambia solo lo stato.
+export async function reopenWatchedSeries(uid, tmdbId) {
+  const ref = getLibraryDocRef(uid, "tv", tmdbId);
+  const snapshot = await getDoc(ref);
+  if (!snapshot.exists() || snapshot.data().status !== LIBRARY_STATUS.WATCHED) {
+    return;
+  }
+
+  await setDoc(
+    ref,
+    { status: LIBRARY_STATUS.WATCHING, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
 export async function removeFromLibrary(uid, mediaType, tmdbId) {
   await deleteDoc(getLibraryDocRef(uid, mediaType, tmdbId));
 }
