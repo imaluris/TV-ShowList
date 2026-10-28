@@ -18,6 +18,7 @@ import Language from "./pages/profile/Language.jsx";
 import Genres from "./pages/profile/Genres.jsx";
 import Stats from "./pages/profile/Stats.jsx";
 import Notifications from "./pages/profile/Notifications.jsx";
+import Backup from "./pages/profile/Backup.jsx";
 import About from "./pages/profile/About.jsx";
 import Account from "./pages/profile/Account.jsx";
 import AccountEdit from "./pages/profile/AccountEdit.jsx";
@@ -61,6 +62,7 @@ function App() {
         <Route path="/profile/genres" element={<Genres />} />
         <Route path="/profile/stats" element={<Stats />} />
         <Route path="/profile/notifications" element={<Notifications />} />
+        <Route path="/profile/backup" element={<Backup />} />
         <Route path="/profile/about" element={<About />} />
         <Route path="/profile/account" element={<Account />} />
         <Route path="/profile/account/edit" element={<AccountEdit />} />

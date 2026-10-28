@@ -1,0 +1,92 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 0;
+}
+
+@media (min-width: 800px) {
+  .page {
+    padding: 1.75rem 1.5rem 0;
+  }
+}
+
+.description,
+.note {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.note {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+}
+
+.button,
+.buttonSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: transform 0.2s var(--ease), opacity 0.15s ease;
+}
+
+.button {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #1b1c20;
+}
+
+.buttonSecondary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.button:active:not(:disabled),
+.buttonSecondary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled,
+.buttonSecondary:disabled {
+  opacity: 0.6;
+}
+
+.fileInput {
+  display: none;
+}
+
+.success,
+.error {
+  margin: 1rem 0 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-card);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.success {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  color: var(--text);
+}
+
+.error {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
