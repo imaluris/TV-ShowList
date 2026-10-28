@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ProfileRow from "../../components/profile/ProfileRow";
-import { User, Palette, Globe, Tags, Bell, Info, Settings } from "lucide-react";
+import { User, Palette, Globe, Tags, Bell, Info, Settings, BarChart3 } from "lucide-react";
 import styles from "./Profile.module.css";
 
 function Profile() {
@@ -30,6 +30,7 @@ function Profile() {
       </div>
 
       <div className={styles.rowsList}>
+        <ProfileRow icon={BarChart3} label="Statistics" to="/profile/stats" />
         <ProfileRow icon={Palette} label="Appearance" to="/profile/appearance" />
         <ProfileRow icon={Globe} label="Language" to="/profile/language" />
         <ProfileRow icon={Tags} label="Favorite genres" to="/profile/genres" />

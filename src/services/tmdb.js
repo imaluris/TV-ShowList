@@ -559,3 +559,22 @@ export async function getTitleWatchProviders(mediaType, id, region = "IT") {
   const data = await response.json();
   return data.results?.[region] || null;
 }
+
+// Durata (in minuti) di un film, o di un episodio medio per le serie.
+// Serve alle statistiche. Ritorna null se TMDB non ha il dato.
+export async function getRuntimeMinutes(mediaType, id) {
+  const params = new URLSearchParams({ api_key: API_KEY });
+  const response = await fetch(`${BASE_URL}/${mediaType}/${id}?${params}`);
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (mediaType === "movie") {
+    return data.runtime || null;
+  }
+
+  return data.episode_run_time?.[0] || data.last_episode_to_air?.runtime || null;
+}
