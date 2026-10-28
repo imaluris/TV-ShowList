@@ -9,6 +9,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  deleteField,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 
@@ -79,6 +80,17 @@ function getStatusFromWatched(watchedEpisodes, slimmedSeasons, isOngoing) {
   }
   if (watchedEpisodes.length > 0) return LIBRARY_STATUS.WATCHING;
   return LIBRARY_STATUS.TO_WATCH;
+}
+
+// Data di inizio visione: la scriviamo quando un titolo passa da "Da vedere"
+// (o da non presente) a iniziato. Serve a capire cosa è davvero "nuovo": solo
+// gli episodi usciti dopo che hai iniziato la serie. I documenti vecchi non
+// l'hanno e si ripiega su `addedAt`.
+function getStartedAtField(previousStatus, nextStatus) {
+  const wasNotStarted =
+    !previousStatus || previousStatus === LIBRARY_STATUS.TO_WATCH;
+  const isStarted = nextStatus !== LIBRARY_STATUS.TO_WATCH;
+  return wasNotStarted && isStarted ? { startedAt: serverTimestamp() } : {};
 }
 
 // Data di fine visione: la scriviamo solo nel momento in cui un titolo
@@ -160,6 +172,8 @@ export async function setLibraryStatus(
         : {}),
       ...(shouldClearWatched ? { watchedEpisodes: [] } : {}),
       ...getWatchedAtField(existing.data()?.status, finalStatus),
+      ...getStartedAtField(existing.data()?.status, finalStatus),
+      ...(shouldClearWatched ? { startedAt: deleteField() } : {}),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -204,7 +218,11 @@ export async function refreshLibrarySeasons(
       seasons: slimmed,
       isOngoing,
       ...(nextStatus
-        ? { status: nextStatus, ...getWatchedAtField(data.status, nextStatus) }
+        ? {
+            status: nextStatus,
+            ...getWatchedAtField(data.status, nextStatus),
+            ...getStartedAtField(data.status, nextStatus),
+          }
         : {}),
     },
     { merge: true },
@@ -282,6 +300,7 @@ export async function toggleEpisodeWatched(
       ...(isOngoing !== undefined ? { isOngoing } : {}),
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
       ...getWatchedAtField(data?.status, nextStatus),
+      ...getStartedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
@@ -340,6 +359,7 @@ export async function toggleSeasonWatched(
       ...(isOngoing !== undefined ? { isOngoing } : {}),
       ...(knownSeasons ? { seasons: knownSeasons } : {}),
       ...getWatchedAtField(data?.status, nextStatus),
+      ...getStartedAtField(data?.status, nextStatus),
       updatedAt: serverTimestamp(),
       ...(existing.exists() ? {} : { addedAt: serverTimestamp() }),
     },
