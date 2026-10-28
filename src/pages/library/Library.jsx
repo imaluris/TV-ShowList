@@ -8,6 +8,7 @@ import {
   DEFAULT_SORT,
   sortLibraryItems,
 } from "../../utils/librarySort";
+import SortMenu from "../../components/library/SortMenu";
 import SegmentedControl from "../../components/ui/SegmentedControl";
 import SkeletonGrid from "../../components/ui/SkeletonGrid";
 import LibraryCard from "../../components/library/LibraryCard";
@@ -84,8 +85,7 @@ function Library() {
     setItems((prev) => prev.filter((item) => item.id !== docId));
   }
 
-  function handleSortChange(e) {
-    const value = e.target.value;
+  function handleSortChange(value) {
     setSortBy(value);
     try {
       localStorage.setItem(SORT_STORAGE_KEY, value);
@@ -146,18 +146,11 @@ function Library() {
           </button>
         )}
       </div>
-        <select
-          className={styles.sortSelect}
-          value={sortBy}
-          onChange={handleSortChange}
-          aria-label="Sort library"
-        >
-          {SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+      <SortMenu
+        options={SORT_OPTIONS}
+        value={sortBy}
+        onChange={handleSortChange}
+      />
       </div>
 
       {!isSearching && (
