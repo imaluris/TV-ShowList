@@ -1,5 +1,10 @@
-// Calcolo dei nuovi episodi: confronta gli episodi già usciti (da TMDB) con
-// quelli spuntati nella libreria. Funzioni pure, senza chiamate di rete.
+// Calcolo dei nuovi episodi. Funzioni pure, senza chiamate di rete.
+//
+// "Nuovo" = episodio uscito negli ultimi RECENT_DAYS giorni e non ancora
+// spuntato. L'arretrato di una serie vecchia (episodi usciti anni fa che non
+// hai ancora guardato) NON conta come novità.
+
+export const RECENT_DAYS = 30;
 
 // Solo le serie già iniziate (in corso o viste) possono avere "novità":
 // una serie "Da vedere" ha semplicemente tutto da guardare.
@@ -10,37 +15,31 @@ export function canHaveNewEpisodes(item) {
   );
 }
 
-// Chiavi "S{stagione}E{episodio}" di tutti gli episodi già usciti.
-// `show` contiene solo `seasons` e `lastEpisode` ({season_number, episode_number}).
-export function getAiredKeys(show) {
-  const last = show?.lastEpisode;
-  if (!last) return [];
+// Dagli episodi di una stagione ({episode_number, air_date}) ricava le chiavi
+// "S{stagione}E{episodio}" di quelli usciti negli ultimi RECENT_DAYS giorni
+// (oggi compreso, futuro escluso).
+export function getRecentKeys(seasonNumber, episodes, now = Date.now()) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const from = now - RECENT_DAYS * dayMs;
 
-  const keys = [];
-  (show.seasons || []).forEach((season) => {
-    if (season.season_number === 0) return;
-
-    if (season.season_number < last.season_number) {
-      for (let ep = 1; ep <= season.episode_count; ep++) {
-        keys.push(`S${season.season_number}E${ep}`);
-      }
-    } else if (season.season_number === last.season_number) {
-      for (let ep = 1; ep <= last.episode_number; ep++) {
-        keys.push(`S${season.season_number}E${ep}`);
-      }
-    }
-  });
-  return keys;
+  return episodes
+    .filter((episode) => {
+      if (!episode.air_date) return false;
+      const time = new Date(episode.air_date).getTime();
+      return time <= now && time >= from;
+    })
+    .map((episode) => `S${seasonNumber}E${episode.episode_number}`);
 }
 
 // Restituisce { count, newSeason } oppure null se non ci sono novità.
-// count = episodi usciti e non spuntati; newSeason = c'è una stagione uscita
+// `show.recentKeys` sono le chiavi degli episodi usciti da poco.
+// count = quelli non spuntati; newSeason = uno di loro è in una stagione
 // più avanti di tutte quelle che hai iniziato.
 export function getNewEpisodes(item, show) {
-  if (!canHaveNewEpisodes(item) || !show) return null;
+  if (!canHaveNewEpisodes(item) || !show?.recentKeys?.length) return null;
 
   const watched = new Set(item.watchedEpisodes || []);
-  const unseen = getAiredKeys(show).filter((key) => !watched.has(key));
+  const unseen = show.recentKeys.filter((key) => !watched.has(key));
   if (unseen.length === 0) return null;
 
   const seasonOf = (key) => Number(key.slice(1, key.indexOf("E")));

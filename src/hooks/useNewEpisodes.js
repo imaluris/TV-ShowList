@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import { getShowDetails } from "../services/tmdb";
-import { canHaveNewEpisodes, getNewEpisodes } from "../utils/newEpisodes";
+import { getShowDetails, getSeasonAirDates } from "../services/tmdb";
+import {
+  RECENT_DAYS,
+  canHaveNewEpisodes,
+  getNewEpisodes,
+  getRecentKeys,
+} from "../utils/newEpisodes";
 
-const CACHE_KEY = "new-episodes-cache";
+const CACHE_KEY = "new-episodes-cache-v2";
 const CACHE_MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6 ore
 const PARALLEL_REQUESTS = 5;
 
@@ -22,19 +27,18 @@ function writeCache(cache) {
   }
 }
 
-// Di ogni serie teniamo solo ciò che serve: stagioni e ultimo episodio uscito.
-function slimShow(details) {
+// Di ogni serie teniamo solo le chiavi degli episodi usciti da poco. Se
+// l'ultimo episodio è uscito da più di RECENT_DAYS giorni non c'è nulla di
+// nuovo e non serve nemmeno scaricare la stagione.
+async function loadRecentKeys(tmdbId, details) {
   const last = details.last_episode_to_air;
-  return {
-    at: Date.now(),
-    seasons: (details.seasons || []).map((s) => ({
-      season_number: s.season_number,
-      episode_count: s.episode_count,
-    })),
-    lastEpisode: last
-      ? { season_number: last.season_number, episode_number: last.episode_number }
-      : null,
-  };
+  if (!last?.air_date) return [];
+
+  const ageDays = (Date.now() - new Date(last.air_date).getTime()) / 86400000;
+  if (ageDays > RECENT_DAYS) return [];
+
+  const episodes = await getSeasonAirDates(tmdbId, last.season_number);
+  return getRecentKeys(last.season_number, episodes);
 }
 
 // Dato l'elenco della libreria, restituisce una mappa
@@ -74,9 +78,12 @@ export function useNewEpisodes(items) {
             const tmdbId = id.replace(/^tv-/, "");
             try {
               const details = await getShowDetails("tv", tmdbId);
-              const slim = slimShow(details);
-              cache[id] = slim;
-              loaded[id] = slim;
+              const entry = {
+                at: Date.now(),
+                recentKeys: await loadRecentKeys(tmdbId, details),
+              };
+              cache[id] = entry;
+              loaded[id] = entry;
             } catch (err) {
               console.error("Nuovi episodi non disponibili:", id, err);
             }

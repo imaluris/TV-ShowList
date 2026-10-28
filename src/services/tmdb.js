@@ -578,3 +578,22 @@ export async function getRuntimeMinutes(mediaType, id) {
 
   return data.episode_run_time?.[0] || data.last_episode_to_air?.runtime || null;
 }
+
+
+// Solo numero e data di uscita degli episodi di una stagione (chiamata leggera,
+// usata per capire quali episodi sono usciti da poco).
+export async function getSeasonAirDates(showId, seasonNumber) {
+  const params = new URLSearchParams({ api_key: API_KEY });
+  const response = await fetch(
+    `${BASE_URL}/tv/${showId}/season/${seasonNumber}?${params}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(`Errore nella fetch: ${response.status}`);
+  }
+  const data = await response.json();
+  return (data.episodes || []).map((episode) => ({
+    episode_number: episode.episode_number,
+    air_date: episode.air_date,
+  }));
+}
