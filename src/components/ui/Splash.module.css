@@ -4,7 +4,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
+  /* Stesso fondo della schermata di avvio di Android (background_color del
+     manifest), cosi' il passaggio non si nota anche con il tema chiaro. */
+  background: #0c0d10;
 }
 
 .mark {
