@@ -5,7 +5,8 @@ import { app, db } from "../firebase/config";
 // Chiave pubblica per le notifiche web (Firebase console → Impostazioni
 // progetto → Cloud Messaging → Configurazione web → Coppia di chiavi).
 // Non è un segreto.
-const VAPID_KEY = "";
+const VAPID_KEY =
+  "BOTJynLmidXgf45_2ZXs37pVggmuVnF3ITcstnZbqfmfgAELvj29LBbTJ4xmDZhN7S23m_2S9vYmGMDqS8qfZtQ";
 
 const TOKEN_STORAGE_KEY = "push-token";
 
