@@ -11,7 +11,7 @@ function LibraryCard({ uid, item, onRemoved, news }) {
 
   // Avanzamento: episodi spuntati sul totale salvato nel documento.
   const totalEpisodes = item.seasons
-    ? item.seasons.reduce((sum, season) => sum + season.episode_count, 0)
+    ? item.seasons.reduce((sum, season) => sum + (season.aired_count ?? season.episode_count), 0)
     : 0;
   const watchedCount = Math.min(item.watchedEpisodes?.length || 0, totalEpisodes);
   const showProgress =

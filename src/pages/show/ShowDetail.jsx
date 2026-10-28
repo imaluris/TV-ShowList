@@ -9,7 +9,7 @@ import {
 } from "../../services/tmdb";
 import { useAuth } from "../../contexts/AuthContext";
 import { refreshLibrarySeasons } from "../../services/firestore";
-import { getTitle, isShowOngoing } from "../../utils/media";
+import { getTitle, isShowOngoing, getSeasonsWithAired } from "../../utils/media";
 import styles from "./ShowDetail.module.css";
 import ShowRow from "../../components/show/ShowRow";
 import SeasonCard from "../../components/show/SeasonCard";
@@ -79,7 +79,7 @@ function ShowDetail() {
       currentUser.uid,
       mediaType,
       show.id,
-      show.seasons,
+      getSeasonsWithAired(show),
       isShowOngoing(show),
     );
   }, [show, currentUser, mediaType]);
@@ -115,7 +115,7 @@ function ShowDetail() {
   // componenti che salvano su Firestore, così il documento della serie
   // sa quanti episodi ha in totale.
   const seasons = !isMovie
-    ? show.seasons.filter((season) => season.season_number !== 0)
+    ? getSeasonsWithAired(show).filter((season) => season.season_number !== 0)
     : undefined;
 
   const year = (show.release_date || show.first_air_date || "").slice(0, 4);

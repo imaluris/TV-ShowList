@@ -5,7 +5,7 @@ import {
   getSeasonDetails,
   getAggregateCreditsShow,
 } from "../../services/tmdb";
-import { getTitle, isShowOngoing } from "../../utils/media";
+import { getTitle, isShowOngoing, getSeasonsWithAired } from "../../utils/media";
 import CastCard from "../../components/show/CastCard";
 import EpisodeCard from "../../components/show/EpisodeCard";
 import styles from "./SeasonDetail.module.css";
@@ -47,7 +47,7 @@ function SeasonDetail() {
 
   // Stagioni "vere" (senza la 0, gli speciali): servono a EpisodeCard per
   // salvare nel documento Firestore quanti episodi ha la serie in totale.
-  const seasons = show.seasons.filter((s) => s.season_number !== 0);
+  const seasons = getSeasonsWithAired(show).filter((s) => s.season_number !== 0);
 
   // Cast della sola stagione: prima gli attori principali (season.credits),
   // poi gli ospiti che compaiono negli episodi di questa stagione

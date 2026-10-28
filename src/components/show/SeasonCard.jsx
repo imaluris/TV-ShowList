@@ -10,6 +10,7 @@ import {
 } from "../../services/firestore";
 import styles from "./SeasonCard.module.css";
 import { getContentLanguage } from "../../services/language";
+import { getAiredCount } from "../../utils/media";
 
 function SeasonCard({
   showId,
@@ -53,7 +54,7 @@ function SeasonCard({
   const watched = isSeasonWatched(
     watchedEpisodes,
     season.season_number,
-    season.episode_count,
+    getAiredCount(season),
   );
 
   async function handleToggle(e) {
@@ -65,7 +66,7 @@ function SeasonCard({
       mediaType,
       tmdbId: showId,
       seasonNumber: season.season_number,
-      episodeCount: season.episode_count,
+      episodeCount: getAiredCount(season),
       title,
       posterPath,
       seasons,

@@ -46,6 +46,7 @@ function slimSeasons(seasons) {
     .map((season) => ({
       season_number: season.season_number,
       episode_count: season.episode_count,
+      aired_count: season.aired_count ?? season.episode_count,
     }));
 }
 
@@ -53,7 +54,13 @@ function slimSeasons(seasons) {
 function getAllEpisodeKeys(slimmedSeasons) {
   const keys = [];
   slimmedSeasons.forEach((season) => {
-    keys.push(...getSeasonKeys(season.season_number, season.episode_count));
+    // Solo gli episodi già usciti: quelli futuri non si possono aver visto.
+    keys.push(
+      ...getSeasonKeys(
+        season.season_number,
+        season.aired_count ?? season.episode_count,
+      ),
+    );
   });
   return keys;
 }

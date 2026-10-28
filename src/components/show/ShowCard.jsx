@@ -10,7 +10,7 @@ import {
   setLibraryStatus,
   removeFromLibrary,
 } from "../../services/firestore";
-import { getTitle, getYear, isShowOngoing } from "../../utils/media";
+import { getTitle, getYear, isShowOngoing, getSeasonsWithAired } from "../../utils/media";
 import {
   RESET_VALUE,
   REMOVE_VALUE,
@@ -122,7 +122,7 @@ function ShowCard({ show }) {
     if (value === LIBRARY_STATUS.WATCHED && mediaType === "tv") {
       try {
         const details = await getShowDetails("tv", show.id);
-        seasons = details.seasons;
+        seasons = getSeasonsWithAired(details);
         isOngoing = isShowOngoing(details);
       } catch (err) {
         console.error("Impossibile caricare le stagioni:", err);
