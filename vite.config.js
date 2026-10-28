@@ -14,7 +14,7 @@ export default defineConfig({
       workbox: {
         importScripts: ['push-sw.js'],
       },
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.png', 'pwa/apple-touch-icon.png'],
       manifest: {
         name: 'TV ShowList',
         short_name: 'TV ShowList',
