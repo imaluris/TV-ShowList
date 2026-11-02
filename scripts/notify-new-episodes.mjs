@@ -108,11 +108,21 @@ async function findNews(uid) {
 
   for (const docSnap of library.docs) {
     const item = { id: docSnap.id, ...docSnap.data() };
-    if (!canHaveNewEpisodes(item)) continue;
+    if (!canHaveNewEpisodes(item)) {
+      if (item.mediaType === "tv") console.log(`  - ${item.title}: ignorata (stato ${item.status})`);
+      continue;
+    }
 
     try {
       const episodes = await loadEpisodes(item.tmdbId, getStartedMillis(item));
       const news = getNewEpisodes(item, { episodes });
+      // Diagnostica: cosa vede lo script per ogni serie.
+      const startedIso = new Date(getStartedMillis(item)).toISOString().slice(0, 10);
+      const notified = (item.notifiedEpisodes || []).length;
+      console.log(
+        `  - ${item.title}: stato ${item.status}, iniziata ${startedIso}, ` +
+          `episodi datati dopo l'inizio ${episodes.length}, nuovi ${news ? news.count : 0}, già notificati ${notified}`,
+      );
       if (!news) continue;
 
       // Chiavi degli episodi nuovi, per non avvisare due volte per gli stessi.
