@@ -123,6 +123,15 @@ async function findNews(uid) {
         `  - ${item.title}: stato ${item.status}, iniziata ${startedIso}, ` +
           `episodi datati dopo l'inizio ${episodes.length}, nuovi ${news ? news.count : 0}, già notificati ${notified}`,
       );
+      if (episodes.length > 0 && episodes.length < 30) {
+        const watchedSet = new Set(item.watchedEpisodes || []);
+        console.log(
+          "      episodi: " +
+            episodes
+              .map((e) => `${e.key}@${new Date(e.time).toISOString().slice(0, 10)}${watchedSet.has(e.key) ? "(visto)" : ""}`)
+              .join(" "),
+        );
+      }
       if (!news) continue;
 
       // Chiavi degli episodi nuovi, per non avvisare due volte per gli stessi.
