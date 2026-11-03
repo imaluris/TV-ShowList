@@ -159,6 +159,9 @@
   .media {
     bottom: auto;
     height: calc(100vw + env(safe-area-inset-top));
+    /* Se la testata è più bassa (es. episodio, senza locandina) l'immagine
+       non deve uscirne: sfumerebbe sopra il testo che sta sotto. */
+    max-height: 100%;
   }
 }
 
