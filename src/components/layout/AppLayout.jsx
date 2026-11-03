@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { touchNotificationDevice } from "../../services/notifications";
 import TopBar from "./TopBar";
 import BottomNav from "./BottomNav";
+import ScrollToTop from "./ScrollToTop";
 import styles from "./AppLayout.module.css";
 
 function AppLayout() {
@@ -18,6 +19,7 @@ function AppLayout() {
 
   return (
     <>
+      <ScrollToTop />
       {isHome && <TopBar />}
       <div className={isHome ? styles.content : styles.contentNoTopBar}>
         <div key={location.pathname} className={styles.page}>
